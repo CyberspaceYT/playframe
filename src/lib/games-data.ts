@@ -4,8 +4,8 @@
   description: string;
   category: string;
   thumbnail_url: string;
-  embed_url: string;
-  html_code?: string;
+  embed_url?: string;
+  embed_code?: string;
 }
 
 export interface Category {

@@ -29,7 +29,7 @@ const Index = () => {
               Play Games <span className="text-primary">Instantly</span>
             </h1>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              Browse and play hundreds of games right in your browser — no downloads needed.
+              Browse and play a huge catalog of games right in your browser — no downloads needed!
             </p>
           </div>
         </section>

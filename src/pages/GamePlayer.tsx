@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Maximize, Minimize } from "lucide-react";
+import { ArrowLeft, Maximize, Minimize, Code, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { games } from "@/lib/games-data";
 import { useState, useRef, useCallback } from "react";
@@ -12,6 +12,7 @@ const GamePlayer = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [useHtmlCode, setUseHtmlCode] = useState(false);
 
   const toggleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
@@ -58,20 +59,53 @@ const GamePlayer = () => {
                 <p className="text-sm text-muted-foreground">{game.description}</p>
               </div>
             </div>
-            <Button variant="outline" size="icon" onClick={toggleFullscreen}>
-              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+              {game.html_code && (
+                <Button
+                  variant={useHtmlCode ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setUseHtmlCode(!useHtmlCode)}
+                  className="gap-1.5"
+                >
+                  {useHtmlCode ? (
+                    <>
+                      <Globe className="h-4 w-4" />
+                      Use Embed URL
+                    </>
+                  ) : (
+                    <>
+                      <Code className="h-4 w-4" />
+                      Use HTML Code
+                    </>
+                  )}
+                </Button>
+              )}
+              <Button variant="outline" size="icon" onClick={toggleFullscreen}>
+                {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
 
           <div ref={containerRef} className="overflow-hidden rounded-xl border border-border bg-black">
-            <iframe
-              ref={iframeRef}
-              src={game.embed_url}
-              title={game.title}
-              className="h-[70vh] w-full"
-              allow="fullscreen; autoplay; gamepad"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-            />
+            {useHtmlCode && game.html_code ? (
+              <iframe
+                ref={iframeRef}
+                srcDoc={game.html_code}
+                title={game.title}
+                className="h-[70vh] w-full"
+                allow="fullscreen; autoplay; gamepad"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            ) : (
+              <iframe
+                ref={iframeRef}
+                src={game.embed_url}
+                title={game.title}
+                className="h-[70vh] w-full"
+                allow="fullscreen; autoplay; gamepad"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            )}
           </div>
         </div>
       </main>

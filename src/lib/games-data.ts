@@ -5,6 +5,7 @@
   category: string;
   thumbnail_url: string;
   embed_url: string;
+  html_code?: string;
 }
 
 export interface Category {

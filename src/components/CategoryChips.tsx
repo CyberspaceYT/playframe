@@ -15,7 +15,7 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
         className={cn(
           "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
           activeCategory === null
-            ? "bg-primary text-primary-foreground"
+            ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-md"
             : "bg-secondary text-muted-foreground hover:text-foreground"
         )}
       >
@@ -28,7 +28,7 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
           className={cn(
             "rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-colors",
             activeCategory === cat.slug
-              ? "bg-primary text-primary-foreground"
+              ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-md"
               : "bg-secondary text-muted-foreground hover:text-foreground"
           )}
         >

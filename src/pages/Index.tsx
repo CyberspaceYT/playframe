@@ -26,7 +26,7 @@ const Index = () => {
         <section className="border-b border-border py-12">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Play Games <span className="text-primary">Instantly</span>
+              Play Games <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Instantly</span>
             </h1>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Browse and play hundreds of games right in your browser — no downloads needed.

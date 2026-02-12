@@ -9,7 +9,7 @@ interface GameCardProps {
 const GameCard = ({ game }: GameCardProps) => {
   return (
     <Link to={`/play/${game.id}`} className="group block">
-      <div className="overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1">
+        <div className="overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-1">
         <div className="aspect-square overflow-hidden bg-secondary">
           <img
             src={game.thumbnail_url}
@@ -17,7 +17,7 @@ const GameCard = ({ game }: GameCardProps) => {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://placehold.co/400x400/1a1a2e/7c3aed?text=${encodeURIComponent(game.title)}`;
+              (e.target as HTMLImageElement).src = `https://placehold.co/400x400/fff7ed/e97c1a?text=${encodeURIComponent(game.title)}`;
             }}
           />
         </div>

@@ -13,7 +13,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <Gamepad2 className="h-7 w-7 text-primary" />
+          <Gamepad2 className="h-7 w-7 text-orange-500" />
           <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             PlayFrame
           </span>

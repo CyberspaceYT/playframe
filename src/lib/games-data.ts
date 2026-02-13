@@ -57,4 +57,4 @@ export const games: Game[] = [
   { id: "30", title: "1v1.lol", description: "1v1.lol is a shooting game with building, AI, and more.", category: "action", thumbnail_url: "https://mathsframe.github.io/alllogo/1v1-lol/logo.png", embed_code: "https://en.riwnlimdshork.dawuiiwauidwahyuiwahuioqwd.site/assets/allgames/1v1.lol-main/1v1.lol/index.html" }, 
   { id: "31", title: "Tag", description: "Tag is a chill game that allows 2, 3, or 4 players to go against each other in a game of tag.", category: "multiplayer", thumbnail_url: "https://cdn-1.webcatalog.io/catalog/poki-tag/poki-tag-icon-filled-256.png?v=1714780383344", embed_code: "https://tagunblocked.vercel.app/file/" }, 
   { id: "32", title: "Jetpack Joyride", description: "Jetpack Joyride is a game about a worker that has stolen a jetpack and is causing havoc in the facility.", category: "action", thumbnail_url: "https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png", embed_code: "https://n-git-main-dm-me-for-proxs-projects.vercel.app/y/jetpack-joyride/index.html" },
-];
+]

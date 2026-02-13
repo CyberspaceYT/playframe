@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Maximize, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { games } from "@/lib/games-data";
+import { recordVisit } from "@/lib/visit-tracker";
 import { useState, useRef, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,6 +13,10 @@ const GamePlayer = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (id) recordVisit(id);
+  }, [id]);
 
   useEffect(() => {
     const handleChange = () => {

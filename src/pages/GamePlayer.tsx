@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Maximize, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { games } from "@/lib/games-data";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -12,6 +12,14 @@ const GamePlayer = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleChange);
+    return () => document.removeEventListener("fullscreenchange", handleChange);
+  }, []);
 
   const toggleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
@@ -63,13 +71,13 @@ const GamePlayer = () => {
             </Button>
           </div>
 
-          <div ref={containerRef} className="overflow-hidden rounded-xl border border-border bg-black">
+          <div ref={containerRef} className={`overflow-hidden bg-black ${isFullscreen ? "" : "rounded-xl border border-border"}`}>
             {game.embed_code ? (
               <iframe
                 ref={iframeRef}
                 srcDoc={game.embed_code}
                 title={game.title}
-                className="h-[70vh] w-full"
+                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
                 allow="fullscreen; autoplay; gamepad"
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               />
@@ -78,12 +86,12 @@ const GamePlayer = () => {
                 ref={iframeRef}
                 src={game.embed_url}
                 title={game.title}
-                className="h-[70vh] w-full"
+                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
                 allow="fullscreen; autoplay; gamepad"
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               />
             ) : (
-              <div className="flex h-[70vh] w-full items-center justify-center text-muted-foreground">
+              <div className={`flex w-full items-center justify-center text-muted-foreground ${isFullscreen ? "h-screen" : "h-[70vh]"}`}>
                 No game source available.
               </div>
             )}

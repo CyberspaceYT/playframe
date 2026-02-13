@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { Gamepad2, Search } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Gamepad2, Search, Code } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface NavbarProps {
@@ -9,6 +9,10 @@ interface NavbarProps {
 }
 
 const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarProps) => {
+  const location = useLocation();
+  const isGames = location.pathname === "/" || location.pathname.startsWith("/play") || location.pathname === "/categories";
+  const isCreate = location.pathname === "/create";
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
@@ -33,10 +37,26 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
 
         <nav className="flex items-center gap-1">
           <Link
-            to="/categories"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            to="/"
+            className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              isGames
+                ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
-            Categories
+            <Gamepad2 className="h-4 w-4" />
+            Games
+          </Link>
+          <Link
+            to="/create"
+            className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              isCreate
+                ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Code className="h-4 w-4" />
+            Create
           </Link>
         </nav>
       </div>

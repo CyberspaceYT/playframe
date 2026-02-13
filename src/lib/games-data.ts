@@ -4,8 +4,7 @@ export interface Game {
   description: string;
   category: string;
   thumbnail_url: string;
-  embed_url?: string;
-  embed_code?: string;
+  embed_url: string;
 }
 
 export interface Category {
@@ -61,14 +60,4 @@ export const games: Game[] = [
   { id: "33", title: "Jetpack Joyride", description: "Jetpack Joyride is a game about a worker that has stolen a jetpack and is causing havoc in the facility.", category: "action", thumbnail_url: "https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png", embed_url: "https://n-git-main-dm-me-for-proxs-projects.vercel.app/y/jetpack-joyride/index.html" },
 ];
 
-// --- NEW INTEGRATION ---
-// Function to render either embed_url or embed_code
-export function renderGameEmbed(game: Game): string {
-  if (game.embed_url && game.embed_url.trim() !== "") {
-    return `<iframe src="${game.embed_url}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>`;
-  } else if (game.embed_code && game.embed_code.trim() !== "") {
-    return game.embed_code;
-  } else {
-    return `<div style="color:red;">No embed available for ${game.title}</div>`;
-  }
-}
+

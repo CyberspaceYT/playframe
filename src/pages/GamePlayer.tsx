@@ -72,29 +72,14 @@ const GamePlayer = () => {
           </div>
 
           <div ref={containerRef} className={`overflow-hidden bg-black ${isFullscreen ? "" : "rounded-xl border border-border"}`}>
-            {game.embed_code ? (
-              <iframe
-                ref={iframeRef}
-                srcDoc={game.embed_code}
-                title={game.title}
-                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
-                allow="fullscreen; autoplay; gamepad"
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              />
-            ) : game.embed_url ? (
-              <iframe
-                ref={iframeRef}
-                src={game.embed_url}
-                title={game.title}
-                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
-                allow="fullscreen; autoplay; gamepad"
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              />
-            ) : (
-              <div className={`flex w-full items-center justify-center text-muted-foreground ${isFullscreen ? "h-screen" : "h-[70vh]"}`}>
-                No game source available.
-              </div>
-            )}
+            <iframe
+              ref={iframeRef}
+              src={game.embed_url}
+              title={game.title}
+              className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
+              allow="fullscreen; autoplay; gamepad"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            />
           </div>
         </div>
       </main>

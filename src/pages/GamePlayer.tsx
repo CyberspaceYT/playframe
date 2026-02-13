@@ -71,7 +71,7 @@ const GamePlayer = () => {
             </Button>
           </div>
 
-          <div ref={containerRef} className={`overflow-hidden bg-black ${isFullscreen ? "" : "rounded-xl border border-border"}`}>
+          <div ref={containerRef} className={`overflow-hidden bg-black transition-all duration-300 ${isFullscreen ? "" : "rounded-xl border border-border/50"}`}>
             <iframe
               ref={iframeRef}
               src={game.embed_url}

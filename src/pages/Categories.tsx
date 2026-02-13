@@ -20,11 +20,11 @@ const Categories = () => {
                 <Link
                   key={cat.id}
                   to={`/?category=${cat.slug}`}
-                  className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-orange-300 hover:shadow-lg hover:shadow-orange-500/10"
+                  className="group rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
-                      <Gamepad2 className="h-5 w-5 text-orange-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors duration-300">
+                      <Gamepad2 className="h-5 w-5 text-primary transition-colors duration-300" />
                     </div>
                     <div>
                       <h2 className="font-semibold">{cat.name}</h2>

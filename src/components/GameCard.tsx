@@ -9,7 +9,7 @@ interface GameCardProps {
 const GameCard = ({ game }: GameCardProps) => {
   return (
     <Link to={`/play/${game.id}`} className="group block">
-        <div className="overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-1">
+        <div className="overflow-hidden rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
         <div className="aspect-square overflow-hidden bg-secondary">
           <img
             src={game.thumbnail_url}

@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import GameCard from "@/components/GameCard";
 import CategoryChips from "@/components/CategoryChips";
 import Footer from "@/components/Footer";
+import PopularGames from "@/components/PopularGames";
 import { useTheme } from "@/components/ThemeProvider";
 import { games, categories } from "@/lib/games-data";
 
@@ -42,6 +43,9 @@ const Index = () => {
             </p>
           </div>
         </section>
+
+        {/* Popular Games */}
+        <PopularGames />
 
         {/* Games */}
         <section className="container mx-auto px-4 py-8">

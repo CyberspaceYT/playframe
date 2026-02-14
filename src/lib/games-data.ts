@@ -22,6 +22,7 @@ export const categories: Category[] = [
   { id: "6", name: "Strategy", slug: "strategy" },
   { id: "7", name: "Adventure", slug: "adventure" },
   { id: "8", name: "Multiplayer", slug: "multiplayer" },
+  { id: "9", name: "Horror", slug: "horror" },
 ];
 
 export const games: Game[] = [
@@ -31,7 +32,7 @@ export const games: Game[] = [
   { id: "4", title: "Cookie Clicker", description: "Click cookies to build a cookie empire.", category: "arcade", thumbnail_url: "https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok", embed_url: "https://cookieclicker-beta.vercel.app/" },
   { id: "5", title: "Moto X3M", description: "Extreme motorcycle stunts and racing.", category: "racing", thumbnail_url: "https://img.utdstc.com/icon/d24/aad/d24aad08f82ff37844908451206fb5351018de4f7afcbc3092b53632f8efec14:200", embed_url: "https://moto-x3m-chi.vercel.app/" },
   { id: "6", title: "Run 3", description: "Run through space tunnels.", category: "action", thumbnail_url: "https://cdn2.steamgriddb.com/icon_thumb/833cc7b10966fa0202801496bffccb37.png", embed_url: "https://student-desmos.vercel.app/" },
-  { id: "7", title: "Subway Surfers", description: "Surf through the subway and dodge trains.", category: "action", thumbnail_url: "https://i.pinimg.com/564x/26/2e/a0/262ea058aba7b39950e4b1c5348be001.jpg", embed_url: "https://files.ufreegame.net/1024/Subway-Surfers-Zurich/" },
+  { id: "7", title: "Subway Surfers", description: "Surf through the subway and dodge trains.", category: "action", thumbnail_url: "https://i.pinimg.com/564x/26/2e/a0/262ea058aba7b39950e4b1c5348be001.jpg", embed_url: "https://spectacular-fudge-927db3.netlify.app/games/subwaysurfers/" },
   { id: "8", title: "Basketball Stars", description: "1v1 basketball action.", category: "sports", thumbnail_url: "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/bc02c9cdfc5b424ddf343b01edf791ce/basketball-stars.png", embed_url: "https://basketballstarsonline.vercel.app/file/" },
   { id: "9", title: "Paper.io 2", description: "Conquer territory in this .io game.", category: "multiplayer", thumbnail_url: "https://play-lh.googleusercontent.com/SWTpYqsX9RN2YirCDnAjQ8qsbgn4UrHkRRGsjwuASnHMVqssIvWKzq82mP82y_ffBSE=w240-h480-rw", embed_url: "https://parcoil-assets.onrender.com/paperio2/" },
   { id: "10", title: "Chess", description: "Classic chess against AI or friends.", category: "strategy", thumbnail_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYpsPXEHUiiyC8E0JJg6o_D6eA1sKiapW2nQ&s", embed_url: "https://www.chesskid.com/play/computer" },
@@ -48,4 +49,6 @@ export const games: Game[] = [
   { id: "21", title: "Funny Shooter 2", description: "A goofy gun game with big bosses and little red men.", category: "action", thumbnail_url: "https://funny-shooter-22.github.io/image/cache/catalog/g4ames/funny-800x800.jpg", embed_url: "https://ubgwtf.gitlab.io/funny-shooter-2/" },
   { id: "22", title: "Pako Highway", description: "An intense car highway game with traffic and procedural generated buildings.", category: "racing", thumbnail_url: "https://cdn.gracza.pl/galeria/gry13/grupy/276001531.jpg", embed_url: "https://pako-highway.vercel.app/" },
   { id: "23", title: "Plants vs. Zombies", description: "A strategical game about plants with abilities fighting zombies.", category: "strategy", thumbnail_url: "https://i.pinimg.com/474x/93/86/7f/93867f5cd62270ad5a191c3856d1ddfd.jpg", embed_url: "https://www.greenfoot.org/scenarios/31337?embed=true" },
+  { id: "24", title: "R.E.P.O.", description: "R.E.P.O is a game about robots going into harsh environments with entities and hazards.", category: "horror", thumbnail_url: "https://cdn2.steamgriddb.com/icon/0504b3f1ca5994854e8718b2090ab098/32/256x256.png", embed_url: "https://truffled.lol/games/repo/index.html" },
+  { id: "25", title: "Snow Rider 3D", description: "Slide around in a customizable sled dodging trees and rocks.", category: "strategy", thumbnail_url: "https://static.keygames.com/2/115102/100968/1024x1024/snow-rider-3d.webp", embed_url: "https://snowrider3-d-silk.vercel.app/" },
 ];

@@ -55,6 +55,6 @@ export const games: Game[] = [
   { id: "27", title: "Escape Road", description: "A arcade game about running from the cops in many vehicles.", category: "arcade", thumbnail_url: "https://escaperoad.org/data/image/game/escape-road-game.png", embed_url: "https://family.pietre-la-rinichi.ro/onlylocal/html/264.html" },
   { id: "28", title: "Drive Mad", description: "A 3D truck game about jumping and driving around obstacles in funny vehicles.", category: "arcade", thumbnail_url: "https://assets.about.me/background/users/d/r/i/drivemadorg_1695736496_582.jpg", embed_url: "https://drive-mad-ten.vercel.app" },
   { id: "29", title: "Tag", description: "A multiplayer game about tag, not so complicated.", category: "multiplayer", thumbnail_url: "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/32d2b1401c7a86c61fae5afeed977b37/tag.png", embed_url: "https://family.pietre-la-rinichi.ro/onlylocal/html/627.html" },
-  { id: "30", title: "Webfishing", description: "A multiplayer game about catching fish and chatting.", category: "multiplayer", thumbnail_url: "https://cdn2.steamgriddb.com/grid/f85c6e30462acd89648c010d3f6fecb4.jpg", embed_url: "https://elite-gamez.github.io/g/webfishing.html" },
+  { id: "30", title: "WebFishing", description: "A multiplayer game about catching fish and chatting.", category: "multiplayer", thumbnail_url: "https://cdn2.steamgriddb.com/grid/f85c6e30462acd89648c010d3f6fecb4.jpg", embed_url: "https://elite-gamez.github.io/g/webfishing.html" },
 
 ];

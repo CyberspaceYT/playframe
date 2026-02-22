@@ -3,7 +3,7 @@ import { ArrowLeft, Maximize, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { games } from "@/lib/games-data";
 import { recordVisit } from "@/lib/visit-tracker";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -11,28 +11,41 @@ const GamePlayer = () => {
   const { id } = useParams();
   const game = games.find((g) => g.id === id);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     if (id) recordVisit(id);
   }, [id]);
 
+  // Keep state in sync when user presses Esc or browser exits fullscreen
   useEffect(() => {
-    const handleChange = () => {
+    const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
-    document.addEventListener("fullscreenchange", handleChange);
-    return () => document.removeEventListener("fullscreenchange", handleChange);
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
   }, []);
 
   const toggleFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!iframeRef.current) return;
+
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen();
-      setIsFullscreen(true);
+      // Try to fullscreen the iframe directly — most games like this best
+      iframeRef.current
+        .requestFullscreen()
+        .then(() => setIsFullscreen(true))
+        .catch(() => {
+          // Fallback: try the container if iframe fullscreen is blocked
+          const container = iframeRef.current?.parentElement;
+          if (container) {
+            container.requestFullscreen().catch(console.warn);
+          }
+        });
     } else {
-      document.exitFullscreen();
+      document.exitFullscreen().catch(console.warn);
       setIsFullscreen(false);
     }
   }, []);
@@ -55,41 +68,78 @@ const GamePlayer = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar showSearch={false} />
+      {/* Only show navbar + header when NOT in fullscreen */}
+      {!isFullscreen && (
+        <>
+          <Navbar showSearch={false} />
+          <main className="flex-1">
+            <div className="container mx-auto px-4 py-6">
+              <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link to="/">
+                      <ArrowLeft className="h-6 w-6" />
+                    </Link>
+                  </Button>
+                  <div>
+                    <h1 className="text-2xl font-bold">{game.title}</h1>
+                    <p className="text-muted-foreground">{game.description}</p>
+                  </div>
+                </div>
 
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-6">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" asChild>
-                <Link to="/">
-                  <ArrowLeft className="h-5 w-5" />
-                </Link>
-              </Button>
-              <div>
-                <h1 className="text-xl font-bold">{game.title}</h1>
-                <p className="text-sm text-muted-foreground">{game.description}</p>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={toggleFullscreen}
+                  title={isFullscreen ? "Exit fullscreen" : "Go fullscreen"}
+                >
+                  {isFullscreen ? (
+                    <Minimize className="h-5 w-5" />
+                  ) : (
+                    <Maximize className="h-5 w-5" />
+                  )}
+                </Button>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-border/40 bg-black shadow-xl">
+                <iframe
+                  ref={iframeRef}
+                  src={game.embed_url}
+                  title={game.title}
+                  className="h-[75vh] w-full"
+                  allow="fullscreen; autoplay; gamepad; accelerometer; gyroscope; picture-in-picture"
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox"
+                />
               </div>
             </div>
-            <Button variant="outline" size="icon" onClick={toggleFullscreen}>
-              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-            </Button>
-          </div>
+          </main>
+          <Footer />
+        </>
+      )}
 
-          <div ref={containerRef} className={`overflow-hidden bg-black transition-all duration-300 ${isFullscreen ? "" : "rounded-xl border border-border/50"}`}>
-            <iframe
-              ref={iframeRef}
-              src={game.embed_url}
-              title={game.title}
-              className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
-              allow="fullscreen; autoplay; gamepad"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-            />
-          </div>
+      {/* Fullscreen version — only iframe + minimal controls */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-black">
+          <iframe
+            ref={iframeRef}
+            src={game.embed_url}
+            title={game.title}
+            className="h-full w-full"
+            allow="fullscreen; autoplay; gamepad; accelerometer; gyroscope; picture-in-picture"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox"
+          />
+
+          {/* Optional: tiny exit button in corner */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 z-10 bg-black/40 text-white hover:bg-black/70"
+            onClick={toggleFullscreen}
+          >
+            <Minimize className="h-6 w-6" />
+          </Button>
         </div>
-      </main>
-
-      <Footer />
+      )}
     </div>
   );
 };

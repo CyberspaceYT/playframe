@@ -6,3 +6,4 @@ Modern UI: A sleek, dark-themed interface for easy game discovery.
 Fast Loading: Minimalist codebase for quick access between classes. 
 
 Thanks for visiting! Feel free to fork this repo to create infinite alt links to infiltrate! 😈
+(Just please put them in "Issues" because I'm trying to make a huge gdoc that has all the links.)

@@ -10,6 +10,7 @@ const Footer = () => {
         </div>
         <p className="text-xs text-muted-foreground max-w-md mx-auto">
           All games are property of their respective owners. PlayFrame does not claim ownership of any game content displayed on this site.
+          We are not responsible if you suffer any consequences while using this website. - Cyberspace110
         </p>
       </div>
     </footer>

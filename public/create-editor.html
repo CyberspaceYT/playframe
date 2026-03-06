@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Try HTML – See Changes Live</title>
-  <style>
+  <style id="theme-styles">
     :root {
       --bg-page:      #ffffff;
       --bg-editor:    linear-gradient(135deg, #fffaf0 0%, #fff0e6 100%);
@@ -13,6 +13,32 @@
       --accent-start: #fed7aa;
       --accent-end:   #fbbf24;
       --border-light: #f3f4f6;
+      --header-bg:    linear-gradient(to right, #fef3e8, #fff7ed);
+      --header-text:  #c2410c;
+      --toolbar-bg:   #fffbeb;
+      --btn-bg:       white;
+      --btn-border:   2px solid transparent;
+      --btn-text:     #c2410c;
+      --resizer:      #f3f4f6;
+      --preview-shadow: 0 4px 16px rgba(251,191,36,0.12);
+    }
+
+    body.dark {
+      --bg-page:      #0f0f1a;
+      --bg-editor:    linear-gradient(135deg, #1a1a2e 0%, #2a1a3a 100%);
+      --text:         #e0e0ff;
+      --text-dim:     #a0a0c0;
+      --accent-start: #c084fc;
+      --accent-end:   #a78bfa;
+      --border-light: #3a3a50;
+      --header-bg:    linear-gradient(to right, #1e1b32, #2a1f40);
+      --header-text:  #d8b4fe;
+      --toolbar-bg:   #1e1b32;
+      --btn-bg:       #2a1f40;
+      --btn-border:   2px solid;
+      --btn-text:     #e9d5ff;
+      --resizer:      #4a4060;
+      --preview-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
 
     * {
@@ -27,6 +53,7 @@
       background: var(--bg-page);
       color: var(--text);
       overflow: hidden;
+      transition: background 0.6s ease, color 0.6s ease;
     }
 
     .app {
@@ -35,12 +62,26 @@
       flex-direction: column;
     }
 
+    header {
+      height: 52px;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--accent-start);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--header-text);
+      transition: all 0.6s ease;
+    }
+
     .main {
       flex: 1;
       display: flex;
       min-height: 0;
       padding: 16px;
       gap: 16px;
+      transition: all 0.6s ease;
     }
 
     .editor-panel {
@@ -51,34 +92,40 @@
       background: var(--bg-editor);
       border-radius: 14px;
       overflow: hidden;
-      border: 1px solid #fed7aa;
+      border: 1px solid var(--accent-start);
       box-shadow: 0 2px 10px rgba(0,0,0,0.04);
       position: relative;
+      transition: all 0.6s ease;
     }
 
     .editor-header {
       height: 48px;
       background: rgba(255,255,255,0.6);
-      border-bottom: 1px solid #fed7aa;
+      border-bottom: 1px solid var(--accent-start);
       display: flex;
       align-items: center;
       padding: 0 18px;
       font-size: 1rem;
-      color: #9a3412;
+      color: var(--header-text);
       font-weight: 500;
+      transition: all 0.6s ease;
     }
 
-    .download-btn {
+    body.dark .editor-header {
+      background: rgba(30,27,50,0.7);
+    }
+
+    .download-btn,
+    .fullscreen-btn {
       position: absolute;
       top: 8px;
-      right: 12px;
       width: 36px;
       height: 36px;
-      background: white;
-      border: 2px solid;
+      background: var(--btn-bg);
+      border: var(--btn-border);
       border-image: linear-gradient(to right, var(--accent-start), var(--accent-end)) 1;
       border-radius: 10px;
-      color: #c2410c;
+      color: var(--btn-text);
       font-size: 1.4rem;
       line-height: 32px;
       text-align: center;
@@ -88,10 +135,20 @@
       user-select: none;
     }
 
-    .download-btn:hover {
+    .download-btn { right: 12px; }
+    .fullscreen-btn { right: 58px; }
+
+    .download-btn:hover,
+    .fullscreen-btn:hover {
       background: #fff7ed;
       transform: translateY(-1px);
       box-shadow: 0 3px 8px rgba(251,191,36,0.2);
+    }
+
+    body.dark .download-btn:hover,
+    body.dark .fullscreen-btn:hover {
+      background: #3a2a50;
+      box-shadow: 0 3px 8px rgba(168,85,247,0.3);
     }
 
     .code-area {
@@ -106,7 +163,7 @@
       height: 100%;
       padding: 16px 16px 16px 56px;
       background: transparent;
-      color: #1e293b;
+      color: var(--text);
       font-family: "Consolas", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.55;
@@ -116,6 +173,7 @@
       white-space: pre;
       overflow: auto;
       tab-size: 2;
+      transition: color 0.6s ease;
     }
 
     .line-numbers {
@@ -123,7 +181,7 @@
       left: 0; top: 0; bottom: 0;
       width: 48px;
       background: rgba(255,245,230,0.6);
-      color: #9ca3af;
+      color: var(--text-dim);
       text-align: right;
       padding-top: 16px;
       padding-right: 8px;
@@ -131,20 +189,32 @@
       line-height: 1.55;
       user-select: none;
       pointer-events: none;
-      border-right: 1px solid #fed7aa;
+      border-right: 1px solid var(--accent-start);
+      transition: all 0.6s ease;
+    }
+
+    body.dark .line-numbers {
+      background: rgba(30,27,50,0.7);
+      color: #b0a0d0;
+      border-right-color: #7c3aed;
     }
 
     .resizer {
       width: 10px;
-      background: #f3f4f6;
+      background: var(--resizer);
       cursor: col-resize;
       border-radius: 5px;
-      transition: background 0.15s;
+      transition: background 0.6s ease;
     }
 
     .resizer:hover,
     .resizer:active {
-      background: #fbbf24;
+      background: var(--accent-end);
+    }
+
+    body.dark .resizer:hover,
+    body.dark .resizer:active {
+      background: #c084fc;
     }
 
     .preview-panel {
@@ -157,27 +227,35 @@
       overflow: hidden;
       border: 1px solid #e5e7eb;
       box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      transition: all 0.6s ease;
+    }
+
+    body.dark .preview-panel {
+      background: #0f0f1a;
+      border-color: #4a4060;
     }
 
     .preview-toolbar {
       height: 48px;
-      background: #fffbeb;
-      border-bottom: 1px solid #fed7aa;
+      background: var(--toolbar-bg);
+      border-bottom: 1px solid var(--accent-start);
       display: flex;
       align-items: center;
       padding: 0 18px;
       gap: 12px;
       font-size: 0.95rem;
-      color: #9a3412;
+      color: var(--header-text);
+      position: relative;
+      transition: all 0.6s ease;
     }
 
     .device-btn {
       padding: 6px 14px;
-      background: white;
-      border: 2px solid transparent;
+      background: var(--btn-bg);
+      border: var(--btn-border);
       border-image: linear-gradient(to right, var(--accent-start), var(--accent-end)) 1;
       border-radius: 10px;
-      color: #c2410c;
+      color: var(--btn-text);
       cursor: pointer;
       font-size: 0.9rem;
       transition: all 0.14s;
@@ -188,12 +266,22 @@
       color: #9a3412;
     }
 
+    body.dark .device-btn:hover {
+      background: #3a2a50;
+      color: #e0d0ff;
+    }
+
     .device-btn.active {
       background: linear-gradient(to right, #fef3e8, #fff7ed);
       border: 2px solid;
       border-image: linear-gradient(to right, var(--accent-start), var(--accent-end)) 1;
       color: #c2410c;
       box-shadow: 0 1px 4px rgba(251,191,36,0.25);
+    }
+
+    body.dark .device-btn.active {
+      background: linear-gradient(to right, #2a1f40, #3a2a50);
+      color: #e0d0ff;
     }
 
     .preview-content {
@@ -203,6 +291,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: background 0.6s ease;
+    }
+
+    body.dark .preview-content {
+      background: #0f0f1a;
     }
 
     #preview-frame {
@@ -213,8 +306,12 @@
       border: 2px solid;
       border-image: linear-gradient(to right, var(--accent-start), var(--accent-end)) 1;
       overflow: hidden;
-      transition: width 0.28s ease;
-      box-shadow: 0 4px 16px rgba(251,191,36,0.12);
+      transition: all 0.6s ease;
+      box-shadow: var(--preview-shadow);
+    }
+
+    body.dark #preview-frame {
+      background: #111122;
     }
 
     #preview {
@@ -223,26 +320,35 @@
       border: none;
     }
 
+    /* Responsive preview widths */
     #preview-frame.desktop { width: 100%; max-width: 1440px; }
     #preview-frame.tablet   { width: 780px; }
     #preview-frame.mobile   { width: 380px; }
 
+    /* Scrollbars */
     #code::-webkit-scrollbar { width: 10px; }
     #code::-webkit-scrollbar-track { background: rgba(255,245,230,0.6); }
     #code::-webkit-scrollbar-thumb { background: #f4a261; border-radius: 5px; }
     #code::-webkit-scrollbar-thumb:hover { background: #ea580c; }
+
+    body.dark #code::-webkit-scrollbar-track { background: rgba(30,27,50,0.7); }
+    body.dark #code::-webkit-scrollbar-thumb { background: #a78bfa; }
+    body.dark #code::-webkit-scrollbar-thumb:hover { background: #c084fc; }
   </style>
 </head>
 <body>
 
 <div class="app">
 
+  <header>Try HTML – See Changes Live</header>
+
   <div class="main">
 
     <div class="editor-panel" id="editorPanel">
       <div class="editor-header">To get started, type some code!</div>
       
-      <button class="download-btn" id="downloadBtn" title="Download as .txt">&#8595;</button>
+      <button class="download-btn" id="downloadBtn" title="Download as .txt">↓</button>
+      <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle fullscreen preview">□</button>
 
       <div class="code-area">
         <div class="line-numbers" id="linenumbers"></div>
@@ -272,17 +378,43 @@
 </div>
 
 <script>
-  const code      = document.getElementById('code');
-  const preview   = document.getElementById('preview');
-  const numbers   = document.getElementById('linenumbers');
-  const frame     = document.getElementById('preview-frame');
-  const buttons   = document.querySelectorAll('.device-btn');
-  const resizer   = document.getElementById('resizer');
-  const left      = document.getElementById('editorPanel');
-  const downloadBtn = document.getElementById('downloadBtn');
+  // ────────────────────────────────────────────────
+  // Elements
+  const code         = document.getElementById('code');
+  const preview      = document.getElementById('preview');
+  const numbers      = document.getElementById('linenumbers');
+  const frame        = document.getElementById('preview-frame');
+  const buttons      = document.querySelectorAll('.device-btn');
+  const resizer      = document.getElementById('resizer');
+  const left         = document.getElementById('editorPanel');
+  const downloadBtn  = document.getElementById('downloadBtn');
+  const fullscreenBtn= document.getElementById('fullscreenBtn');
 
-  code.value = 'Print:"Hello World!"';
+  code.value = `Print:"Hello World!"`;
 
+  // ────────────────────────────────────────────────
+  // Theme switch logic
+  function isNightMode() {
+    const hour = new Date().getHours();
+    return hour >= 19 || hour < 7; // 7:00 PM → 6:59 AM
+  }
+
+  function applyTheme() {
+    if (isNightMode()) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+
+  // Initial theme
+  applyTheme();
+
+  // Check every minute
+  setInterval(applyTheme, 60 * 1000);
+
+  // ────────────────────────────────────────────────
+  // Core functions (unchanged)
   function updateLineNumbers() {
     const count = (code.value.match(/\n/g) || []).length + 1;
     numbers.textContent = Array.from({length: count}, (_, i) => i+1).join('\n');
@@ -300,80 +432,87 @@
     doc.close();
   }
 
-  downloadBtn.addEventListener('click', function() {
-    var content = code.value;
-    var blob = new Blob([content], { type: 'text/plain' });
-    var url = URL.createObjectURL(blob);
-    
-    var a = document.createElement('a');
+  // Download
+  downloadBtn.addEventListener('click', () => {
+    const blob = new Blob([code.value], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
     a.href = url;
     a.download = 'my-code.txt';
-    document.body.appendChild(a);
     a.click();
-    
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   });
 
-  code.addEventListener('input', function() {
+  // Fullscreen
+  fullscreenBtn.addEventListener('click', () => {
+    const elem = document.getElementById('preview-frame');
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen?.() || elem.webkitRequestFullscreen?.() || elem.msRequestFullscreen?.();
+      fullscreenBtn.textContent = '×';
+    } else {
+      document.exitFullscreen?.() || document.webkitExitFullscreen?.() || document.msExitFullscreen?.();
+      fullscreenBtn.textContent = '□';
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    fullscreenBtn.textContent = document.fullscreenElement ? '×' : '□';
+  });
+
+  code.addEventListener('input', () => {
     updateLineNumbers();
     updatePreview();
   });
 
-  code.addEventListener('scroll', function() {
+  code.addEventListener('scroll', () => {
     numbers.scrollTop = code.scrollTop;
   });
 
-  buttons.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      buttons.forEach(function(b) { b.classList.remove('active'); });
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       frame.className = btn.dataset.size;
     });
   });
 
-  var resizing = false;
+  let resizing = false;
 
-  resizer.addEventListener('mousedown', function(e) {
+  resizer.addEventListener('mousedown', e => {
     resizing = true;
     document.body.style.cursor = 'col-resize';
     e.preventDefault();
   });
 
-  document.addEventListener('mousemove', function(e) {
+  document.addEventListener('mousemove', e => {
     if (!resizing) return;
-    var rect = document.querySelector('.main').getBoundingClientRect();
-    var w = e.clientX - rect.left - (resizer.offsetWidth / 2);
-    var min = 340;
+    const rect = document.querySelector('.main').getBoundingClientRect();
+    let w = e.clientX - rect.left - (resizer.offsetWidth / 2);
+    const min = 340;
     w = Math.max(min, w);
     w = Math.min(rect.width - min, w);
-    left.style.flex = '0 0 ' + w + 'px';
+    left.style.flex = `0 0 ${w}px`;
   });
 
-  document.addEventListener('mouseup', function() {
+  document.addEventListener('mouseup', () => {
     if (resizing) {
       resizing = false;
       document.body.style.cursor = '';
     }
   });
 
-  resizer.addEventListener('touchstart', function(e) {
-    resizing = true;
-    e.preventDefault();
-  }, {passive:false});
-
-  document.addEventListener('touchmove', function(e) {
+  resizer.addEventListener('touchstart', e => { resizing = true; e.preventDefault(); }, {passive:false});
+  document.addEventListener('touchmove', e => {
     if (!resizing) return;
-    var touch = e.touches[0];
-    var rect = document.querySelector('.main').getBoundingClientRect();
-    var w = touch.clientX - rect.left - (resizer.offsetWidth / 2);
-    var min = 340;
+    const touch = e.touches[0];
+    const rect = document.querySelector('.main').getBoundingClientRect();
+    let w = touch.clientX - rect.left - (resizer.offsetWidth / 2);
+    const min = 340;
     w = Math.max(min, w);
     w = Math.min(rect.width - min, w);
-    left.style.flex = '0 0 ' + w + 'px';
+    left.style.flex = `0 0 ${w}px`;
   }, {passive:false});
-
-  document.addEventListener('touchend', function() { resizing = false; });
+  document.addEventListener('touchend', () => resizing = false);
 
   updateLineNumbers();
   updatePreview();
@@ -381,5 +520,3 @@
 
 </body>
 </html>
-</content>
-</invoke>

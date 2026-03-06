@@ -1,44 +1,31 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Try HTML – Live Editor</title>
+
+<title>Live Code Playground</title>
 
 <style>
 
 :root{
---bg-main:linear-gradient(135deg,#fff7ed,#fff3e8);
---panel-bg:rgba(255,255,255,0.6);
---glass:rgba(255,255,255,0.55);
+--bg:linear-gradient(135deg,#fff7ed,#fff3e8);
+--panel:rgba(255,255,255,0.75);
 --border:#fed7aa;
---accent1:#fed7aa;
---accent2:#fbbf24;
---shadow:0 10px 30px rgba(0,0,0,0.08);
+--accent:#f59e0b;
+--shadow:0 12px 35px rgba(0,0,0,0.08);
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
 height:100vh;
-font-family:system-ui,-apple-system;
-background:var(--bg-main);
+font-family:system-ui;
+background:var(--bg);
+overflow:hidden;
 display:flex;
 flex-direction:column;
-overflow:hidden;
-}
-
-/* DARK MODE */
-
-body.dark{
---bg-main:linear-gradient(135deg,#0f172a,#1e293b);
---panel-bg:rgba(30,41,59,0.7);
---glass:rgba(30,41,59,0.6);
---border:#334155;
 }
 
 /* HEADER */
@@ -49,18 +36,12 @@ display:flex;
 align-items:center;
 padding:0 20px;
 font-weight:600;
+background:rgba(255,255,255,0.6);
 backdrop-filter:blur(10px);
-background:var(--glass);
 border-bottom:1px solid var(--border);
 }
 
 /* LAYOUT */
-
-.app{
-flex:1;
-display:flex;
-flex-direction:column;
-}
 
 .main{
 flex:1;
@@ -73,10 +54,10 @@ padding:16px;
 
 .editor-panel,
 .preview-panel{
-border-radius:18px;
-background:var(--panel-bg);
-backdrop-filter:blur(12px);
+background:var(--panel);
+backdrop-filter:blur(10px);
 border:1px solid var(--border);
+border-radius:18px;
 box-shadow:var(--shadow);
 display:flex;
 flex-direction:column;
@@ -94,9 +75,27 @@ position:relative;
 height:46px;
 display:flex;
 align-items:center;
-padding:0 18px;
+padding:0 16px;
 border-bottom:1px solid var(--border);
 font-size:14px;
+}
+
+/* BUTTON */
+
+button{
+padding:7px 14px;
+border-radius:10px;
+border:none;
+background:#f59e0b;
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:.15s;
+}
+
+button:hover{
+transform:translateY(-1px);
+filter:brightness(1.05);
 }
 
 /* DOWNLOAD */
@@ -107,17 +106,7 @@ top:8px;
 right:10px;
 width:36px;
 height:36px;
-border-radius:12px;
-border:2px solid transparent;
-background:white;
-cursor:pointer;
-font-size:16px;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-transition:0.15s;
-}
-
-.download-btn:hover{
-transform:translateY(-2px);
+padding:0;
 }
 
 /* CODE AREA */
@@ -132,14 +121,14 @@ position:absolute;
 left:0;
 top:0;
 bottom:0;
-width:50px;
+width:48px;
 padding-top:14px;
-padding-right:8px;
 text-align:right;
+padding-right:6px;
 font-family:monospace;
 font-size:14px;
 color:#9ca3af;
-background:rgba(255,255,255,0.4);
+background:rgba(255,255,255,0.5);
 border-right:1px solid var(--border);
 }
 
@@ -152,24 +141,24 @@ outline:none;
 resize:none;
 font-family:Consolas,monospace;
 font-size:14px;
-line-height:1.5;
 background:white;
 color:black;
-border-radius:0 0 18px 18px;
+}
+
+/* DRAG OVER */
+
+#code.drag{
+background:#fff7ed;
+outline:3px dashed var(--accent);
 }
 
 /* RESIZER */
 
 .resizer{
 width:10px;
-border-radius:10px;
-background:rgba(0,0,0,0.05);
 cursor:col-resize;
-transition:0.15s;
-}
-
-.resizer:hover{
-background:#fbbf24;
+background:rgba(0,0,0,0.05);
+border-radius:10px;
 }
 
 /* PREVIEW */
@@ -185,47 +174,23 @@ align-items:center;
 gap:10px;
 padding:0 16px;
 border-bottom:1px solid var(--border);
-background:var(--glass);
+background:rgba(255,255,255,0.6);
 }
-
-/* BUTTONS */
-
-.device-btn{
-padding:6px 12px;
-border-radius:12px;
-border:1px solid var(--border);
-background:white;
-cursor:pointer;
-font-size:13px;
-transition:0.15s;
-}
-
-.device-btn:hover{
-transform:translateY(-1px);
-}
-
-.device-btn.active{
-background:linear-gradient(to right,var(--accent1),var(--accent2));
-}
-
-/* PREVIEW AREA */
 
 .preview-content{
 flex:1;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 padding:20px;
 }
 
 #preview-frame{
 width:100%;
 height:100%;
-border-radius:18px;
+border-radius:16px;
 overflow:hidden;
-border:2px solid transparent;
-border-image:linear-gradient(to right,var(--accent1),var(--accent2))1;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+border:2px solid var(--accent);
 }
 
 #preview{
@@ -235,26 +200,23 @@ border:none;
 background:white;
 }
 
-/* DEVICE SIZES */
-
-#preview-frame.desktop{max-width:1400px;}
-#preview-frame.tablet{width:780px;}
-#preview-frame.mobile{width:380px;}
+#preview-frame.desktop{max-width:1400px}
+#preview-frame.tablet{width:780px}
+#preview-frame.mobile{width:380px}
 
 </style>
 </head>
 
 <body>
 
-<header>Try HTML – Live Editor</header>
-
-<div class="app">
+<header>Live Code Playground</header>
 
 <div class="main">
 
 <div class="editor-panel" id="editorPanel">
 
-<div class="editor-header">Start typing HTML...</div>
+<div class="editor-header">Drag a file here or type code</div>
+
 <button class="download-btn" id="downloadBtn">↓</button>
 
 <div class="code-area">
@@ -273,12 +235,10 @@ background:white;
 
 <div class="preview-toolbar">
 
-<span>Preview</span>
-
-<button class="device-btn active" data-size="desktop">Computer</button>
-<button class="device-btn" data-size="tablet">Tablet</button>
-<button class="device-btn" data-size="mobile">Phone</button>
-<button class="device-btn" id="fullscreenBtn">Fullscreen</button>
+<button data-size="desktop">Computer</button>
+<button data-size="tablet">Tablet</button>
+<button data-size="mobile">Phone</button>
+<button id="fullscreenBtn">Fullscreen</button>
 
 </div>
 
@@ -294,32 +254,23 @@ background:white;
 
 </div>
 
-</div>
-
 <script>
 
 const code=document.getElementById("code")
 const preview=document.getElementById("preview")
 const numbers=document.getElementById("lineNumbers")
 const frame=document.getElementById("preview-frame")
-const buttons=document.querySelectorAll(".device-btn")
 const resizer=document.getElementById("resizer")
 const left=document.getElementById("editorPanel")
-const downloadBtn=document.getElementById("downloadBtn")
-const fullscreenBtn=document.getElementById("fullscreenBtn")
 
-const STORAGE="editor_save"
-
-if(localStorage.getItem(STORAGE)){
-code.value=localStorage.getItem(STORAGE)
-}else{
-code.value="<h1>Hello world</h1>"
-}
+/* UPDATE LINES */
 
 function updateLines(){
 const count=(code.value.match(/\n/g)||[]).length+1
 numbers.textContent=Array.from({length:count},(_,i)=>i+1).join("\n")
 }
+
+/* RUN PREVIEW */
 
 function updatePreview(){
 const doc=preview.contentDocument
@@ -328,30 +279,75 @@ doc.write(code.value)
 doc.close()
 }
 
-function save(){
-localStorage.setItem(STORAGE,code.value)
-}
-
 code.addEventListener("input",()=>{
 updateLines()
 updatePreview()
-save()
 })
 
-code.addEventListener("scroll",()=>{
-numbers.scrollTop=code.scrollTop
+/* DRAG DROP FILE */
+
+code.addEventListener("dragover",e=>{
+e.preventDefault()
+code.classList.add("drag")
 })
 
-buttons.forEach(btn=>{
-if(!btn.dataset.size)return
-btn.onclick=()=>{
-buttons.forEach(b=>b.classList.remove("active"))
-btn.classList.add("active")
-frame.className=btn.dataset.size
+code.addEventListener("dragleave",()=>{
+code.classList.remove("drag")
+})
+
+code.addEventListener("drop",e=>{
+e.preventDefault()
+
+code.classList.remove("drag")
+
+const file=e.dataTransfer.files[0]
+
+if(!file)return
+
+const reader=new FileReader()
+
+reader.onload=event=>{
+
+let text=event.target.result
+
+const ext=file.name.split(".").pop().toLowerCase()
+
+if(ext==="html"){
+code.value=text
 }
+
+else if(ext==="css"){
+code.value="<style>\n"+text+"\n</style>"
+}
+
+else if(ext==="js"){
+code.value="<script>\n"+text+"\n<\/script>"
+}
+
+else if(ext==="png"||ext==="jpg"||ext==="jpeg"||ext==="gif"){
+code.value=`<img src="${event.target.result}" style="max-width:100%">`
+}
+
+else{
+code.value=text
+}
+
+updateLines()
+updatePreview()
+
+}
+
+if(file.type.startsWith("image")){
+reader.readAsDataURL(file)
+}else{
+reader.readAsText(file)
+}
+
 })
 
-fullscreenBtn.onclick=()=>{
+/* FULLSCREEN */
+
+document.getElementById("fullscreenBtn").onclick=()=>{
 if(!document.fullscreenElement){
 frame.requestFullscreen()
 }else{
@@ -359,7 +355,17 @@ document.exitFullscreen()
 }
 }
 
-downloadBtn.onclick=()=>{
+/* DEVICE BUTTONS */
+
+document.querySelectorAll(".preview-toolbar button[data-size]").forEach(btn=>{
+btn.onclick=()=>{
+frame.className=btn.dataset.size
+}
+})
+
+/* DOWNLOAD */
+
+document.getElementById("downloadBtn").onclick=()=>{
 const blob=new Blob([code.value],{type:"text/html"})
 const url=URL.createObjectURL(blob)
 
@@ -370,6 +376,8 @@ a.click()
 
 URL.revokeObjectURL(url)
 }
+
+/* RESIZE */
 
 let resizing=false
 
@@ -382,18 +390,6 @@ const rect=document.querySelector(".main").getBoundingClientRect()
 let w=e.clientX-rect.left
 left.style.flex=`0 0 ${w}px`
 }
-
-function updateTheme(){
-const hour=new Date().getHours()
-if(hour>=19||hour<7){
-document.body.classList.add("dark")
-}else{
-document.body.classList.remove("dark")
-}
-}
-
-updateTheme()
-setInterval(updateTheme,60000)
 
 updateLines()
 updatePreview()

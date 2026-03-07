@@ -5,8 +5,6 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.en
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
 
-console.log('[v0] Supabase configured:', isSupabaseConfigured)
-
 // Only create the client if we have valid configuration
 // Using a placeholder URL/key when not configured to avoid initialization errors
 export const supabase: SupabaseClient = createClient(

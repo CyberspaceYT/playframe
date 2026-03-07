@@ -14,15 +14,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  console.log('[v0] AuthProvider mounting')
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log('[v0] AuthProvider useEffect running, isSupabaseConfigured:', isSupabaseConfigured)
     if (!isSupabaseConfigured) {
-      console.warn('[v0] Supabase is not configured. Auth features will be disabled.')
       setLoading(false)
       return
     }

@@ -1,17 +1,7 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Gamepad2, Search, Code, User, LogOut, Settings } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Gamepad2, Search, Code } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useTheme } from "@/components/ThemeProvider";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRef, useEffect, useState } from "react";
 
 interface NavbarProps {
@@ -22,21 +12,10 @@ interface NavbarProps {
 
 const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarProps) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { theme } = useTheme();
-  const { user, loading, signOut } = useAuth();
   
   const isGames = location.pathname === "/" || location.pathname.startsWith("/play") || location.pathname === "/categories";
   const isCreate = location.pathname === "/create";
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
-
-  const getInitials = (email: string) => {
-    return email.charAt(0).toUpperCase();
-  };
 
   const gamesRef = useRef<HTMLAnchorElement>(null);
   const createRef = useRef<HTMLAnchorElement>(null);
@@ -122,55 +101,6 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
             Create
           </Link>
         </nav>
-
-        {/* Auth Section */}
-        <div className="flex items-center gap-2">
-          {loading ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-secondary" />
-          ) : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9 border border-border/50">
-                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                      {getInitials(user.email || "U")}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="flex flex-col gap-1 p-2">
-                  <p className="text-sm font-medium">{user.email}</p>
-                  <p className="text-xs text-muted-foreground">Manage your account</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/account" className="flex items-center gap-2 cursor-pointer">
-                    <Settings className="h-4 w-4" />
-                    Account Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/login">Sign in</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link to="/signup">Sign up</Link>
-              </Button>
-            </div>
-          )}
-        </div>
       </div>
     </header>
   );

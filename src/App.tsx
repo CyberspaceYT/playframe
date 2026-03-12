@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import GamePlayer from "./pages/GamePlayer";
 import Categories from "./pages/Categories";
@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -25,10 +25,8 @@ const App = () => (
               <Route path="/play/:id" element={<GamePlayer />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/create" element={<Create />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="*" element={<NotFound />} />
+              {/* Redirect any unknown pages back to home since NotFound is deleted */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

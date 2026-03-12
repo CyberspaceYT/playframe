@@ -9,10 +9,6 @@ import Index from "./pages/Index";
 import GamePlayer from "./pages/GamePlayer";
 import Categories from "./pages/Categories";
 import Create from "./pages/Create";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import Account from "./pages/Account";
-import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 

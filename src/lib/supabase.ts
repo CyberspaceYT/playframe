@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// This matches the VITE_ names we just added
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// This checks if the keys actually exist so the app doesn't crash
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+export const supabase = createClient(
+  supabaseUrl || '',
+  supabaseAnonKey || ''
+);

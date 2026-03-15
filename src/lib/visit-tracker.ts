@@ -5,6 +5,9 @@ interface VisitData {
 }
 
 function getVisitData(): VisitData {
+  // Check if we are in a browser
+  if (typeof window === 'undefined') return {}; 
+  
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : {};
@@ -14,6 +17,8 @@ function getVisitData(): VisitData {
 }
 
 function saveVisitData(data: VisitData) {
+  if (typeof window === 'undefined') return;
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -29,10 +34,13 @@ export function recordVisit(gameId: string) {
 
 export function getTopGames(count: number): { gameId: string; visits: number }[] {
   const data = getVisitData();
-  return Object.entries(data)
+  const sorted = Object.entries(data)
     .map(([gameId, visits]) => ({ gameId, visits }))
     .sort((a, b) => b.visits - a.visits)
     .slice(0, count);
+  
+  // If no visits yet, return empty list instead of crashing
+  return sorted;
 }
 
 export function getVisitCount(gameId: string): number {

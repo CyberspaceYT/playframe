@@ -62,18 +62,19 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
         {/* Navigation with Animated Slider */}
         <nav className="relative flex items-center bg-secondary/20 p-1 rounded-lg">
           {/* Sliding indicator - The "Swipe" element */}
-          <div
-            className={`absolute h-[calc(100%-8px)] rounded-md shadow-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-              theme === "dark"
-                ? "bg-white/15"
-                : "bg-gradient-to-r from-amber-400 to-orange-500"
-            }`}
-            style={{
-              ...indicatorStyle,
-              top: '4px',
-              pointerEvents: 'none' // Ensures the indicator doesn't block clicks
-            }}
-          />
+<div
+  className={`absolute h-[calc(100%-8px)] rounded-md shadow-sm transition-all duration-300 ease-in-out ${
+    theme === "dark"
+      ? "bg-white/15"
+      : "bg-gradient-to-r from-amber-400 to-orange-500"
+  }`}
+  style={{
+    ...indicatorStyle,
+    top: '4px',
+    pointerEvents: 'none'
+  }}
+/>
+
 
           <Link
             ref={gamesRef}

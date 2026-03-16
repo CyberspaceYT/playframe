@@ -25,28 +25,29 @@ const Index = () => {
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
       <main className="flex-1">
-{/* Hero */}
-<section className="relative overflow-hidden border-b border-border/50 py-20 transition-colors duration-500">
 
-  <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(#00000010_1px,transparent_1px),linear-gradient(90deg,#00000010_1px,transparent_1px)] bg-[size:40px_40px]" />
+        {/* Hero */}
+        <section className="relative border-b border-border/50 py-12 transition-colors duration-500 overflow-hidden">
 
-  <div className="relative container mx-auto px-4 text-center">
+          {/* Grid background */}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(#00000010_1px,transparent_1px),linear-gradient(90deg,#00000010_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-    <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
-      PLAYFRAME
-    </h1>
+          <div className="relative container mx-auto px-4 text-center">
 
-    <div className="mt-4 inline-block border-4 border-black bg-red-400 px-6 py-3 text-2xl font-extrabold shadow-[6px_6px_0_black] sm:text-3xl">
-      PLAY GAMES ANYWHERE
-    </div>
+            <h1 className="text-5xl font-black tracking-tight sm:text-7xl transition-colors duration-300">
+              PLAYFRAME
+            </h1>
 
-    <p className="mx-auto mt-6 max-w-xl text-muted-foreground">
-      Browse hundreds of browser games and play instantly. No downloads, no installs, just click and play.
-    </p>
+            <div className="mt-4 inline-block border-4 border-black bg-red-400 px-6 py-3 text-2xl font-extrabold shadow-[6px_6px_0_black] sm:text-3xl">
+              PLAY GAMES ANYWHERE
+            </div>
 
-  </div>
+            <p className="mx-auto mt-6 max-w-lg text-muted-foreground">
+              Browse hundreds of browser games and play instantly. No downloads, no installs, just click and play.
+            </p>
 
-</section>
+          </div>
+        </section>
 
         {/* Popular Games */}
         <PopularGames />
@@ -71,6 +72,7 @@ const Index = () => {
             </div>
           )}
         </section>
+
       </main>
 
       <Footer />

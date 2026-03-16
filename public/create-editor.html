@@ -16,8 +16,6 @@
 --shadow:0 12px 35px rgba(0,0,0,0.08);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-
 body{
 height:100vh;
 font-family:system-ui;
@@ -25,6 +23,39 @@ background:var(--bg);
 overflow:hidden;
 display:flex;
 flex-direction:column;
+transition:all 0.5s ease;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode{
+background:#131018;
+color:#d8b4fe;
+}
+
+body.dark-mode header{
+background:rgba(19,16,24,0.6);
+border-bottom:1px solid #d8b4fe;
+}
+
+body.dark-mode .editor-panel,
+body.dark-mode .preview-panel{
+background:rgba(19,16,24,0.75);
+border:1px solid #d8b4fe;
+}
+
+body.dark-mode .preview-toolbar{
+background:rgba(19,16,24,0.6);
+border-bottom:1px solid #d8b4fe;
+}
+
+body.dark-mode #code{
+background:#131018;
+color:#d8b4fe;
+}
+
+body.dark-mode button{
+background:#d8b4fe;
+color:#131018;
 }
 
 /* HEADER */
@@ -38,6 +69,7 @@ font-weight:600;
 background:rgba(255,255,255,0.6);
 backdrop-filter:blur(10px);
 border-bottom:1px solid var(--border);
+transition:all 0.5s ease;
 }
 
 /* LAYOUT */
@@ -61,6 +93,7 @@ box-shadow:var(--shadow);
 display:flex;
 flex-direction:column;
 overflow:hidden;
+transition:all 0.5s ease;
 }
 
 /* EDITOR */
@@ -129,6 +162,7 @@ font-size:14px;
 color:#9ca3af;
 background:rgba(255,255,255,0.5);
 border-right:1px solid var(--border);
+transition:all 0.5s ease;
 }
 
 #code{
@@ -142,6 +176,7 @@ font-family:Consolas,monospace;
 font-size:14px;
 background:white;
 color:black;
+transition:all 0.5s ease;
 }
 
 /* DRAG OVER */
@@ -263,14 +298,12 @@ const resizer=document.getElementById("resizer")
 const left=document.getElementById("editorPanel")
 
 /* UPDATE LINES */
-
 function updateLines(){
 const count=(code.value.match(/\n/g)||[]).length+1
 numbers.textContent=Array.from({length:count},(_,i)=>i+1).join("\n")
 }
 
 /* RUN PREVIEW */
-
 function updatePreview(){
 const doc=preview.contentDocument
 doc.open()
@@ -284,7 +317,6 @@ updatePreview()
 })
 
 /* DRAG DROP FILE */
-
 code.addEventListener("dragover",e=>{
 e.preventDefault()
 code.classList.add("drag")
@@ -296,66 +328,33 @@ code.classList.remove("drag")
 
 code.addEventListener("drop",e=>{
 e.preventDefault()
-
 code.classList.remove("drag")
-
 const file=e.dataTransfer.files[0]
-
 if(!file)return
-
 const reader=new FileReader()
-
 reader.onload=event=>{
-
 let text=event.target.result
-
 const ext=file.name.split(".").pop().toLowerCase()
-
-if(ext==="html"){
-code.value=text
-}
-
-else if(ext==="css"){
-code.value="<style>\n"+text+"\n</style>"
-}
-
-else if(ext==="js"){
-code.value="<script>\n"+text+"\n<\/script>"
-}
-
+if(ext==="html"){code.value=text}
+else if(ext==="css"){code.value="<style>\n"+text+"\n</style>"}
+else if(ext==="js"){code.value="<script>\n"+text+"\n<\/script>"}
 else if(ext==="png"||ext==="jpg"||ext==="jpeg"||ext==="gif"){
-code.value=`<img src="${event.target.result}" style="max-width:100%">`
-}
-
-else{
-code.value=text
-}
-
+code.value=`<img src="${event.target.result}" style="max-width:100%">`}
+else{code.value=text}
 updateLines()
 updatePreview()
-
 }
-
-if(file.type.startsWith("image")){
-reader.readAsDataURL(file)
-}else{
-reader.readAsText(file)
-}
-
+if(file.type.startsWith("image")){reader.readAsDataURL(file)}
+else{reader.readAsText(file)}
 })
 
 /* FULLSCREEN */
-
 document.getElementById("fullscreenBtn").onclick=()=>{
-if(!document.fullscreenElement){
-frame.requestFullscreen()
-}else{
-document.exitFullscreen()
-}
+if(!document.fullscreenElement){frame.requestFullscreen()}
+else{document.exitFullscreen()}
 }
 
 /* DEVICE BUTTONS */
-
 document.querySelectorAll(".preview-toolbar button[data-size]").forEach(btn=>{
 btn.onclick=()=>{
 frame.className=btn.dataset.size
@@ -363,26 +362,20 @@ frame.className=btn.dataset.size
 })
 
 /* DOWNLOAD */
-
 document.getElementById("downloadBtn").onclick=()=>{
 const blob=new Blob([code.value],{type:"text/html"})
 const url=URL.createObjectURL(blob)
-
 const a=document.createElement("a")
 a.href=url
 a.download="project.html"
 a.click()
-
 URL.revokeObjectURL(url)
 }
 
 /* RESIZE */
-
 let resizing=false
-
 resizer.onmousedown=()=>resizing=true
 document.onmouseup=()=>resizing=false
-
 document.onmousemove=e=>{
 if(!resizing)return
 const rect=document.querySelector(".main").getBoundingClientRect()
@@ -392,6 +385,18 @@ left.style.flex=`0 0 ${w}px`
 
 updateLines()
 updatePreview()
+
+/* DARK MODE AT 7PM */
+function checkDarkMode(){
+const hour=new Date().getHours()
+if(hour>=19){ // 7PM or later
+document.body.classList.add("dark-mode")
+}else{
+document.body.classList.remove("dark-mode")
+}
+}
+checkDarkMode()
+setInterval(checkDarkMode,60000) // recheck every minute
 
 </script>
 

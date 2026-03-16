@@ -1,4 +1,4 @@
-# Welcome to PlayFrame!
+# Welcome to PlayFrame! 🎮
 
 This repo is the official source code for PlayFrame, a lightweight, high-performance website dedicated to providing unblocked games for school / work environments. Built with a focus on accessibility and bypassing network restrictions, this repository contains the full frontend and game-embedding logic similar to many other proxies and sites like Art Class, Interstellar, Rammerhead, and more. 
 

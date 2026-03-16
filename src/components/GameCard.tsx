@@ -10,17 +10,31 @@ const GameCard = ({ game }: GameCardProps) => {
   return (
     <Link to={`/play/${game.id}`} className="group block">
       <div
-        className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-2 hover:border-sky-300/60 hover:shadow-[0_15px_40px_rgba(0,0,0,0.45),0_0_20px_rgba(0,170,255,0.35)]"
+        style={{
+          borderRadius: "1rem",
+          backdropFilter: "blur(12px) saturate(180%)",
+          background: "rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
+          transition: "transform 300ms ease, box-shadow 300ms ease",
+          overflow: "hidden",
+          position: "relative",
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+        }}
+        className="card group-hover:[transform:translateY(-4px)] group-hover:[box-shadow:0_12px_25px_rgba(0,0,0,0.25)]"
       >
-        {/* Aero gloss layer */}
-        <div className="pointer-events-none absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/40 to-transparent" />
-
         {/* Thumbnail */}
-        <div className="aspect-square overflow-hidden bg-white/20">
+        <div style={{ aspectRatio: "1 / 1", overflow: "hidden", background: "rgba(255, 255, 255, 0.08)" }}>
           <img
             src={game.thumbnail_url}
             alt={game.title}
-            className="h-full w-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-110"
+            style={{
+              height: "100%",
+              width: "100%",
+              objectFit: "cover",
+              transition: "transform 300ms ease, filter 300ms ease",
+              willChange: "transform, filter",
+            }}
+            className="group-hover:[transform:scale(1.1)] group-hover:[filter:brightness(1.1)]"
             loading="lazy"
             onError={(e) => {
               (e.target as HTMLImageElement).src = `https://placehold.co/400x400/fff7ed/e97c1a?text=${encodeURIComponent(
@@ -31,14 +45,33 @@ const GameCard = ({ game }: GameCardProps) => {
         </div>
 
         {/* Content */}
-        <div className="p-3 relative z-10">
-          <h3 className="font-semibold text-sm truncate text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+        <div style={{ padding: "0.75rem", position: "relative", zIndex: 10 }}>
+          <h3
+            style={{
+              fontWeight: 600,
+              fontSize: "0.875rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              color: "rgba(255, 255, 255, 0.9)",
+              textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+            }}
+          >
             {game.title}
           </h3>
-
           <Badge
             variant="secondary"
-            className="mt-1.5 text-xs capitalize bg-white/70 text-sky-900 border border-white/60 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_2px_6px_rgba(0,0,0,0.3)]"
+            style={{
+              marginTop: "0.375rem",
+              fontSize: "0.75rem",
+              textTransform: "capitalize",
+              background: "rgba(255, 255, 255, 0.1)",
+              color: "rgba(255, 255, 255, 0.7)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px) saturate(180%)",
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
+              transition: "color 200ms ease",
+            }}
           >
             {game.category}
           </Badge>

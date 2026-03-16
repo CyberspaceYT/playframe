@@ -1,23 +1,39 @@
+/* Root container for layout */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  position: relative;
+  z-index: 10; /* above background bubbles if used */
 }
 
+/* Logo base style */
 .logo {
   height: 6em;
   padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  border-radius: 1rem; /* soft rounded */
+  backdrop-filter: blur(10px) saturate(180%); /* frosted glass */
+  background: rgba(255, 255, 255, 0.1); /* semi-transparent glass */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25); /* subtle lift */
+  transition: all 300ms ease-in-out;
+  will-change: transform, filter, box-shadow;
 }
 
+/* Hover glow and lift */
+.logo:hover {
+  transform: translateY(-5px);
+  filter: drop-shadow(0 0 2em rgba(100, 108, 255, 0.66));
+  box-shadow: 0 12px 30px rgba(100, 108, 255, 0.4);
+}
+
+/* React-specific hover glow */
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em rgba(97, 218, 255, 0.66));
+  box-shadow: 0 12px 30px rgba(97, 218, 255, 0.4);
+}
+
+/* Logo spinning animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,16 +43,35 @@
   }
 }
 
+/* Apply spin if user allows motion */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+    animation: logo-spin 20s linear infinite;
   }
 }
 
+/* Card container with frosted glass effect */
 .card {
   padding: 2em;
+  border-radius: 1rem;
+  backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 300ms ease, box-shadow 300ms ease;
 }
 
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Links with subtle glass-style text */
 .read-the-docs {
-  color: #888;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.read-the-docs:hover {
+  color: #fff;
 }

@@ -43,10 +43,10 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
       {/* Sliding indicator */}
       <div
         className={cn(
-          "absolute top-0 rounded-full transition-all duration-300 ease-out",
+          "absolute top-0 rounded-full transition-all duration-300 ease-out backdrop-blur-sm",
           theme === "dark"
-            ? "bg-white/15"
-            : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-md"
+            ? "bg-gradient-to-r from-cyan-400/30 to-blue-400/30"
+            : "bg-gradient-to-r from-blue-300/40 to-cyan-300/40 shadow-md"
         )}
         style={indicatorStyle}
       />
@@ -57,8 +57,8 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
         className={cn(
           "relative z-10 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-300",
           activeCategory === null
-            ? "text-white"
-            : "bg-secondary/70 text-muted-foreground hover:text-foreground hover:bg-secondary"
+            ? "text-white drop-shadow-md"
+            : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary/80"
         )}
       >
         All
@@ -71,8 +71,8 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
           className={cn(
             "relative z-10 rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-all duration-300",
             activeCategory === cat.slug
-              ? "text-white"
-              : "bg-secondary/70 text-muted-foreground hover:text-foreground hover:bg-secondary"
+              ? "text-white drop-shadow-md"
+              : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary/80"
           )}
         >
           {cat.name}

@@ -34,11 +34,11 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
   }, [isGames, isCreate]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-xl transition-colors duration-500">
+    <header className="sticky top-0 z-50 glass-panel border-b border-primary/20 m-4 mt-0 rounded-b-2xl rounded-t-none transition-colors duration-500">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2 shrink-0 transition-opacity duration-300 hover:opacity-80">
-          <Gamepad2 className={`h-7 w-7 transition-colors duration-300 ${theme === "dark" ? "text-white" : "text-orange-500"}`} />
-          <span className="text-xl font-bold tracking-tight transition-colors duration-300" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <Link to="/" className="flex items-center gap-2 shrink-0 transition-all duration-300 hover:opacity-80 hover:-translate-y-0.5">
+          <Gamepad2 className={`h-7 w-7 transition-colors duration-300 ${theme === "dark" ? "text-cyan-300" : "text-blue-500"}`} />
+          <span className="text-xl font-bold tracking-tight transition-colors duration-300 gradient-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             PlayFrame
           </span>
         </Link>
@@ -50,7 +50,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
               placeholder="Search games..."
               value={searchQuery}
               onChange={(e) => onSearchChange?.(e.target.value)}
-              className="pl-9 bg-secondary/50 border-border/50 backdrop-blur-sm transition-all duration-300 focus:bg-secondary/80"
+              className="pl-9 bg-background/40 border-primary/30 backdrop-blur-sm transition-all duration-300 focus:bg-background/60 focus:border-primary/60 rounded-lg"
             />
           </div>
         )}
@@ -58,19 +58,19 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
         <nav className="relative flex items-center gap-1">
           {/* Sliding indicator */}
           <div
-            className={`absolute top-1/2 -translate-y-1/2 h-9 rounded-md transition-all duration-300 ease-out ${
+            className={`absolute top-1/2 -translate-y-1/2 h-9 rounded-lg transition-all duration-300 ease-out ${
               theme === "dark"
-                ? "bg-white/15"
-                : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"
+                ? "bg-gradient-to-r from-cyan-400/30 to-blue-400/30"
+                : "bg-gradient-to-r from-blue-300/40 to-cyan-300/40"
             }`}
             style={indicatorStyle}
           />
           <Link
             ref={gamesRef}
             to="/"
-            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ${
+            className={`relative z-10 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 ${
               isGames
-                ? "text-white"
+                ? "text-white drop-shadow-md"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -80,9 +80,9 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
           <Link
             ref={createRef}
             to="/create"
-            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ${
+            className={`relative z-10 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 ${
               isCreate
-                ? theme === "dark" ? "text-white" : "text-white"
+                ? "text-white drop-shadow-md"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

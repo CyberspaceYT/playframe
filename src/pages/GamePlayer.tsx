@@ -34,12 +34,14 @@ const GamePlayer = () => {
   }, []);
   if (!game) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col relative">
+        <div className="floating-orb floating-orb-1" />
+        <div className="floating-orb floating-orb-2" />
         <Navbar showSearch={false} />
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center relative z-10">
           <div className="text-center">
-            <h1 className="text-2xl font-bold">Game Not Found</h1>
-            <Link to="/" className="mt-4 inline-block text-primary hover:underline">
+            <h1 className="text-3xl font-bold gradient-text">Game Not Found</h1>
+            <Link to="/" className="mt-6 inline-block text-primary hover:text-accent transition-colors duration-300 font-medium">
               ← Back to Games
             </Link>
           </div>
@@ -48,27 +50,29 @@ const GamePlayer = () => {
     );
   }
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col relative">
+      <div className="floating-orb floating-orb-1" />
+      <div className="floating-orb floating-orb-2" />
       <Navbar showSearch={false} />
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <div className="container mx-auto px-4 py-6">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" asChild>
+              <Button variant="ghost" size="icon" asChild className="hover:bg-primary/20 rounded-lg">
                 <Link to="/">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-5 w-5 text-primary" />
                 </Link>
               </Button>
               <div>
-                <h1 className="text-xl font-bold">{game.title}</h1>
+                <h1 className="text-2xl font-bold gradient-text">{game.title}</h1>
                 <p className="text-sm text-muted-foreground">{game.description}</p>
               </div>
             </div>
-            <Button variant="outline" size="icon" onClick={toggleFullscreen}>
-              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            <Button variant="outline" size="icon" onClick={toggleFullscreen} className="border-primary/40 hover:bg-primary/20 rounded-lg">
+              {isFullscreen ? <Minimize className="h-4 w-4 text-primary" /> : <Maximize className="h-4 w-4 text-primary" />}
             </Button>
           </div>
-          <div ref={containerRef} className={`overflow-hidden bg-black transition-all duration-300 ${isFullscreen ? "" : "rounded-xl border border-border/50"}`}>
+          <div ref={containerRef} className={`overflow-hidden bg-black glass-panel transition-all duration-300 ${isFullscreen ? "" : "rounded-2xl"}`}>
             <iframe
               ref={iframeRef}
               src={game.embed_url}

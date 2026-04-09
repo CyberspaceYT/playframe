@@ -21,25 +21,24 @@ const Index = () => {
   }, [searchQuery, activeCategory]);
 
   return (
-    <div className="flex min-h-screen flex-col relative">
-      {/* Decorative floating orbs */}
-      <div className="floating-orb floating-orb-1" />
-      <div className="floating-orb floating-orb-2" />
-      <div className="floating-orb floating-orb-3" />
-
+    <div className="flex min-h-screen flex-col">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
-      <main className="flex-1 relative z-10">
+      <main className="flex-1">
         {/* Hero */}
-        <section className="border-b border-border/30 py-12 transition-colors duration-500">
+        <section className="border-b border-border/50 py-12 transition-colors duration-500">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight transition-colors duration-300 neon-glow">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl transition-colors duration-300">
               Play Games{" "}
-              <span className="gradient-text">
+              <span className={`bg-clip-text text-transparent transition-all duration-500 ${
+                theme === "dark"
+                  ? "bg-gradient-to-r from-purple-300 to-white"
+                  : "bg-gradient-to-r from-amber-400 to-orange-500"
+              }`}>
                 Instantly
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-lg text-muted-foreground text-lg">
+            <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Browse and play a huge catalog of games right in your browser — no downloads needed!
             </p>
           </div>

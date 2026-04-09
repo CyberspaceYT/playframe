@@ -2,11 +2,9 @@ import Navbar from "@/components/Navbar";
 
 const Create = () => {
   return (
-    <div className="flex min-h-screen flex-col relative">
-      <div className="floating-orb floating-orb-1" />
-      <div className="floating-orb floating-orb-2" />
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar showSearch={false} />
-      <div className="flex-1 relative z-10">
+      <div className="flex-1">
         <iframe
           src="/create-editor.html"
           title="HTML Editor"

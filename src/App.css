@@ -5,35 +5,32 @@
   padding: 2rem;
   text-align: center;
   position: relative;
-  z-index: 10; /* above background bubbles if used */
+  z-index: 10;
 }
 
 /* Logo base style */
 .logo {
   height: 6em;
   padding: 1.5em;
-  border-radius: 1rem; /* soft rounded */
-  backdrop-filter: blur(10px) saturate(180%); /* frosted glass */
-  background: rgba(255, 255, 255, 0.1); /* semi-transparent glass */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25); /* subtle lift */
+  border-radius: 1rem;
+  backdrop-filter: blur(10px) saturate(180%);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   transition: all 300ms ease-in-out;
   will-change: transform, filter, box-shadow;
 }
 
-/* Hover glow and lift */
 .logo:hover {
   transform: translateY(-5px);
   filter: drop-shadow(0 0 2em rgba(100, 108, 255, 0.66));
   box-shadow: 0 12px 30px rgba(100, 108, 255, 0.4);
 }
 
-/* React-specific hover glow */
 .logo.react:hover {
   filter: drop-shadow(0 0 2em rgba(97, 218, 255, 0.66));
   box-shadow: 0 12px 30px rgba(97, 218, 255, 0.4);
 }
 
-/* Logo spinning animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -43,7 +40,6 @@
   }
 }
 
-/* Apply spin if user allows motion */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin 20s linear infinite;

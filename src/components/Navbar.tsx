@@ -3,6 +3,7 @@ import { Gamepad2, Search, Code } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRef, useEffect, useState } from "react";
+import OnlineStatus from "./OnlineStatus";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -54,6 +55,8 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
             />
           </div>
         )}
+
+        <OnlineStatus showCount={true} />
 
         <nav className="relative flex items-center gap-1">
           {/* Sliding indicator */}

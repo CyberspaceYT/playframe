@@ -9,27 +9,34 @@ import GamePlayer from "./pages/GamePlayer";
 import Categories from "./pages/Categories";
 import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
+import { useTabVisibility } from "./hooks/useTabVisibility";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/play/:id" element={<GamePlayer />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/create" element={<Create />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const AppContent = () => {
+  useTabVisibility();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/play/:id" element={<GamePlayer />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/create" element={<Create />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
+
+const App = () => <AppContent />;
 
 export default App;

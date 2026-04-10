@@ -2,6 +2,12 @@ import { useEffect } from "react";
 
 export const useTabVisibility = () => {
   useEffect(() => {
+    // Store original favicon
+    const originalFavicon = document.querySelector(
+      'link[rel="icon"]'
+    ) as HTMLLinkElement;
+    const originalFaviconHref = originalFavicon?.href || "";
+
     const handleBlur = () => {
       // Change title when user leaves tab
       document.title = "PlayFrameGames";
@@ -24,9 +30,15 @@ export const useTabVisibility = () => {
     };
 
     const handleFocus = () => {
-      // Optionally restore original title/favicon when user returns
-      // You can customize this behavior as needed
+      // Restore original title and favicon when user returns
       document.title = "PlayFrame";
+
+      const favicon = document.querySelector(
+        'link[rel="icon"]'
+      ) as HTMLLinkElement;
+      if (favicon && originalFaviconHref) {
+        favicon.href = originalFaviconHref;
+      }
     };
 
     window.addEventListener("blur", handleBlur);

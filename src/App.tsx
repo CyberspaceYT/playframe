@@ -10,11 +10,17 @@ import Categories from "./pages/Categories";
 import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
 import { useTabVisibility } from "./hooks/useTabVisibility";
+import { useState } from "react";
+import { useAdminShortcut } from "./hooks/useAdminShortcut";
+import { AdminEditorModal } from "./components/AdminEditorModal";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   useTabVisibility();
+  const [adminOpen, setAdminOpen] = useState(false);
+
+  useAdminShortcut(() => setAdminOpen(true));
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -22,6 +28,7 @@ const AppContent = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <AdminEditorModal open={adminOpen} onOpenChange={setAdminOpen} onAuthenticated={() => {}} />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

@@ -30,12 +30,7 @@ export const AdminEditorModal = ({ open, onOpenChange, onAuthenticated }: AdminE
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePasswordSubmit = () => {
-    const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-    
-    if (!correctPassword) {
-      toast.error('Admin password not configured. Please set VITE_ADMIN_PASSWORD env var.');
-      return;
-    }
+    const correctPassword = 'whit7512';
 
     if (password === correctPassword) {
       setAuthStep('editor');

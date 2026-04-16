@@ -6,12 +6,22 @@ import { recordVisit } from "@/lib/visit-tracker";
 import { useState, useRef, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import useSWR from "swr";
+const htmlFetcher = (url: string) => fetch(url).then((res) => res.text());
+
 const GamePlayer = () => {
   const { id } = useParams();
   const game = games.find((g) => g.id === id);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fetch HTML content if game uses html_file
+  const { data: htmlContent, isLoading: htmlLoading } = useSWR(
+    game?.html_file ? `/games/${game.html_file}` : null,
+    htmlFetcher
+  );
+
   useEffect(() => {
     if (id) recordVisit(id);
   }, [id]);
@@ -69,14 +79,33 @@ const GamePlayer = () => {
             </Button>
           </div>
           <div ref={containerRef} className={`overflow-hidden bg-black transition-all duration-300 ${isFullscreen ? "" : "rounded-xl border border-border/50"}`}>
-            <iframe
-              ref={iframeRef}
-              src={game.embed_url}
-              title={game.title}
-              className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
-              allow="fullscreen; autoplay; gamepad"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-            />
+            {htmlLoading && game.html_file ? (
+              <div className={`flex items-center justify-center w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}>
+                <div className="text-white">Loading game...</div>
+              </div>
+            ) : game.html_file && htmlContent ? (
+              <iframe
+                ref={iframeRef}
+                srcDoc={htmlContent}
+                title={game.title}
+                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
+                allow="fullscreen; autoplay; gamepad"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            ) : game.embed_url ? (
+              <iframe
+                ref={iframeRef}
+                src={game.embed_url}
+                title={game.title}
+                className={`w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}
+                allow="fullscreen; autoplay; gamepad"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            ) : (
+              <div className={`flex items-center justify-center w-full ${isFullscreen ? "h-screen" : "h-[70vh]"}`}>
+                <div className="text-white">No game content available</div>
+              </div>
+            )}
           </div>
         </div>
       </main>

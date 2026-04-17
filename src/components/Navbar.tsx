@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Gamepad2, Search, Code } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ThemeProvider";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -13,19 +13,35 @@ interface NavbarProps {
 const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarProps) => {
   const location = useLocation();
   const { theme } = useTheme();
-  const isGames = location.pathname === "/" || location.pathname.startsWith("/play") || location.pathname === "/categories";
+
+  const isGames =
+    location.pathname === "/" ||
+    location.pathname.startsWith("/play") ||
+    location.pathname === "/categories";
+
   const isCreate = location.pathname === "/create";
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const gamesRef = useRef<HTMLAnchorElement>(null);
   const createRef = useRef<HTMLAnchorElement>(null);
+
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
 
-  useEffect(() => {
-    const activeRef = isGames ? gamesRef.current : isCreate ? createRef.current : null;
-    if (activeRef) {
+  const updateIndicator = useCallback(() => {
+    const activeEl = isGames
+      ? gamesRef.current
+      : isCreate
+      ? createRef.current
+      : null;
+
+    if (activeEl && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const elRect = activeEl.getBoundingClientRect();
+
       setIndicatorStyle({
-        left: activeRef.offsetLeft,
-        width: activeRef.offsetWidth,
+        left: elRect.left - containerRect.left,
+        width: elRect.width,
+        height: elRect.height,
         opacity: 1,
       });
     } else {
@@ -33,12 +49,26 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
     }
   }, [isGames, isCreate]);
 
+  useEffect(() => {
+    updateIndicator();
+  }, [updateIndicator]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-xl transition-colors duration-500">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2 shrink-0 transition-opacity duration-300 hover:opacity-80">
-          <Gamepad2 className={`h-7 w-7 transition-colors duration-300 ${theme === "dark" ? "text-white" : "text-orange-500"}`} />
-          <span className="text-xl font-bold tracking-tight transition-colors duration-300" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <Link
+          to="/"
+          className="flex items-center gap-2 shrink-0 transition-opacity duration-300 hover:opacity-80"
+        >
+          <Gamepad2
+            className={`h-7 w-7 transition-colors duration-300 ${
+              theme === "dark" ? "text-white" : "text-orange-500"
+            }`}
+          />
+          <span
+            className="text-xl font-bold tracking-tight transition-colors duration-300"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             PlayFrame
           </span>
         </Link>
@@ -55,16 +85,17 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
           </div>
         )}
 
-        <nav className="relative flex items-center gap-1">
+        <nav ref={containerRef} className="relative flex items-center gap-1">
           {/* Sliding indicator */}
           <div
-            className={`absolute top-1/2 -translate-y-1/2 h-9 rounded-md transition-all duration-300 ease-out ${
+            className={`absolute rounded-md transition-all duration-300 ease-out ${
               theme === "dark"
                 ? "bg-white/15"
                 : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"
             }`}
             style={indicatorStyle}
           />
+
           <Link
             ref={gamesRef}
             to="/"
@@ -77,12 +108,13 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
             <Gamepad2 className="h-4 w-4" />
             Games
           </Link>
+
           <Link
             ref={createRef}
             to="/create"
             className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ${
               isCreate
-                ? theme === "dark" ? "text-white" : "text-white"
+                ? "text-white"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

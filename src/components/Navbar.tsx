@@ -49,8 +49,25 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
     }
   }, [isGames, isCreate]);
 
+  // 🔥 Smooth route transition fix
   useEffect(() => {
-    updateIndicator();
+    let raf1: number;
+    let raf2: number;
+
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        updateIndicator();
+      });
+    });
+
+    const handleResize = () => updateIndicator();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [updateIndicator]);
 
   return (
@@ -88,7 +105,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
         <nav ref={containerRef} className="relative flex items-center gap-1">
           {/* Sliding indicator */}
           <div
-            className={`absolute rounded-md transition-all duration-300 ease-out ${
+            className={`absolute rounded-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               theme === "dark"
                 ? "bg-white/15"
                 : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"

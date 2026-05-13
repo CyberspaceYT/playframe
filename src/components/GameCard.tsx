@@ -7,9 +7,14 @@ interface GameCardProps {
 }
 
 const GameCard = ({ game }: GameCardProps) => {
+  // Split description into words, take first 5, and join them
+  const descriptionPreview = game.description
+    ? game.description.split(" ").slice(0, 5).join(" ") + "..."
+    : "";
+
   return (
     <Link to={`/play/${game.id}`} className="group block">
-        <div className="overflow-hidden rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
+      <div className="overflow-hidden rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
         <div className="aspect-square overflow-hidden bg-secondary">
           <img
             src={game.thumbnail_url}
@@ -17,12 +22,22 @@ const GameCard = ({ game }: GameCardProps) => {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://placehold.co/400x400/fff7ed/e97c1a?text=${encodeURIComponent(game.title)}`;
+              (e.target as HTMLImageElement).src = `https://placehold.co/400x400/fff7ed/e97c1a?text=${encodeURIComponent(
+                game.title
+              )}`;
             }}
           />
         </div>
         <div className="p-3">
           <h3 className="font-semibold text-sm truncate">{game.title}</h3>
+          
+          {/* Added description preview text */}
+          {descriptionPreview && (
+            <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+              {descriptionPreview}
+            </p>
+          )}
+
           <Badge variant="secondary" className="mt-1.5 text-xs capitalize">
             {game.category}
           </Badge>

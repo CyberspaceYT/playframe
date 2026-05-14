@@ -10,7 +10,6 @@ interface GamePlayerProps {
   onClose: () => void
 }
 
-// REMOVED 'export' keyword from here to clean up the named conflict
 function GamePlayer({ game, onClose }: GamePlayerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -65,7 +64,7 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
     input.type = "file"
     input.accept = ".html"
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.
+      const file = (e.target as HTMLInputElement).files?.[0]
       if (file) {
         setIsLoading(true)
         const reader = new FileReader()
@@ -128,7 +127,7 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
     input.type = "file"
     input.accept = ".json"
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.
+      const file = (e.target as HTMLInputElement).files?.[0]
       if (file) {
         const reader = new FileReader()
         reader.onload = (event) => {
@@ -278,5 +277,4 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
   )
 }
 
-// FIXED: Added default export to align with App.tsx imports
 export default GamePlayer;

@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Maximize2, Minimize2, Download, Upload, X, Code, FileCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { LoadingScreen } from "@/components/loading-screen"
 import type { Game } from "@/lib/games"
 
 interface GamePlayerProps {
@@ -35,11 +34,10 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     }
   }
 
-  // Feature 1: Download the entire HTML Source of the game
+  // Feature: Download the entire HTML Source of the game
   const handleDownloadHtmlCode = async () => {
     try {
       setIsLoading(true)
-      // Safely fetch the static file source code
       const response = await fetch(game.htmlFile)
       if (!response.ok) throw new Error("Failed to fetch game source.")
       const htmlText = await response.text()
@@ -48,7 +46,6 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       
-      // Sanitizes title spacing for standard file naming conventions
       const safeTitle = game.title.replace(/\s+/g, "_").toUpperCase()
       a.href = url
       a.download = `${safeTitle}_PLAYFRAMESAVE.html`
@@ -61,7 +58,7 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     }
   }
 
-  // Feature 2: Upload custom modified HTML and immediately load it safely inside the sandbox
+  // Feature: Upload custom modified HTML and load it safely inside the sandbox
   const handleUploadHtmlCode = () => {
     const input = document.createElement("input")
     input.type = "file"
@@ -76,7 +73,6 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
           const blob = new Blob([htmlContent], { type: "text/html" })
           const customUrl = URL.createObjectURL(blob)
           
-          // Re-route iframe target configuration to parse user files
           setUploadedHtmlSrc(customUrl)
           alert("Custom HTML Engine file loaded inside framework interface successfully.")
         }
@@ -170,9 +166,14 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
         ref={containerRef}
         className="relative w-full max-w-5xl aspect-video bg-[#2A1212] rounded-xl overflow-hidden border-2 border-[#4A1010]"
       >
-        {isLoading && <LoadingScreen gameName={game.title} />}
+        {/* Plug-and-play Built-in Loading Screen Replacement */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-[#2A1212] flex flex-col items-center justify-center z-50 text-[#F5A962] gap-4">
+            <div className="w-8 h-8 border-4 border-[#D64545] border-t-transparent rounded-full animate-spin"></div>
+            <p className="font-medium text-sm tracking-wider">LOADING {game.title.toUpperCase()}...</p>
+          </div>
+        )}
 
-        {/* Fallback to user uploaded code source if configured */}
         <iframe
           ref={iframeRef}
           src={uploadedHtmlSrc || game.htmlFile}
@@ -184,7 +185,7 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
         {/* Control Bar */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
           
-          {/* New Button: Download HTML Source Code */}
+          {/* Download HTML Source Code */}
           <div>
             <Button
               variant="outline"
@@ -197,7 +198,7 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
             </Button>
           </div>
 
-          {/* New Button: Upload custom HTML code */}
+          {/* Upload custom HTML code */}
           <div>
             <Button
               variant="outline"

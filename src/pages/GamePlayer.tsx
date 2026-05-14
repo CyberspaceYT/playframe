@@ -10,7 +10,8 @@ interface GamePlayerProps {
   onClose: () => void
 }
 
-export function GamePlayer({ game, onClose }: GamePlayerProps) {
+// REMOVED 'export' keyword from here to clean up the named conflict
+function GamePlayer({ game, onClose }: GamePlayerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [uploadedHtmlSrc, setUploadedHtmlSrc] = useState<string | null>(null)
@@ -64,7 +65,7 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     input.type = "file"
     input.accept = ".html"
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
+      const file = (e.target as HTMLInputElement).files?.
       if (file) {
         setIsLoading(true)
         const reader = new FileReader()
@@ -127,7 +128,7 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     input.type = "file"
     input.accept = ".json"
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
+      const file = (e.target as HTMLInputElement).files?.
       if (file) {
         const reader = new FileReader()
         reader.onload = (event) => {
@@ -166,7 +167,6 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
         ref={containerRef}
         className="relative w-full max-w-5xl aspect-video bg-[#2A1212] rounded-xl overflow-hidden border-2 border-[#4A1010]"
       >
-        {/* Plug-and-play Built-in Loading Screen Replacement */}
         {isLoading && (
           <div className="absolute inset-0 bg-[#2A1212] flex flex-col items-center justify-center z-50 text-[#F5A962] gap-4">
             <div className="w-8 h-8 border-4 border-[#D64545] border-t-transparent rounded-full animate-spin"></div>
@@ -277,3 +277,6 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     </div>
   )
 }
+
+// FIXED: Added default export to align with App.tsx imports
+export default GamePlayer;

@@ -3,6 +3,7 @@ import { Gamepad2, Search, Code } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRef, useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -10,7 +11,11 @@ interface NavbarProps {
   showSearch?: boolean;
 }
 
-const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarProps) => {
+const Navbar = ({
+  searchQuery = "",
+  onSearchChange,
+  showSearch = true,
+}: NavbarProps) => {
   const location = useLocation();
   const { theme } = useTheme();
 
@@ -34,89 +39,100 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
       ? createRef.current
       : null;
 
-    if (activeEl && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const elRect = activeEl.getBoundingClientRect();
+    if (!activeEl || !containerRef.current) return;
 
-      setIndicatorStyle({
-        left: elRect.left - containerRect.left,
-        width: elRect.width,
-        height: elRect.height,
-        opacity: 1,
-      });
-    } else {
-      setIndicatorStyle({ opacity: 0 });
-    }
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const elRect = activeEl.getBoundingClientRect();
+
+    setIndicatorStyle({
+      left: elRect.left - containerRect.left,
+      width: elRect.width,
+      height: elRect.height,
+      opacity: 1,
+    });
   }, [isGames, isCreate]);
 
-  // 🔥 Smooth route transition fix
   useEffect(() => {
-    let raf1: number;
-    let raf2: number;
+    let raf: number;
 
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        updateIndicator();
-      });
+    raf = requestAnimationFrame(() => {
+      requestAnimationFrame(updateIndicator);
     });
 
-    const handleResize = () => updateIndicator();
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", updateIndicator);
 
     return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updateIndicator);
     };
   }, [updateIndicator]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-xl transition-colors duration-500">
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="sticky top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-xl"
+    >
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
+
+        {/* LOGO */}
         <Link
           to="/"
-          className="flex items-center gap-2 shrink-0 transition-opacity duration-300 hover:opacity-80"
+          className="flex items-center gap-2 shrink-0 transition-transform duration-300 hover:scale-105 active:scale-95"
         >
-          <Gamepad2
-            className={`h-7 w-7 transition-colors duration-300 ${
-              theme === "dark" ? "text-white" : "text-orange-500"
-            }`}
-          />
-          <span
-            className="text-xl font-bold tracking-tight transition-colors duration-300"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
+          <motion.div whileHover={{ rotate: 10 }} transition={{ type: "spring" }}>
+            <Gamepad2
+              className={`h-7 w-7 ${
+                theme === "dark" ? "text-white" : "text-orange-500"
+              }`}
+            />
+          </motion.div>
+
+          <span className="text-xl font-bold tracking-tight">
             PlayFrame
           </span>
         </Link>
 
+        {/* SEARCH */}
         {showSearch && (
-          <div className="relative max-w-md flex-1">
+          <motion.div
+            whileFocus={{ scale: 1.02 }}
+            className="relative max-w-md flex-1 transition-all duration-300"
+          >
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search games..."
               value={searchQuery}
               onChange={(e) => onSearchChange?.(e.target.value)}
-              className="pl-9 bg-secondary/50 border-border/50 backdrop-blur-sm transition-all duration-300 focus:bg-secondary/80"
+              className="pl-9 bg-secondary/50 border-border/50 transition-all duration-300 focus:shadow-lg focus:scale-[1.01]"
             />
-          </div>
+          </motion.div>
         )}
 
+        {/* NAV */}
         <nav ref={containerRef} className="relative flex items-center gap-1">
-          {/* Sliding indicator */}
-          <div
-            className={`absolute rounded-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+
+          {/* INDICATOR */}
+          <motion.div
+            className={`absolute rounded-md ${
               theme === "dark"
                 ? "bg-white/15"
-                : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-sm"
+                : "bg-gradient-to-r from-amber-400 to-orange-500"
             }`}
-            style={indicatorStyle}
+            animate={indicatorStyle}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 40,
+            }}
           />
 
+          {/* GAMES */}
           <Link
             ref={gamesRef}
             to="/"
-            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ${
+            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${
               isGames
                 ? "text-white"
                 : "text-muted-foreground hover:text-foreground"
@@ -126,10 +142,11 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
             Games
           </Link>
 
+          {/* CREATE */}
           <Link
             ref={createRef}
             to="/create"
-            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 ${
+            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${
               isCreate
                 ? "text-white"
                 : "text-muted-foreground hover:text-foreground"
@@ -140,7 +157,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
           </Link>
         </nav>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

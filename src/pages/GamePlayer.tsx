@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Maximize2, Minimize2, Download, Upload, X } from "lucide-react"
+import { Maximize2, Minimize2, Download, Upload, X, Code, FileCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LoadingScreen } from "@/components/loading-screen"
 import type { Game } from "@/lib/games"
@@ -14,6 +14,7 @@ interface GamePlayerProps {
 export function GamePlayer({ game, onClose }: GamePlayerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [uploadedHtmlSrc, setUploadedHtmlSrc] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -32,6 +33,57 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
     } else {
       await document.exitFullscreen()
     }
+  }
+
+  // Feature 1: Download the entire HTML Source of the game
+  const handleDownloadHtmlCode = async () => {
+    try {
+      setIsLoading(true)
+      // Safely fetch the static file source code
+      const response = await fetch(game.htmlFile)
+      if (!response.ok) throw new Error("Failed to fetch game source.")
+      const htmlText = await response.text()
+      
+      const blob = new Blob([htmlText], { type: "text/html" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      
+      // Sanitizes title spacing for standard file naming conventions
+      const safeTitle = game.title.replace(/\s+/g, "_").toUpperCase()
+      a.href = url
+      a.download = `${safeTitle}_PLAYFRAMESAVE.html`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      alert("Could not download the game code layout. Ensure the path is correct.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Feature 2: Upload custom modified HTML and immediately load it safely inside the sandbox
+  const handleUploadHtmlCode = () => {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = ".html"
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (file) {
+        setIsLoading(true)
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          const htmlContent = event.target?.result as string
+          const blob = new Blob([htmlContent], { type: "text/html" })
+          const customUrl = URL.createObjectURL(blob)
+          
+          // Re-route iframe target configuration to parse user files
+          setUploadedHtmlSrc(customUrl)
+          alert("Custom HTML Engine file loaded inside framework interface successfully.")
+        }
+        reader.readAsText(file)
+      }
+    }
+    input.click()
   }
 
   const handleDownloadSave = () => {
@@ -120,9 +172,10 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
       >
         {isLoading && <LoadingScreen gameName={game.title} />}
 
+        {/* Fallback to user uploaded code source if configured */}
         <iframe
           ref={iframeRef}
-          src={game.htmlFile}
+          src={uploadedHtmlSrc || game.htmlFile}
           className="w-full h-full"
           onLoad={handleIframeLoad}
           title={game.title}
@@ -130,7 +183,34 @@ export function GamePlayer({ game, onClose }: GamePlayerProps) {
 
         {/* Control Bar */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
-          {/* Save/Load buttons */}
+          
+          {/* New Button: Download HTML Source Code */}
+          <div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleDownloadHtmlCode}
+              className="bg-[#2A1212] border-2 border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962] transition-all duration-300"
+              title="Download Game HTML Code"
+            >
+              <Code className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* New Button: Upload custom HTML code */}
+          <div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleUploadHtmlCode}
+              className="bg-[#2A1212] border-2 border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962] transition-all duration-300"
+              title="Upload Modified HTML File"
+            >
+              <FileCode className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Save/Load JSON configuration buttons */}
           <div>
             <Button
               variant="outline"

@@ -1,3 +1,4 @@
+```tsx
 import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import GameCard from "@/components/GameCard";
@@ -6,23 +7,35 @@ import Footer from "@/components/Footer";
 import PopularGames from "@/components/PopularGames";
 import { useTheme } from "@/components/ThemeProvider";
 import { games, categories } from "@/lib/games-data";
+import { GamePlayer } from "@/components/GamePlayer";
 
 const Index = () => {
   const { theme } = useTheme();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  const [selectedGame, setSelectedGame] = useState<any | null>(null);
+
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
-      const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = !activeCategory || game.category === activeCategory;
+      const matchesSearch = game.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      const matchesCategory =
+        !activeCategory || game.category === activeCategory;
+
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory]);
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <Navbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
       <main className="flex-1">
         {/* Hero */}
@@ -30,16 +43,20 @@ const Index = () => {
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl transition-colors duration-300">
               Play Games{" "}
-              <span className={`bg-clip-text text-transparent transition-all duration-500 ${
-                theme === "dark"
-                  ? "bg-gradient-to-r from-purple-300 to-white"
-                  : "bg-gradient-to-r from-amber-400 to-orange-500"
-              }`}>
+              <span
+                className={`bg-clip-text text-transparent transition-all duration-500 ${
+                  theme === "dark"
+                    ? "bg-gradient-to-r from-purple-300 to-white"
+                    : "bg-gradient-to-r from-amber-400 to-orange-500"
+                }`}
+              >
                 Instantly
               </span>
             </h1>
+
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              Browse and play a huge catalog of games right in your browser — no downloads needed!
+              Browse and play a huge catalog of games right in your browser —
+              no downloads needed!
             </p>
           </div>
         </section>
@@ -57,7 +74,13 @@ const Index = () => {
 
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {filteredGames.map((game) => (
-              <GameCard key={game.id} game={game} />
+              <div
+                key={game.id}
+                onClick={() => setSelectedGame(game)}
+                className="cursor-pointer"
+              >
+                <GameCard game={game} />
+              </div>
             ))}
           </div>
 
@@ -70,8 +93,17 @@ const Index = () => {
       </main>
 
       <Footer />
+
+      {/* GAME POPUP */}
+      {selectedGame && (
+        <GamePlayer
+          game={selectedGame}
+          onClose={() => setSelectedGame(null)}
+        />
+      )}
     </div>
   );
 };
 
 export default Index;
+```

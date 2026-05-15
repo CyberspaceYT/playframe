@@ -38,17 +38,20 @@ const Index = () => {
       />
 
       <main className="flex-1">
-        {/* Hero */}
+
+        {/* HERO */}
         <section className="border-b border-border/50 py-12 transition-colors duration-500">
           <div className="container mx-auto px-4 text-center">
+
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl transition-colors duration-300">
               Play Games{" "}
+
               <span
-                className={`bg-clip-text text-transparent transition-all duration-500 ${
+                className={
                   theme === "dark"
-                    ? "bg-gradient-to-r from-purple-300 to-white"
-                    : "bg-gradient-to-r from-amber-400 to-orange-500"
-                }`}
+                    ? "bg-clip-text text-transparent transition-all duration-500 bg-gradient-to-r from-purple-300 to-white"
+                    : "bg-clip-text text-transparent transition-all duration-500 bg-gradient-to-r from-amber-400 to-orange-500"
+                }
               >
                 Instantly
               </span>
@@ -58,14 +61,16 @@ const Index = () => {
               Browse and play a huge catalog of games right in your browser —
               no downloads needed!
             </p>
+
           </div>
         </section>
 
-        {/* Popular Games */}
+        {/* POPULAR GAMES */}
         <PopularGames />
 
-        {/* Games */}
+        {/* GAMES */}
         <section className="container mx-auto px-4 py-8">
+
           <CategoryChips
             categories={categories}
             activeCategory={activeCategory}
@@ -73,6 +78,7 @@ const Index = () => {
           />
 
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+
             {filteredGames.map((game) => (
               <div
                 key={game.id}
@@ -82,6 +88,7 @@ const Index = () => {
                 <GameCard game={game} />
               </div>
             ))}
+
           </div>
 
           {filteredGames.length === 0 && (
@@ -89,6 +96,7 @@ const Index = () => {
               No games found. Try a different search or category.
             </div>
           )}
+
         </section>
       </main>
 

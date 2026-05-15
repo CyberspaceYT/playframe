@@ -1,21 +1,19 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Maximize2, Minimize2, Download, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { games } from "@/lib/games" // Make sure this path correctly points to your games array or data helper
+import type { Game } from "@/lib/games"
 
-export function GamePlayer() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  
+interface GamePlayerProps {
+  game: Game
+  onClose: () => void
+}
+
+export function GamePlayer({ game, onClose }: GamePlayerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  // Find the game using the ID from the URL route
-  const game = games.find((g) => g.id === id)
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -24,18 +22,6 @@ export function GamePlayer() {
     document.addEventListener("fullscreenchange", handleFullscreenChange)
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange)
   }, [])
-
-  // If the game isn't found, handle gracefully
-  if (!game) {
-    return (
-      <div className="fixed inset-0 bg-[#1A0808] flex flex-col items-center justify-center text-white p-4">
-        <h2 className="text-2xl font-bold text-[#F5A962] mb-4">Game Not Found</h2>
-        <Button onClick={() => navigate("/")} className="bg-[#2A1212] border-2 border-[#D64545] text-[#F5A962]">
-          Go Back Home
-        </Button>
-      </div>
-    )
-  }
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return
@@ -59,6 +45,7 @@ export function GamePlayer() {
       a.click()
       URL.revokeObjectURL(url)
     } else {
+      // Try to get save from iframe
       try {
         const iframeWindow = iframeRef.current?.contentWindow
         if (iframeWindow) {
@@ -94,6 +81,7 @@ export function GamePlayer() {
           const saveData = event.target?.result as string
           const saveKey = `game_save_${game.id}`
           localStorage.setItem(saveKey, saveData)
+          // Try to inject into iframe
           try {
             const iframeWindow = iframeRef.current?.contentWindow
             if (iframeWindow) {
@@ -103,6 +91,7 @@ export function GamePlayer() {
               iframeWindow.location.reload()
             }
           } catch {
+            // Cross-origin restrictions - just reload iframe
             if (iframeRef.current) {
               iframeRef.current.src = iframeRef.current.src
             }
@@ -197,7 +186,7 @@ export function GamePlayer() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => navigate("/")} // Redirect back home on close
+              onClick={onClose}
               className="bg-[#2A1212] border-2 border-[#8B1A1A] text-[#E07B5A] hover:bg-[#8B1A1A] hover:text-[#F5D6BA] transition-all duration-300"
             >
               <X className="h-4 w-4" />
@@ -218,5 +207,3 @@ export function GamePlayer() {
     </motion.div>
   )
 }
-
-export default GamePlayer;

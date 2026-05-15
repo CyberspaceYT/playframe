@@ -1,4 +1,3 @@
-```tsx
 import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import GameCard from "@/components/GameCard";
@@ -38,18 +37,16 @@ const Index = () => {
 
       <main className="flex-1">
 
-        {/* HERO */}
         <section className="border-b border-border/50 py-12 transition-colors duration-500">
           <div className="container mx-auto px-4 text-center">
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl transition-colors duration-300">
               Play Games{" "}
-
               <span
                 className={
                   theme === "dark"
-                    ? "bg-clip-text text-transparent transition-all duration-500 bg-gradient-to-r from-purple-300 to-white"
-                    : "bg-clip-text text-transparent transition-all duration-500 bg-gradient-to-r from-amber-400 to-orange-500"
+                    ? "bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-white"
+                    : "bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500"
                 }
               >
                 Instantly
@@ -64,10 +61,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* POPULAR GAMES */}
         <PopularGames />
 
-        {/* GAMES */}
         <section className="container mx-auto px-4 py-8">
 
           <CategoryChips
@@ -101,7 +96,6 @@ const Index = () => {
 
       <Footer />
 
-      {/* GAME POPUP */}
       {selectedGame && (
         <GamePlayer
           game={selectedGame}
@@ -113,4 +107,3 @@ const Index = () => {
 };
 
 export default Index;
-```

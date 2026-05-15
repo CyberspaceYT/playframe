@@ -1,8 +1,10 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/games/:path*",
-      "destination": "/games/:path*"
+      "source": "/(.*)\\.(html|js|css|png|jpg|jpeg|svg|webp|json|gif|mp3|wav|ogg|wasm)",
+      "destination": "/$1.$2"
     },
     {
       "source": "/(.*)",

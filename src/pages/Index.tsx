@@ -14,7 +14,6 @@ const Index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
   const [selectedGame, setSelectedGame] = useState<any | null>(null);
 
   const filteredGames = useMemo(() => {

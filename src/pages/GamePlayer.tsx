@@ -1,8 +1,10 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Maximize2, Minimize2, Download, Upload, X, Code, FileCode } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Maximize2, Minimize2, Download, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { LoadingScreen } from "@/components/loading-screen"
 import type { Game } from "@/lib/games"
 
 interface GamePlayerProps {
@@ -10,10 +12,9 @@ interface GamePlayerProps {
   onClose: () => void
 }
 
-function GamePlayer({ game, onClose }: GamePlayerProps) {
+export function GamePlayer({ game, onClose }: GamePlayerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [uploadedHtmlSrc, setUploadedHtmlSrc] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -27,6 +28,7 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return
+    
     if (!document.fullscreenElement) {
       await containerRef.current.requestFullscreen()
     } else {
@@ -34,59 +36,12 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
     }
   }
 
-  // Feature: Download the entire HTML Source of the game
-  const handleDownloadHtmlCode = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch(game.htmlFile)
-      if (!response.ok) throw new Error("Failed to fetch game source.")
-      const htmlText = await response.text()
-      
-      const blob = new Blob([htmlText], { type: "text/html" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      
-      const safeTitle = game.title.replace(/\s+/g, "_").toUpperCase()
-      a.href = url
-      a.download = `${safeTitle}_PLAYFRAMESAVE.html`
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      alert("Could not download the game code layout. Ensure the path is correct.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Feature: Upload custom modified HTML and load it safely inside the sandbox
-  const handleUploadHtmlCode = () => {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = ".html"
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        setIsLoading(true)
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          const htmlContent = event.target?.result as string
-          const blob = new Blob([htmlContent], { type: "text/html" })
-          const customUrl = URL.createObjectURL(blob)
-          
-          setUploadedHtmlSrc(customUrl)
-          alert("Custom HTML Engine file loaded inside framework interface successfully.")
-        }
-        reader.readAsText(file)
-      }
-    }
-    input.click()
-  }
-
   const handleDownloadSave = () => {
     if (!game.hasSaveSystem) return
+    
     const saveKey = `game_save_${game.id}`
     const saveData = localStorage.getItem(saveKey)
-
+    
     if (saveData) {
       const blob = new Blob([saveData], { type: "application/json" })
       const url = URL.createObjectURL(blob)
@@ -96,13 +51,13 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
       a.click()
       URL.revokeObjectURL(url)
     } else {
+      // Try to get save from iframe
       try {
         const iframeWindow = iframeRef.current?.contentWindow
         if (iframeWindow) {
-          const iframeSave =
-            iframeWindow.localStorage.getItem("gameData") ||
-            iframeWindow.localStorage.getItem("save") ||
-            iframeWindow.localStorage.getItem("saveData")
+          const iframeSave = iframeWindow.localStorage.getItem("gameData") || 
+                            iframeWindow.localStorage.getItem("save") ||
+                            iframeWindow.localStorage.getItem("saveData")
           if (iframeSave) {
             const blob = new Blob([iframeSave], { type: "application/json" })
             const url = URL.createObjectURL(blob)
@@ -123,6 +78,7 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
 
   const handleUploadSave = () => {
     if (!game.hasSaveSystem) return
+    
     const input = document.createElement("input")
     input.type = "file"
     input.accept = ".json"
@@ -134,7 +90,8 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
           const saveData = event.target?.result as string
           const saveKey = `game_save_${game.id}`
           localStorage.setItem(saveKey, saveData)
-
+          
+          // Try to inject into iframe
           try {
             const iframeWindow = iframeRef.current?.contentWindow
             if (iframeWindow) {
@@ -144,6 +101,7 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
               iframeWindow.location.reload()
             }
           } catch {
+            // Cross-origin restrictions - just reload iframe
             if (iframeRef.current) {
               iframeRef.current.src = iframeRef.current.src
             }
@@ -157,95 +115,83 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
   }
 
   const handleIframeLoad = () => {
+    // Add a small delay for smoother transition
     setTimeout(() => setIsLoading(false), 500)
   }
 
   return (
-    <div className="fixed inset-0 bg-[#1A0808]/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div
+    <motion.div 
+      className="fixed inset-0 bg-[#1A0808]/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div 
         ref={containerRef}
         className="relative w-full max-w-5xl aspect-video bg-[#2A1212] rounded-xl overflow-hidden border-2 border-[#4A1010]"
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        transition={{ type: "spring", damping: 20 }}
       >
-        {isLoading && (
-          <div className="absolute inset-0 bg-[#2A1212] flex flex-col items-center justify-center z-50 text-[#F5A962] gap-4">
-            <div className="w-8 h-8 border-4 border-[#D64545] border-t-transparent rounded-full animate-spin"></div>
-            <p className="font-medium text-sm tracking-wider">LOADING {game.title.toUpperCase()}...</p>
-          </div>
-        )}
-
+        <AnimatePresence>
+          {isLoading && <LoadingScreen gameName={game.title} />}
+        </AnimatePresence>
+        
         <iframe
           ref={iframeRef}
-          src={uploadedHtmlSrc || game.htmlFile}
+          src={game.htmlFile}
           className="w-full h-full"
           onLoad={handleIframeLoad}
           title={game.title}
         />
-
+        
         {/* Control Bar */}
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          
-          {/* Download HTML Source Code */}
-          <div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleDownloadHtmlCode}
-              className="bg-[#2A1212] border-2 border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962] transition-all duration-300"
-              title="Download Game HTML Code"
-            >
-              <Code className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Upload custom HTML code */}
-          <div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleUploadHtmlCode}
-              className="bg-[#2A1212] border-2 border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962] transition-all duration-300"
-              title="Upload Modified HTML File"
-            >
-              <FileCode className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Save/Load JSON configuration buttons */}
-          <div>
+        <motion.div 
+          className="absolute top-4 right-4 flex items-center gap-2"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          {/* Save/Load buttons */}
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
               size="icon"
               onClick={handleDownloadSave}
               disabled={!game.hasSaveSystem}
-              className={`border-2 transition-all duration-300 ${
-                game.hasSaveSystem
-                  ? "bg-[#2A1212] border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962]"
+              className={`
+                border-2 transition-all duration-300
+                ${game.hasSaveSystem 
+                  ? "bg-[#2A1212] border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962]" 
                   : "bg-[#2A1212]/50 border-[#4A1010] text-[#4A1010] cursor-not-allowed"
-              }`}
+                }
+              `}
               title={game.hasSaveSystem ? "Download Save" : "No save system"}
             >
               <Download className="h-4 w-4" />
             </Button>
-          </div>
-
-          <div>
+          </motion.div>
+          
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
               size="icon"
               onClick={handleUploadSave}
               disabled={!game.hasSaveSystem}
-              className={`border-2 transition-all duration-300 ${
-                game.hasSaveSystem
-                  ? "bg-[#2A1212] border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962]"
+              className={`
+                border-2 transition-all duration-300
+                ${game.hasSaveSystem 
+                  ? "bg-[#2A1212] border-[#D64545] text-[#F5A962] hover:bg-[#4A1010] hover:border-[#F5A962]" 
                   : "bg-[#2A1212]/50 border-[#4A1010] text-[#4A1010] cursor-not-allowed"
-              }`}
+                }
+              `}
               title={game.hasSaveSystem ? "Upload Save" : "No save system"}
             >
               <Upload className="h-4 w-4" />
             </Button>
-          </div>
-
-          <div>
+          </motion.div>
+          
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
               size="icon"
@@ -254,9 +200,9 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
             >
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
-          </div>
-
-          <div>
+          </motion.div>
+          
+          <motion.div whileHover={{ scale: 1.05, rotate: 90 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
               size="icon"
@@ -265,16 +211,19 @@ function GamePlayer({ game, onClose }: GamePlayerProps) {
             >
               <X className="h-4 w-4" />
             </Button>
-          </div>
-        </div>
-
+          </motion.div>
+        </motion.div>
+        
         {/* Game title badge */}
-        <div className="absolute top-4 left-4 bg-[#2A1212]/90 border-2 border-[#4A1010] rounded-lg px-3 py-1">
+        <motion.div 
+          className="absolute top-4 left-4 bg-[#2A1212]/90 border-2 border-[#4A1010] rounded-lg px-3 py-1"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <span className="text-[#F5A962] font-medium text-sm">{game.title}</span>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
-
-export default GamePlayer;

@@ -4,6 +4,8 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: "/",        // 👈 Forces clean absolute paths for hosted files
+  publicDir: "public", // 👈 Ensures Vite always bundles your public folder
   server: {
     host: "::",
     port: 8080,

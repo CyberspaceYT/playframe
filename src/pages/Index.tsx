@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import PopularGames from "@/components/PopularGames";
 import { useTheme } from "@/components/ThemeProvider";
 import { games, categories } from "@/lib/games-data";
-import GamePlayer from "@/components/GamePlayer";
+import GamePlayer from "@/pages/GamePlayer";
 
 const Index = () => {
   const { theme } = useTheme();

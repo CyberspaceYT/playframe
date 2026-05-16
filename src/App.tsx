@@ -4,15 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
-
-// ✅ ADD THIS IMPORT
-import GamePlayer from "./components/GamePlayer";
-
+import GamePlayer from "./components/GamePlayer";   // Game player component
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState } from "react";
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
@@ -36,12 +32,12 @@ const AppContent = () => {
             onOpenChange={setAdminOpen}
             onAuthenticated={() => {}}
           />
-
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/create" element={<Create />} />
+              <Route path="/game/:id" element={<GamePlayer />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
@@ -52,5 +48,4 @@ const AppContent = () => {
 };
 
 const App = () => <AppContent />;
-
 export default App;

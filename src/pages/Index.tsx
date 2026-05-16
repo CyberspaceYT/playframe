@@ -4,16 +4,17 @@ import GameCard from "@/components/GameCard";
 import CategoryChips from "@/components/CategoryChips";
 import Footer from "@/components/Footer";
 import PopularGames from "@/components/PopularGames";
+import GamePlayer from "@/components/GamePlayer";
 import { useTheme } from "@/components/ThemeProvider";
 import { games, categories } from "@/lib/games-data";
-import GamePlayer from "@/pages/GamePlayer";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { theme } = useTheme();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [selectedGame, setSelectedGame] = useState<any | null>(null);
+  const navigate = useNavigate();
 
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
@@ -76,7 +77,7 @@ const Index = () => {
             {filteredGames.map((game) => (
               <div
                 key={game.id}
-                onClick={() => setSelectedGame(game)}
+                onClick={() => navigate(`/game/${game.id}`)}
                 className="cursor-pointer"
               >
                 <GameCard game={game} />
@@ -96,12 +97,6 @@ const Index = () => {
 
       <Footer />
 
-      {selectedGame && (
-        <GamePlayer
-          game={selectedGame}
-          onClose={() => setSelectedGame(null)}
-        />
-      )}
     </div>
   );
 };

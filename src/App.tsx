@@ -42,7 +42,6 @@ const AppContent = () => {
               <Route path="/" element={<Index />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/create" element={<Create />} />
-              <Route path="/game/:id" element={<GamePlayer />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

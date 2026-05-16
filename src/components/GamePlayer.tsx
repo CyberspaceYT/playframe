@@ -120,7 +120,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
         {/* IFRAME */}
         <iframe
           ref={iframeRef}
-          src={game?.htmlFile || ""}
+          src={game?.html_file || ""}
           className="w-full h-full"
           title={game.title}
           allowFullScreen

@@ -14,7 +14,6 @@ import { useState } from "react";
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
 import { AdminEditorModal } from "./components/AdminEditorModal";
 import { games } from "@/lib/games-data";
-import type { Game } from "@/lib/games-data";
 
 const queryClient = new QueryClient();
 
@@ -56,11 +55,8 @@ function FullGamePlayer() {
 
   if (!game) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
-        <div className="text-center">
-          <h1 className="text-5xl mb-4">Game not found 😢</h1>
-          <p className="text-xl">Game ID: {id}</p>
-        </div>
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        <h1>Game {id} not found 😢</h1>
       </div>
     );
   }

@@ -49,7 +49,6 @@ const AppContent = () => {
   );
 };
 
-// Full page game player for /game/1, /game/2, etc.
 function FullGamePlayer() {
   const { id } = useParams<{ id: string }>();
 

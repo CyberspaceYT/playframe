@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
-import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState } from "react";
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
@@ -53,7 +52,7 @@ function FullGamePlayer() {
 
   const game = games.find((g) => g.id === id);
 
-  if (!game) {
+  if (!game || !game.html_file) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
         <div className="text-center">
@@ -64,12 +63,27 @@ function FullGamePlayer() {
     );
   }
 
-  // Full page version - bypass the modal wrapper
   return (
-    <div className="fixed inset-0 bg-black z-50">
-      <GamePlayer 
-        game={game} 
-        onClose={() => window.history.back()} 
+    <div className="fixed inset-0 bg-black z-[100] flex flex-col">
+      {/* Top Bar */}
+      <div className="bg-[#1A0808] border-b border-[#4A1010] px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-white font-bold">{game.title}</h1>
+        </div>
+        <button
+          onClick={() => window.history.back()}
+          className="text-white hover:bg-white/10 px-4 py-1 rounded-md transition-colors"
+        >
+          ← Back to Home
+        </button>
+      </div>
+
+      {/* Game Iframe */}
+      <iframe
+        src={game.html_file}
+        className="flex-1 w-full border-none"
+        title={game.title}
+        allowFullScreen
       />
     </div>
   );

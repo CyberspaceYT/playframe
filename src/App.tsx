@@ -10,7 +10,22 @@ import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
 import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const originalFavicon = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230BA3FF'/><path d='M9 13h14v8H9zM7 15v4M25 15v4M13 10v3M19 10v3' stroke='white' stroke-width='2.5' stroke-linecap='round'/><circle cx='13' cy='17' r='1.5' fill='white'/><circle cx='19' cy='17' r='1.5' fill='white'/></svg>";
+const awayFavicon = "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-drive-color-icon.png";
+
+const FaviconSwitcher = () => {
+  useEffect(() => {
+    const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) return;
+    const update = () => { link.href = document.hidden ? awayFavicon : originalFavicon; };
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+  return null;
+};
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
 import { AdminEditorModal } from "./components/AdminEditorModal";
 import { games } from "@/lib/games-data";
@@ -25,6 +40,7 @@ const AppContent = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <FaviconSwitcher />
       <ThemeProvider>
         <TooltipProvider>
           <Toaster />

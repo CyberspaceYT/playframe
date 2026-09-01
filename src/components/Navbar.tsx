@@ -42,7 +42,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 shadow-sm backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
         <Link to="/" className="group flex shrink-0 items-center gap-2 transition-transform duration-300 hover:-rotate-1 hover:scale-105">
-          <Gamepad2 className="h-7 w-7 text-primary transition-transform duration-300 group-hover:rotate-6" />
+          <Gamepad2 className="h-7 w-7 text-[hsl(var(--logo))] transition-transform duration-300 group-hover:rotate-6" />
           <span className="text-xl font-bold tracking-tight">PlayFrame</span>
         </Link>
         {showSearch && (
@@ -58,7 +58,7 @@ const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarP
           </Link>
         </nav>
       </div>
-      <div className="h-[50px] overflow-hidden border-t border-primary/20 bg-gradient-to-r from-primary via-accent to-primary text-primary-foreground">
+      <div className="h-[25px] overflow-hidden border-t border-white/10 bg-black text-white">
         <div className="flex h-full min-w-max items-center gap-10 whitespace-nowrap animate-marquee px-4 text-xs font-bold tracking-[0.2em]">
           {[...announcements, ...announcements].map((item, index) => <span key={`${item}-${index}`} className="flex items-center gap-10"><span>{item}</span><span className="text-primary-foreground/60">✦</span></span>)}
         </div>

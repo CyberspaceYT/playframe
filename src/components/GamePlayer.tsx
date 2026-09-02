@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import {
   Maximize2,
   Minimize2,
-  Download,
-  Upload,
   X
 } from "lucide-react";
 
@@ -28,6 +26,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
+    requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
 
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
@@ -44,68 +43,10 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     }
   };
 
-  const handleDownloadSave = () => {
-    const saveKey = `game_save_${game.id}`;
-    const saveData = localStorage.getItem(saveKey);
-
-    if (!saveData) {
-      alert("No save data found!");
-      return;
-    }
-
-    const blob = new Blob([saveData], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${game.id}-save.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-  };
-
-  const handleUploadSave = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        const saveData = event.target?.result as string;
-        const saveKey = `game_save_${game.id}`;
-
-        localStorage.setItem(saveKey, saveData);
-
-        try {
-          const iframeWindow = iframeRef.current?.contentWindow;
-
-          if (iframeWindow) {
-            iframeWindow.localStorage.setItem("gameData", saveData);
-            iframeWindow.location.reload();
-          }
-        } catch {
-          if (iframeRef.current) {
-            iframeRef.current.src = iframeRef.current.src;
-          }
-        }
-
-        alert("Save loaded!");
-      };
-
-      reader.readAsText(file);
-    };
-
-    input.click();
-  };
 
   return (
     <motion.div
-      className="fixed inset-0 bg-[#1A0808]/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-background z-50 flex items-center justify-center p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -128,14 +69,6 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
 
         {/* CONTROL BAR */}
         <div className="absolute top-4 right-4 flex gap-2">
-          <Button onClick={handleDownloadSave}>
-            <Download className="h-4 w-4" />
-          </Button>
-
-          <Button onClick={handleUploadSave}>
-            <Upload className="h-4 w-4" />
-          </Button>
-
           <Button onClick={toggleFullscreen}>
             {isFullscreen ? (
               <Minimize2 className="h-4 w-4" />

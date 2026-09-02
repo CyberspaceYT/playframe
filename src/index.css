@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@900&family=Roboto:wght@400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,5 +11,5 @@
   }
   .dark { --background: 230 32% 9%; --foreground: 190 30% 96%; --card: 230 27% 13%; --card-foreground: 190 30% 96%; --popover: 230 27% 13%; --popover-foreground: 190 30% 96%; --primary: 189 100% 50%; --primary-foreground: 0 0% 100%; --secondary: 230 22% 18%; --secondary-foreground: 190 25% 88%; --muted: 230 18% 16%; --muted-foreground: 220 12% 62%; --accent: 238 74% 61%; --accent-foreground: 0 0% 100%; --destructive: 0 72% 51%; --destructive-foreground: 0 0% 100%; --border: 230 17% 24%; --input: 230 17% 24%; --ring: 179 66% 66%; --sidebar-background: 230 28% 11%; --sidebar-foreground: 190 30% 96%; --sidebar-primary: 179 66% 66%; --sidebar-primary-foreground: 230 35% 12%; --sidebar-accent: 230 22% 18%; --sidebar-accent-foreground: 190 25% 88%; --sidebar-border: 230 17% 24%; --sidebar-ring: 179 66% 66%; }
 }
-@layer base { * { @apply border-border; } body { @apply bg-background text-foreground; font-family: 'Poppins', sans-serif; transition: background-color .5s ease, color .5s ease; } h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; font-weight: 600; } }
+@layer base { * { @apply border-border; } body { @apply bg-background text-foreground; font-family: 'Roboto', sans-serif; font-weight: 400; transition: background-color .5s ease, color .5s ease; } h1,h2,h3,h4,h5,h6 { font-family: 'Lexend', sans-serif; font-weight: 900; } .font-display { font-family: 'Lexend', sans-serif; font-weight: 900; } }
 @layer utilities { .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 1rem; } .crosshair-mark { width: 28px; height: 28px; border: 2px solid hsl(var(--primary-foreground)); border-radius: 999px; box-shadow: 0 0 0 5px hsl(var(--primary-foreground) / .18); } .animate-marquee { animation: marquee 24s linear infinite; } @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } } @media (min-width: 768px) { .game-grid { grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); } } }

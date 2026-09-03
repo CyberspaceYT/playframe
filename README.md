@@ -1,10 +1,20 @@
-# Welcome to PlayFrame! 🎮
+# PlayFrame
 
-This repo is the official source code for PlayFrame, a lightweight, high-performance website dedicated to providing unblocked games for school / work environments. Built with a focus on accessibility and bypassing network restrictions, this repository contains the full frontend and game-embedding logic similar to many other proxies and sites like Art Class, Interstellar, Rammerhead, and more. 
+A small React + Vite game hub designed to be easy to fork and customize.
 
-Key Features:
-School-Friendly: Optimized to run smoothly on Chromebooks and restricted networks like at school and/or work.
-Modern UI: A sleek, automatic light/dark mode interface for easy game discovery and quality.
-Fast Loading: Minimalist codebase for quick access between classes. 
+## Quick customization
 
-Thanks for visiting! Feel free to fork this repo to create infinite alt links to infiltrate! 😈
+- **Games:** edit `src/lib/games-data.ts` to add, remove, or rename games.
+- **Scrolling banner:** edit the `announcements` array at the top of `src/components/Navbar.tsx`.
+- **Homepage copy:** edit `src/pages/Index.tsx`.
+- **Colors and layout:** edit `src/index.css` and `src/App.css`.
+- **Game files:** put HTML game files in `public/games/`, then reference them from `games-data.ts`.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Keep changes focused: most forks only need to touch `games-data.ts`, `Navbar.tsx`, and the two CSS files.

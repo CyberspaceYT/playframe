@@ -35,13 +35,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#151515] text-white">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <main className="mx-auto w-full max-w-[1080px] px-5 pb-16">
-        <section className="py-8 sm:py-12">
+      <main className="w-full px-5 pb-16 sm:px-8">
+        <section className="mx-auto max-w-[1080px] py-8 sm:py-12">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to PlayFrame</h1>
           <p className="mt-1 max-w-xs text-sm leading-4 text-white/45">ayo teach me playing<br />games in yo class</p>
         </section>
-        <CategoryChips categories={categories} activeCategory={activeCategory} onSelect={setActiveCategory} />
-        <section className="game-grid mt-7">
+        <div className="mx-auto max-w-[1080px]"><CategoryChips categories={categories} activeCategory={activeCategory} onSelect={setActiveCategory} /></div>
+        <section className="game-grid mt-7 w-full">
           {filteredGames.map((game) => <div key={game.id} onClick={() => navigate(`/game/${game.id}`)} className="cursor-pointer"><GameCard game={game} /></div>)}
         </section>
         {filteredGames.length === 0 && <div className="py-20 text-center text-white/50">No games found. Try a different search or category.</div>}

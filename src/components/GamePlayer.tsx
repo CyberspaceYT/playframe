@@ -9,37 +9,20 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
   const [showHint, setShowHint] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const escapeStarted = useRef<number | null>(null);
-  const escapeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   useEffect(() => {
     const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || escapeStarted.current !== null) return;
-      escapeStarted.current = Date.now();
-      escapeTimer.current = setTimeout(() => {
-        escapeStarted.current = null;
-        if (document.fullscreenElement) void document.exitFullscreen();
-        onClose();
-      }, 3000);
-    };
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      if (escapeTimer.current) clearTimeout(escapeTimer.current);
-      escapeTimer.current = null;
-      escapeStarted.current = null;
+      if (event.key !== "Escape" || event.repeat) return;
+      event.preventDefault();
+      if (document.fullscreenElement) void document.exitFullscreen();
+      onClose();
     };
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    const hintTimer = setTimeout(() => setShowHint(false), 10000);
     requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      clearTimeout(hintTimer);
-      if (escapeTimer.current) clearTimeout(escapeTimer.current);
     };
   }, [onClose]);
 

@@ -1,12 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Maximize2,
-  Minimize2,
-  X
-} from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import type { Game } from "@/lib/games-data";
 
 interface GamePlayerProps {
@@ -53,7 +46,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     >
       <motion.div
         ref={containerRef}
-        className="relative w-full max-w-5xl aspect-video bg-[#2A1212] rounded-xl overflow-hidden border-2 border-[#4A1010]"
+        className="relative w-full max-w-5xl aspect-video overflow-hidden bg-background"
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", damping: 20 }}
@@ -67,25 +60,6 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
           allowFullScreen
         />
 
-        {/* CONTROL BAR */}
-        <div className="absolute top-4 right-4 flex gap-2">
-          <Button onClick={toggleFullscreen}>
-            {isFullscreen ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
-            )}
-          </Button>
-
-          <Button onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* TITLE */}
-        <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded">
-          <span className="text-white text-sm">{game.title}</span>
-        </div>
       </motion.div>
     </motion.div>
   );

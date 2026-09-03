@@ -35,7 +35,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#151515] text-white">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <main className="mx-auto max-w-[1080px] px-5 pb-16">
+      <main className="mx-auto w-full max-w-[1080px] px-5 pb-16">
         <section className="py-8 sm:py-12">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to PlayFrame</h1>
           <p className="mt-1 max-w-xs text-sm leading-4 text-white/45">ayo teach me playing<br />games in yo class</p>

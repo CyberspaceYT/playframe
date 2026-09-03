@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 interface NavbarProps { searchQuery?: string; onSearchChange?: (query: string) => void; showSearch?: boolean; }
-export const announcements = ["ayo we got the new scrolling news thing - carterpcs is goat - signalrgb is evil to pcs - i ate the burgers - ryan is a nerd - nig"];
+export const announcements = ["Welcome to PlayFrame - I ated the burgers - Ryan is a nerd - Jace is a furry femboy - Mason is fake - New Games - Nvm no new games blake ate them - GOGUARDIAN™ IS WATCHING"];
 
 const Navbar = ({ searchQuery = "", onSearchChange, showSearch = true }: NavbarProps) => {
   const [searchOpen, setSearchOpen] = useState(false);

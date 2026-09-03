@@ -44,9 +44,7 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
       <div
         className={cn(
           "absolute top-0 rounded-full transition-all duration-300 ease-out",
-          theme === "dark"
-            ? "bg-white/15"
-            : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-md"
+          "bg-gradient-to-r from-primary to-accent shadow-md shadow-primary/20"
         )}
         style={indicatorStyle}
       />

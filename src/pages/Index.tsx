@@ -1,104 +1,53 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import GameCard from "@/components/GameCard";
 import CategoryChips from "@/components/CategoryChips";
 import Footer from "@/components/Footer";
-import PopularGames from "@/components/PopularGames";
-import GamePlayer from "@/components/GamePlayer";
-import { useTheme } from "@/components/ThemeProvider";
 import { games, categories } from "@/lib/games-data";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const { theme } = useTheme();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const filteredGames = useMemo(() => {
-    return games.filter((game) => {
-      const matchesSearch = game.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    let typed = "";
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.length !== 1) return;
+      typed = `${typed}${event.key.toUpperCase()}`.slice(-2);
+      if (typed === "XP") {
+        const audio = new Audio("/audio/erro.mp3");
+        audio.volume = 0.7;
+        void audio.play().catch(() => undefined);
+        typed = "";
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
-      const matchesCategory =
-        !activeCategory || game.category === activeCategory;
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchQuery, activeCategory]);
+  const filteredGames = useMemo(
+    () => games.filter((game) => game.title.toLowerCase().includes(searchQuery.toLowerCase()) && (!activeCategory || game.category === activeCategory)),
+    [searchQuery, activeCategory],
+  );
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-
-      <main className="flex-1">
-
-        <section className="border-b border-border/50 py-12 transition-colors duration-500">
-          <div className="container mx-auto px-4 text-center">
-
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl transition-colors duration-300">
-              Play Games{" "}
-              <span
-                className={
-                  theme === "dark"
-                    ? "bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-white"
-                    : "bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500"
-                }
-              >
-                Instantly
-              </span>
-            </h1>
-
-            <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              Browse and play a huge catalog of games right in your browser —
-              no downloads needed!
-            </p>
-
-          </div>
+    <div className="min-h-screen bg-[#151515] text-white">
+      <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <main className="w-full px-5 pb-16 sm:px-8">
+        <section className="mx-auto max-w-[1080px] py-8 sm:py-12">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to PlayFrame</h1>
+          <p className="mt-1 max-w-xs text-sm leading-4 text-white/45">ayo teach me playing<br />games in yo class</p>
         </section>
-
-        <PopularGames />
-
-        <section className="container mx-auto px-4 py-8">
-
-          <CategoryChips
-            categories={categories}
-            activeCategory={activeCategory}
-            onSelect={setActiveCategory}
-          />
-
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-
-            {filteredGames.map((game) => (
-              <div
-                key={game.id}
-                onClick={() => navigate(`/game/${game.id}`)}
-                className="cursor-pointer"
-              >
-                <GameCard game={game} />
-              </div>
-            ))}
-
-          </div>
-
-          {filteredGames.length === 0 && (
-            <div className="py-20 text-center text-muted-foreground">
-              No games found. Try a different search or category.
-            </div>
-          )}
-
+        <div className="mx-auto max-w-[1080px]"><CategoryChips categories={categories} activeCategory={activeCategory} onSelect={setActiveCategory} /></div>
+        <section className="game-grid mt-7 w-full">
+          {filteredGames.map((game) => <div key={game.id} onClick={() => navigate(`/game/${game.id}`)} className="cursor-pointer"><GameCard game={game} /></div>)}
         </section>
+        {filteredGames.length === 0 && <div className="py-20 text-center text-white/50">No games found. Try a different search or category.</div>}
       </main>
-
       <Footer />
-
     </div>
   );
 };
-
 export default Index;

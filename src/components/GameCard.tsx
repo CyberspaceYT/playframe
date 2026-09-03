@@ -2,18 +2,10 @@ import { Link } from "react-router-dom";
 import type { Game } from "@/lib/games-data";
 
 interface GameCardProps { game: Game; }
-
-const GameCard = ({ game }: GameCardProps) => {
-  return (
-    <Link to={`/game/${game.id}`} className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-      <div className="game-tile relative aspect-square overflow-hidden rounded-xl border border-border/60 bg-card shadow-md transition-all duration-300 ease-out group-hover:z-10 group-hover:-translate-y-1 group-hover:scale-[1.035] group-hover:border-primary group-hover:shadow-[0_12px_30px_hsl(var(--primary)/0.24)]">
-        <img src={game.thumbnail_url} alt={game.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).src = `https://placehold.co/600x600/6FE3E1/5257E5?text=${encodeURIComponent(game.title)}`; }} />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true"><span className="crosshair-mark" /></div>
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white transition-transform duration-300 group-hover:-translate-y-1">
-          <h3 className="truncate text-base font-bold drop-shadow-md">{game.title}</h3>
-        </div>
-      </div>
-    </Link>
-  );
-};
+const GameCard = ({ game }: GameCardProps) => <Link to={`/game/${game.id}`} className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3348]">
+  <div className="game-tile relative aspect-square overflow-hidden border-[3px] border-[#ff3348] bg-[#151515] transition-transform duration-200 group-hover:scale-[1.025]">
+    <img src={game.thumbnail_url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-0" loading="lazy" aria-hidden="true" />
+    <div className="absolute inset-0 flex items-end p-2 text-[14px] font-medium text-white"><h3 className="truncate">{game.title}</h3></div>
+  </div>
+</Link>;
 export default GameCard;

@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 const originalFavicon = "/favicon.svg";
 const awayFavicon = "/favicon.svg";
@@ -59,6 +60,7 @@ const AppContent = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          <Analytics />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

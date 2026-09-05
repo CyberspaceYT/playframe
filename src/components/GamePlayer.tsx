@@ -12,6 +12,19 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    const intro = new Audio("/audio/game-boy-advance-sp-intro.mp3");
+    intro.preload = "auto";
+    intro.volume = 0.65;
+    const stopBeforeBeep = () => {
+      if (Number.isFinite(intro.duration) && intro.duration > 0) intro.currentTime = Math.max(0, intro.duration - 0.42);
+      intro.pause();
+    };
+    const handleIntroTimeUpdate = () => {
+      if (intro.duration - intro.currentTime <= 0.42) stopBeforeBeep();
+    };
+    intro.addEventListener("timeupdate", handleIntroTimeUpdate);
+    void intro.play().catch(() => undefined);
+
     const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !event.repeat) {
@@ -38,6 +51,8 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     window.addEventListener("keyup", handleKeyUp);
     requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
     return () => {
+      intro.removeEventListener("timeupdate", handleIntroTimeUpdate);
+      intro.pause();
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);

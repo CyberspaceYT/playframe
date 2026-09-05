@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import Create from "./pages/Create";
@@ -59,6 +60,7 @@ const AppContent = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          <Analytics />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

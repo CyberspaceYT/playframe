@@ -2,7 +2,7 @@ import { Gamepad2 } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border/50 bg-background/70 backdrop-blur-sm py-8 transition-colors duration-500">
+    <footer className="border-t border-border/50 bg-background/0 backdrop-blur-sm py-8 transition-colors duration-500">
       <div className="container mx-auto px-4 text-center">
         <div className="flex items-center justify-center gap-2 mb-3">
           <Gamepad2 className="h-5 w-5 text-primary transition-colors duration-300" />

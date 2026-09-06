@@ -22,36 +22,39 @@ const Navbar = ({
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Dynamic Keyframes for smooth infinite looping scrolling */}
+      {/* CSS injection for seamless infinite scrolling loop */}
       <style>{`
-        @keyframes marquee-slow {
+        @keyframes marquee-infinite {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-100%); }
         }
-        .animate-marquee-slow {
-          animation: marquee-slow 45s linear infinite;
+        .animate-marquee-infinite {
+          animation: marquee-infinite 60s linear infinite;
         }
       `}</style>
 
       {/* 1. Scrolling banner at the very top */}
       <div className="h-[25px] overflow-hidden bg-black text-white flex items-center">
         <div className="relative flex w-full overflow-x-hidden whitespace-nowrap text-[12px] font-bold tracking-wide">
-          {/* First Track */}
-          <div className="animate-marquee-slow flex shrink-0 items-center">
+          
+          {/* Primary text layer */}
+          <div className="animate-marquee-infinite flex shrink-0 items-center">
             {announcements.map((item, index) => (
-              <span className="mr-4" key={`track1-${index}`}>
+              <span className="mr-2" key={`track-primary-${index}`}>
                 {item}
               </span>
             ))}
           </div>
-          {/* Second Duplicate Track for seamless loop joining */}
-          <div className="animate-marquee-slow flex shrink-0 items-center" aria-hidden="true">
+
+          {/* Identical secondary text layer to catch the end of the loop seamlessly */}
+          <div className="animate-marquee-infinite flex shrink-0 items-center" aria-hidden="true">
             {announcements.map((item, index) => (
-              <span className="mr-4" key={`track2-${index}`}>
+              <span className="mr-2" key={`track-secondary-${index}`}>
                 {item}
               </span>
             ))}
           </div>
+
         </div>
       </div>
 
@@ -61,7 +64,23 @@ const Navbar = ({
           to="/"
           className="flex items-center gap-2 text-[16px] font-bold text-white"
         >
-          <img src="/favicon-light.svg" alt="PlayFrame Logo" className="size-5" />
+          {/* Custom SVG styled blue to match category chips */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-5 text-primary" // Uses your chip theme color (or substitute with text-[#6395EE])
+          >
+            <line x1="6" x2="10" y1="11" y2="11" />
+            <line x1="8" x2="8" y1="9" y2="13" />
+            <line x1="15" x2="15.01" y1="12" y2="12" />
+            <line x1="18" x2="18.01" y1="10" y2="10" />
+            <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z" />
+          </svg>
           <span>PlayFrame</span>
         </Link>
 

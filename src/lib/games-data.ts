@@ -27,7 +27,7 @@ export const categories: Category[] = [
 ];
 
 export const games: Game[] = [
-  { id: "1", title: "Agar.io", description: "Grow your cell by consuming others.", category: "multiplayer", thumbnail_url: "https://assets-prd.ignimgs.com/2024/09/22/agario-1726971440487.jpg", html_file: "/games/agar.html" },
+  { id: "1", title: "Deltarune", description: "Two worlds, one destiny. Light and dark must align.", category: "adventure", thumbnail_url: "https://art.pixilart.com/5b20349074441ba.png", html_file: "/games/deltarune.html" },
   { id: "2", title: "Backrooms", description: "Horror maze escape.", category: "horror", thumbnail_url: "https://fngames.io/data/image/game/backrooms.png", html_file: "/games/backrooms.html" },
   { id: "3", title: "Basket Bros.", description: "1v1 basketball action.", category: "sports", thumbnail_url: "https://basketbros-game.github.io/images/logo.png", html_file: "/games/basket-bros.html" },
   { id: "4", title: "Basketball Stars", description: "1v1 basketball action.", category: "sports", thumbnail_url: "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/basketball-stars.png", html_file: "/games/basketball-stars.html" },

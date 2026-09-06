@@ -13,11 +13,6 @@ export const announcements = [
   "Welcome to PlayFrame - I ate the burgers - Ryan is a nerd - Jace is a furry femboy - Mason is fake - New Games - Nvm no new games blake ate them - GOGUARDIAN™ IS WATCHING - ",
 ];
 
-const announcementTrack = Array.from(
-  { length: 10000 },
-  (_, index) => `${announcements[0]}${index % 2 ? "" : " "}`
-);
-
 const Navbar = ({
   searchQuery = "",
   onSearchChange,
@@ -27,14 +22,36 @@ const Navbar = ({
 
   return (
     <header className="sticky top-0 z-50">
+      {/* Dynamic Keyframes for smooth infinite looping scrolling */}
+      <style>{`
+        @keyframes marquee-slow {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-100%); }
+        }
+        .animate-marquee-slow {
+          animation: marquee-slow 45s linear infinite;
+        }
+      `}</style>
+
       {/* 1. Scrolling banner at the very top */}
-      <div className="h-[25px] overflow-hidden bg-black text-white">
-        <div className="animate-marquee flex h-full min-w-max items-center whitespace-nowrap px-4 text-[12px] font-bold">
-          {announcementTrack.map((item, index) => (
-            <span className="mr-8" key={index}>
-              {item}
-            </span>
-          ))}
+      <div className="h-[25px] overflow-hidden bg-black text-white flex items-center">
+        <div className="relative flex w-full overflow-x-hidden whitespace-nowrap text-[12px] font-bold tracking-wide">
+          {/* First Track */}
+          <div className="animate-marquee-slow flex shrink-0 items-center">
+            {announcements.map((item, index) => (
+              <span className="mr-4" key={`track1-${index}`}>
+                {item}
+              </span>
+            ))}
+          </div>
+          {/* Second Duplicate Track for seamless loop joining */}
+          <div className="animate-marquee-slow flex shrink-0 items-center" aria-hidden="true">
+            {announcements.map((item, index) => (
+              <span className="mr-4" key={`track2-${index}`}>
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -44,12 +61,7 @@ const Navbar = ({
           to="/"
           className="flex items-center gap-2 text-[16px] font-bold text-white"
         >
-          {/* Replaced Gamepad2 with favicon-light.svg */}
-          <img 
-            src="/favicon-light.svg" 
-            alt="PlayFrame Logo" 
-            className="size-5" 
-          />
+          <img src="/favicon-light.svg" alt="PlayFrame Logo" className="size-5" />
           <span>PlayFrame</span>
         </Link>
 

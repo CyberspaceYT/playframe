@@ -33,8 +33,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     intro.addEventListener("timeupdate", handleIntroTimeUpdate);
     void intro.play().catch(() => undefined);
 
-    const handleFullscreenChange = () =>
-      setIsFullscreen(!!document.fullscreenElement);
+    const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !event.repeat) {
@@ -49,13 +48,13 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
 
       event.preventDefault();
       f2HoldStartedAt.current = performance.now();
-      
-      // Changed to 3000ms (3 seconds) and redirects to Vercel
+
+      // Updated to target playframe-five.vercel.app directly
       f2HoldTimer.current = window.setTimeout(() => {
         f2HoldStartedAt.current = null;
         f2HoldTimer.current = null;
         if (document.fullscreenElement) void document.exitFullscreen();
-        window.location.href = "https://vercel.app";
+        window.location.href = "https://playframe-five.vercel.app/";
       }, 3000);
     };
 
@@ -69,10 +68,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-
-    requestAnimationFrame(() =>
-      containerRef.current?.requestFullscreen().catch(() => undefined)
-    );
+    requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
 
     return () => {
       intro.removeEventListener("timeupdate", handleIntroTimeUpdate);
@@ -98,13 +94,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
         animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", damping: 20 }}
       >
-        <iframe
-          ref={iframeRef}
-          src={game.html_file}
-          className="h-full w-full"
-          title={game.title}
-          allowFullScreen
-        />
+        <iframe ref={iframeRef} src={game.html_file} className="h-full w-full" title={game.title} allowFullScreen />
         {isFullscreen && showHint && (
           <motion.p
             className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-sm font-medium text-white drop-shadow-lg"

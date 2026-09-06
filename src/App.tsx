@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import Index from "./pages/Index";
@@ -12,18 +12,16 @@ import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState, useEffect } from "react";
 
-const originalFavicon = "/favicon.svg";
-const awayFavicon = "/favicon.svg";
-
 const FaviconSwitcher = () => {
+  const { theme } = useTheme();
   useEffect(() => {
-    const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-    if (!link) return;
-    const update = () => { link.href = document.hidden ? awayFavicon : originalFavicon; };
-    update();
-    document.addEventListener("visibilitychange", update);
-    return () => document.removeEventListener("visibilitychange", update);
-  }, []);
+    const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (icon) icon.href = theme === "dark" ? "/favicon-light.svg" : "/favicon-black.svg";
+    document.title = document.hidden ? "PlayFrame" : "PlayFrame";
+    const updateTitle = () => { document.title = document.hidden ? "PlayFrame" : "PlayFrame"; };
+    document.addEventListener("visibilitychange", updateTitle);
+    return () => document.removeEventListener("visibilitychange", updateTitle);
+  }, [theme]);
   return null;
 };
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
@@ -39,9 +37,9 @@ const AppContent = () => {
   useAdminShortcut(() => setAdminOpen(true));
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <FaviconSwitcher />
-      <ThemeProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <FaviconSwitcher />
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -60,8 +58,8 @@ const AppContent = () => {
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 

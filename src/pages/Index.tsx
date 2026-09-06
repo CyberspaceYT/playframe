@@ -12,20 +12,6 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const intro = new Audio("/audio/windows-xp-startup.mp3");
-    intro.preload = "auto";
-    intro.volume = 0.65;
-    const stopBeforeBeep = () => {
-      if (Number.isFinite(intro.duration) && intro.duration > 0) {
-        intro.currentTime = Math.max(0, intro.duration - 0.42);
-      }
-      intro.pause();
-    };
-    intro.addEventListener("timeupdate", () => {
-      if (intro.duration - intro.currentTime <= 0.42) stopBeforeBeep();
-    });
-    void intro.play().catch(() => undefined);
-
     let typed = "";
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.length !== 1) return;

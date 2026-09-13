@@ -9,21 +9,13 @@ const GameCard = ({ game }: GameCardProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const [tone, setTone] = useState<ImageTone>("dark");
   const [imageFailed, setImageFailed] = useState(false);
-  const [imageSrc, setImageSrc] = useState(game.thumbnail_url);
+  const imageSrc = game.html_file
+    ? `/game-icons/${game.html_file.split("/").pop()?.replace(/\.html$/, "")}.png`
+    : "";
 
   useEffect(() => {
-    setImageSrc(game.thumbnail_url);
     setImageFailed(false);
-  }, [game.thumbnail_url]);
-
-  useEffect(() => {
-    if (!imageFailed) return;
-    const retry = window.setInterval(() => {
-      const separator = game.thumbnail_url.includes("?") ? "&" : "?";
-      setImageSrc(`${game.thumbnail_url}${separator}retry=${Date.now()}`);
-    }, 250);
-    return () => window.clearInterval(retry);
-  }, [game.thumbnail_url, imageFailed]);
+  }, [imageSrc]);
 
   useEffect(() => {
     const image = imageRef.current;

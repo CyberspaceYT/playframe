@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const announcements = [
-  "Welcome to PlayFrame - I ate the burgers - Ryan is a nerd - Jace is a furry femboy - Mason is fake - New Games - Nvm no new games blake ate them - GOGUARDIAN™ IS WATCHING - ",
+  "NEW GAMES!!! Added Granny, Baldi's Basics, and Deltarune! - Blake Sux - Mason is fake - funky ehh - what is happening to fgteev duddy man - ayo we on tiktok now @Cyberspace1104 - cheddar + barbecue wavy sour cream and onion = cheddar + barbecue wavy 3 layer dip stack - supercalifragilisticexpialidociously getting pneumenoultramicroscopicsilicovolcanoconiosis - an intercontinental ballistic missile is 500mi away from your current location - oracle is watching - matt digby the goat unlike the movie hes in - disney and pixar sux now unlike back in 2006 when the best movie of all time released - release the baby - surronster crash full vid - GoGuardian Successfully Connected to Active Device - ayo teach they playing games in yo class - ",
 ];
 
 const Navbar = ({

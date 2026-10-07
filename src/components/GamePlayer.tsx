@@ -8,10 +8,7 @@ interface GamePlayerProps {
 }
 
 const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showHint] = useState(true);
-  const f2HoldStartedAt = useRef<number | null>(null);
-  const f2HoldTimer = useRef<number | null>(null);
+  const wasFullscreen = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -33,50 +30,19 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     intro.addEventListener("timeupdate", handleIntroTimeUpdate);
     void intro.play().catch(() => undefined);
 
-    const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !event.repeat) {
-        event.preventDefault();
-        if (document.fullscreenElement) void document.exitFullscreen();
-        onClose();
-        return;
-      }
-
-      if (event.key !== "F2" || event.repeat || f2HoldStartedAt.current !== null)
-        return;
-
-      event.preventDefault();
-      f2HoldStartedAt.current = performance.now();
-
-      // Updated to target playframe-five.vercel.app directly
-      f2HoldTimer.current = window.setTimeout(() => {
-        f2HoldStartedAt.current = null;
-        f2HoldTimer.current = null;
-        if (document.fullscreenElement) void document.exitFullscreen();
-        window.location.href = "https://playframe-five.vercel.app/";
-      }, 3000);
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key !== "F2") return;
-      f2HoldStartedAt.current = null;
-      if (f2HoldTimer.current !== null) window.clearTimeout(f2HoldTimer.current);
-      f2HoldTimer.current = null;
+    const handleFullscreenChange = () => {
+      const fullscreen = Boolean(document.fullscreenElement);
+      if (wasFullscreen.current && !fullscreen) onClose();
+      wasFullscreen.current = fullscreen;
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
     requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
 
     return () => {
       intro.removeEventListener("timeupdate", handleIntroTimeUpdate);
       intro.pause();
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      if (f2HoldTimer.current !== null) window.clearTimeout(f2HoldTimer.current);
     };
   }, [onClose]);
 
@@ -95,16 +61,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
         transition={{ type: "spring", damping: 20 }}
       >
         <iframe ref={iframeRef} src={game.html_file} className="h-full w-full" title={game.title} allowFullScreen />
-        {isFullscreen && showHint && (
-          <motion.p
-            className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-sm font-medium text-white drop-shadow-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.35, 1, 0.35] }}
-            transition={{ duration: 1.8, repeat: 5 }}
-          >
-            Hold F2 for 3s to Go to PlayFrame V5
-          </motion.p>
-        )}
+
       </motion.div>
     </motion.div>
   );

@@ -15,9 +15,9 @@ const Index = () => {
     let typed = "";
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.length !== 1) return;
-      typed = `${typed}${event.key.toUpperCase()}`.slice(-2);
-      if (typed === "XP") {
-        const audio = new Audio("/audio/erro.mp3");
+      typed = `${typed}${event.key.toUpperCase()}`.slice(-4);
+      if (typed === "WIN7") {
+        const audio = new Audio("/audio/windows-7-startup.mp3");
         audio.volume = 0.7;
         void audio.play().catch(() => undefined);
         typed = "";

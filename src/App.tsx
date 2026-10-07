@@ -79,7 +79,7 @@ function FullGamePlayer() {
     );
   }
 
-  return <GamePlayer game={game} onClose={() => window.history.back()} />;
+  return <GamePlayer game={game} onClose={() => { window.history.replaceState(null, "", "/"); window.dispatchEvent(new PopStateEvent("popstate")); }} />;
 }
 
 const App = () => <AppContent />;

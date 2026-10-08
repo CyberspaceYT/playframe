@@ -10,7 +10,7 @@ export const useTabVisibility = () => {
 
     const handleBlur = () => {
       // Change title when user leaves tab
-      document.title = "My Drive - Google Drive";
+      document.title = "My Drive | Google Drive";
 
       // Change favicon when user leaves tab
       const favicon = document.querySelector(

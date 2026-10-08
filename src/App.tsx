@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import Index from "./pages/Index";
@@ -12,18 +12,6 @@ import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState, useEffect } from "react";
 
-const FaviconSwitcher = () => {
-  const { theme } = useTheme();
-  useEffect(() => {
-    const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-    if (icon) icon.href = theme === "dark" ? "/favicon-light.svg" : "/favicon-black.svg";
-    document.title = document.hidden ? "PlayFrame" : "PlayFrame";
-    const updateTitle = () => { document.title = document.hidden ? "PlayFrame" : "PlayFrame"; };
-    document.addEventListener("visibilitychange", updateTitle);
-    return () => document.removeEventListener("visibilitychange", updateTitle);
-  }, [theme]);
-  return null;
-};
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
 import { AdminEditorModal } from "./components/AdminEditorModal";
 import { games } from "@/lib/games-data";
@@ -39,7 +27,6 @@ const AppContent = () => {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <FaviconSwitcher />
         <TooltipProvider>
           <Toaster />
           <Sonner />

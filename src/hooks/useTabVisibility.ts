@@ -18,13 +18,13 @@ export const useTabVisibility = () => {
       ) as HTMLLinkElement;
       if (favicon) {
         favicon.href =
-          "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png";
+          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png";
       } else {
         // If no favicon link exists, create one
         const newFavicon = document.createElement("link");
         newFavicon.rel = "icon";
         newFavicon.href =
-          "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png";
+          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png";
         document.head.appendChild(newFavicon);
       }
     };

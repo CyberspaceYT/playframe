@@ -65,7 +65,7 @@ const Navbar = ({
           className="flex items-center gap-2 text-[16px] font-bold text-white"
         >
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-XOthvgUvU9dKmmZg8EiuuJ3E0946E9.png"
             alt=""
             className="size-5 rounded-md object-cover"
             aria-hidden="true"

@@ -9,35 +9,27 @@ export const useTabVisibility = () => {
     const originalFaviconHref = originalFavicon?.href || "";
 
     const handleBlur = () => {
-      // Change title when user leaves tab
+      // Show the original Drive branding when the tab is inactive.
       document.title = "My Drive | Google Drive";
-
-      // Change favicon when user leaves tab
-      const favicon = document.querySelector(
-        'link[rel="icon"]'
-      ) as HTMLLinkElement;
-      if (favicon) {
-        favicon.href =
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png";
-      } else {
-        // If no favicon link exists, create one
-        const newFavicon = document.createElement("link");
-        newFavicon.rel = "icon";
-        newFavicon.href =
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png";
-        document.head.appendChild(newFavicon);
-      }
-    };
-
-    const handleFocus = () => {
-      // Restore original title and favicon when user returns
-      document.title = "PlayFrame";
 
       const favicon = document.querySelector(
         'link[rel="icon"]'
       ) as HTMLLinkElement;
       if (favicon && originalFaviconHref) {
         favicon.href = originalFaviconHref;
+      }
+    };
+
+    const handleFocus = () => {
+      // Show PlayFrame branding while the tab is active.
+      document.title = "PlayFrame";
+
+      const favicon = document.querySelector(
+        'link[rel="icon"]'
+      ) as HTMLLinkElement;
+      if (favicon) {
+        favicon.href =
+          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
       }
     };
 

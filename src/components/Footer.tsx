@@ -1,4 +1,4 @@
-const BRAND_ICON_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EBKOjT5TwONGhHAoV4DtX7QoxtPflT.png";
+const BRAND_ICON_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
 
 const Footer = () => {
   return (

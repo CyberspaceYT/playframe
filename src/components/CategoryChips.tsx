@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useRef, useEffect, useState, useCallback } from "react";
+import { Palette } from "lucide-react";
 import type { Category } from "@/lib/games-data";
 
 interface CategoryChipsProps {
@@ -12,6 +13,7 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
+  const [chipColor, setChipColor] = useState("#4f8df7");
 
   const updateIndicator = useCallback(() => {
     const key = activeCategory ?? "__all__";
@@ -60,11 +62,11 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
     >
       {/* Sliding background indicator */}
       <div
-        className={cn(
-          "absolute rounded-full transition-all duration-300 ease-out pointer-events-none",
-          "bg-gradient-to-r from-primary to-accent shadow-md shadow-primary/20"
-        )}
-        style={indicatorStyle}
+        className="pointer-events-none absolute rounded-full shadow-md shadow-primary/20 transition-all duration-300 ease-out"
+        style={{
+          ...indicatorStyle,
+          backgroundImage: `linear-gradient(110deg, ${chipColor}, color-mix(in srgb, ${chipColor} 62%, white))`,
+        }}
       />
 
       {/* All Option */}
@@ -103,6 +105,18 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
           {cat.name}
         </button>
       ))}
+
+      <label className="relative z-10 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-secondary/70 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground" title="Choose chip color">
+        <Palette aria-hidden="true" data-icon="inline-start" />
+        <span className="sr-only">Choose category chip color</span>
+        <input
+          type="color"
+          value={chipColor}
+          onChange={(event) => setChipColor(event.target.value)}
+          className="absolute inset-0 cursor-pointer opacity-0"
+          aria-label="Choose category chip color"
+        />
+      </label>
     </div>
   );
 };

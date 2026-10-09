@@ -12,13 +12,14 @@
 }
 @layer utilities {
   .game-grid { display: grid; width: 100%; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 1.6rem 1.75rem; }
-  .game-grid > div { animation: tile-enter 650ms cubic-bezier(.2,.8,.2,1) both; }
+  .game-grid > div { animation: lego-assemble 700ms cubic-bezier(.2,.8,.2,1) both; }
   .game-grid > div:nth-child(2n) { animation-delay: 70ms; }
   .game-grid > div:nth-child(3n) { animation-delay: 140ms; }
+  .game-grid > div:nth-child(4n) { animation-delay: 210ms; }
   .text-stroke { -webkit-text-stroke: 1.5px #000; paint-order: stroke fill; }
   .animate-marquee { animation: marquee 8000s linear infinite; will-change: transform; }
   @keyframes marquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
-  @keyframes tile-enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes lego-assemble { from { opacity: 0; transform: translateY(28px) scale(.86) rotate(-2deg); filter: brightness(.7); } 65% { opacity: 1; transform: translateY(-4px) scale(1.02) rotate(.5deg); filter: brightness(1.08); } to { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: brightness(1); } }
   @media (min-width: 768px) { .game-grid { grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); } }
   @media (prefers-reduced-motion: reduce) { .game-grid > div, .animate-marquee { animation: none; } }
 }

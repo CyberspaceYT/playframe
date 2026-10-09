@@ -6,7 +6,7 @@ interface GameCardProps { game: Game; }
 const GameCard = ({ game }: GameCardProps) => {
   const [imageFailed, setImageFailed] = useState(false);
   return <Link to={`/game/${game.id}`} className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3348]">
-    <div className="game-tile relative aspect-square overflow-hidden rounded-[20%] border border-white/10 bg-[#1d1d1d] shadow-[inset_0_0_0_1px_hsl(var(--foreground)/0.06)] transition-[box-shadow,border-color] duration-300 group-hover:border-white/30 group-hover:shadow-[0_12px_30px_hsl(var(--foreground)/0.2),inset_0_0_0_1px_hsl(var(--foreground)/0.08)]">
+    <div className="game-tile relative aspect-square overflow-hidden rounded-[20%] border border-white/10 bg-[#1d1d1d] shadow-[inset_0_0_0_1px_hsl(var(--foreground)/0.06)] transition-[transform,box-shadow,border-color] duration-300 ease-out group-hover:-translate-y-2 group-hover:border-white/30 group-hover:shadow-[0_18px_34px_hsl(var(--foreground)/0.28),inset_0_0_0_1px_hsl(var(--foreground)/0.08)] motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
       {imageFailed ? (
         <div className="absolute inset-0 flex items-center justify-center bg-muted px-4 text-center text-xs font-bold uppercase text-muted-foreground">IMAGE COULDNT BE LOADED</div>
       ) : (

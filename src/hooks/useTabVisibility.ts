@@ -1,5 +1,15 @@
 import { useEffect } from "react";
 
+const ACTIVE_FAVICON = `data:image/svg+xml,${encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 352">
+    <style>
+      path { fill: #fff; }
+      @media (prefers-color-scheme: light) { path { fill: #000; } }
+    </style>
+    <path d="M176 0c-12 88-28 132-64 168-36 36-80 52-112 56 32 4 76 20 112 56 36 36 52 80 64 72 12 8 28-36 64-72 36-36 80-52 112-56-32-4-76-20-112-56C204 132 188 88 176 0Z"/>
+  </svg>
+`)}`;
+
 export const useTabVisibility = () => {
   useEffect(() => {
     // Store original favicon
@@ -28,8 +38,7 @@ export const useTabVisibility = () => {
         'link[rel="icon"]'
       ) as HTMLLinkElement;
       if (favicon) {
-        favicon.href =
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
+        favicon.href = ACTIVE_FAVICON;
       }
     };
 

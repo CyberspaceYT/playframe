@@ -67,7 +67,7 @@ const Navbar = ({
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png"
             alt=""
-            className="size-5 rounded-md object-cover"
+            className="size-5 rounded-md object-cover invert dark:invert-0"
             aria-hidden="true"
           />
           <span>PlayFrame</span>

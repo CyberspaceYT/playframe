@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const announcements = [
-  "NEW GAMES!!! Added Granny, Baldi's Basics, and Deltarune! - Blake Sux - Mason is fake - funky ehh - what is happening to fgteev duddy man - ayo we on tiktok now @Cyberspace1104 - cheddar + barbecue wavy sour cream and onion = cheddar + barbecue wavy 3 layer dip stack - supercalifragilisticexpialidociously getting pneumenoultramicroscopicsilicovolcanoconiosis - an intercontinental ballistic missile is 500mi away from your current location - oracle is watching - matt digby the goat unlike the movie hes in - disney and pixar sux now unlike back in 2006 when the best movie of all time released - release the baby - surronster crash full vid - GoGuardian Successfully Connected to Active Device - ayo teach they playing games in yo class - ",
+  "NEW GAMES!!! Added Fork N' Sausage and Pizza Tower! - but if you pour water on a rock, nothing happens - cant do nathan - shawty told me she got yellow fever so i had to look at her crazy like baby you bugging bu bu bugging - we on tiktok @Cyberspace1104 - domination station annihalation proclamation exclamation nomination nation - supercalifragilisticexpialidociously getting pneumonoultramicroscopicsilicovolcanoconiosis - moto x3m on top - quite frankly - or is it? - pretty cool right? - it's impossible. no, it's necessary. - https://www.youtube.com/watch?v=pxuj-CWimS0&list=PLpx41Fyr0nnkU4kiFz1jgoW8j7sz4oPG7&index=3 - skadoosh - ayo big teach they playing games in yo class - way to go superstar - if you got this from lowell he lied -",
 ];
 
 const Navbar = ({

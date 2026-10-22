@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
 import { useState, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
 import { AdminEditorModal } from "./components/AdminEditorModal";
@@ -44,6 +45,7 @@ const AppContent = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          <Analytics />
         </TooltipProvider>
       </QueryClientProvider>
     </ThemeProvider>

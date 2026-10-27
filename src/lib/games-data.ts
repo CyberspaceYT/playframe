@@ -71,4 +71,5 @@ export const games: Game[] = [
   { id: "41", title: "Tiny Fishing", showCardTitle: false, description: "Catch small trouts or even sharks in this arcade fishing game.", category: "arcade", thumbnail_url: "https://bowlgames.io/data/image/tiny-fishing.png", html_file: "/games/tiny-fishing.html" },
   { id: "42", title: "Ultrakill", showCardTitle: false, description: "Fast combat FPS.", category: "action", thumbnail_url: "https://web-games.io/cache/data/image/game/Ultrakill-f314x314-jpg.webp", html_file: "/games/ultrakill.html" },
   { id: "43", title: "WebFishing", showCardTitle: false, description: "Fishing + chatting multiplayer.", category: "multiplayer", thumbnail_url: "https://cdn2.steamgriddb.com/grid/f85c6e30462acd89648c010d3f6fecb4.jpg", html_file: "/games/webfishing.html" },
+  { id: "44", title: "Baseball Bros.", showCardTitle: false, description: "Let's play ball.", category: "strategy", thumbnail_url: "https://doodlebaseball.io/data/image/game/baseball-bros/baseball-bros.jpg", html_file: "/games/baseballbros.html" },
 ];

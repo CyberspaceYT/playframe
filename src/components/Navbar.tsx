@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const announcements = [
-  "NEW GAMES!!! Added Fork N' Sausage and Pizza Tower! - but if you pour water on a rock, nothing happens - cant do nathan - shawty told me she got yellow fever so i had to look at her crazy like baby you bugging bu bu bugging - we on tiktok @Cyberspace1104 - domination station annihalation proclamation exclamation nomination nation - supercalifragilisticexpialidociously getting pneumonoultramicroscopicsilicovolcanoconiosis - moto x3m on top - quite frankly - or is it? - pretty cool right? - it's impossible. no, it's necessary. - https://www.youtube.com/watch?v=pxuj-CWimS0&list=PLpx41Fyr0nnkU4kiFz1jgoW8j7sz4oPG7&index=3 - skadoosh - ayo big teach they playing games in yo class - way to go superstar - if you got this from lowell he lied -",
+  "NEW GAMES!!! Added Fork N' Sausage and Pizza Tower! - but if you pour water on a rock, nothing happens - cant do nathan - ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh - we on tiktok @Cyberspace1104 - domination station annihalation proclamation exclamation nomination nation - supercalifragilisticexpialidociously getting pneumonoultramicroscopicsilicovolcanoconiosis - moto x3m is goat - quite frankly - or is it? - pretty cool right? - it's impossible. no, it's necessary. - https://www.youtube.com/watch?v=pxuj-CWimS0&list=PLpx41Fyr0nnkU4kiFz1jgoW8j7sz4oPG7&index=3 - skadoosh - ayo big teach they playing games in yo class - way to go superstar - devin asked to be on here -",
 ];
 
 const Navbar = ({

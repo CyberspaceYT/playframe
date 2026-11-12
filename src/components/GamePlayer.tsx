@@ -11,8 +11,37 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
   const wasFullscreen = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const holdTimerRef = useRef<number | null>(null);
+  const escapeHeldRef = useRef(false);
 
   useEffect(() => {
+    const iframeElement = iframeRef.current;
+    const startHold = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || escapeHeldRef.current) return;
+      escapeHeldRef.current = true;
+      holdTimerRef.current = window.setTimeout(onClose, 2000);
+    };
+    const cancelHold = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      escapeHeldRef.current = false;
+      if (holdTimerRef.current) window.clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    };
+    const bindIframeKeys = () => {
+      try {
+        const iframeDocument = iframeRef.current?.contentDocument;
+        iframeDocument?.addEventListener("keydown", startHold);
+        iframeDocument?.addEventListener("keyup", cancelHold);
+      } catch {
+        // Cross-origin game frames cannot be observed by the parent page.
+      }
+    };
+
+    window.addEventListener("keydown", startHold);
+    window.addEventListener("keyup", cancelHold);
+    iframeElement?.addEventListener("load", bindIframeKeys);
+    bindIframeKeys();
+
     const intro = new Audio("/audio/game-boy-advance-sp-intro.mp3");
     intro.preload = "auto";
     intro.volume = 0.65;
@@ -31,9 +60,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     void intro.play().catch(() => undefined);
 
     const handleFullscreenChange = () => {
-      const fullscreen = Boolean(document.fullscreenElement);
-      if (wasFullscreen.current && !fullscreen) onClose();
-      wasFullscreen.current = fullscreen;
+      wasFullscreen.current = Boolean(document.fullscreenElement);
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
@@ -42,6 +69,17 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     return () => {
       intro.removeEventListener("timeupdate", handleIntroTimeUpdate);
       intro.pause();
+      window.removeEventListener("keydown", startHold);
+      window.removeEventListener("keyup", cancelHold);
+      iframeElement?.removeEventListener("load", bindIframeKeys);
+      try {
+        const iframeDocument = iframeElement?.contentDocument;
+        iframeDocument?.removeEventListener("keydown", startHold);
+        iframeDocument?.removeEventListener("keyup", cancelHold);
+      } catch {
+        // Cross-origin game frames cannot be observed by the parent page.
+      }
+      if (holdTimerRef.current) window.clearTimeout(holdTimerRef.current);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, [onClose]);
@@ -61,7 +99,15 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
         transition={{ type: "spring", damping: 20 }}
       >
         <iframe ref={iframeRef} src={game.html_file} className="h-full w-full" title={game.title} allowFullScreen />
-
+        <motion.p
+          aria-live="polite"
+          className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/75 px-4 py-2 text-sm font-medium text-white shadow-lg"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: [1, 1, 0] }}
+          transition={{ duration: 5, times: [0, 0.86, 1] }}
+        >
+          Hold ESC for 2s to Exit Game
+        </motion.p>
       </motion.div>
     </motion.div>
   );

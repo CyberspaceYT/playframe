@@ -14,8 +14,8 @@ const GameCard = ({ game }: GameCardProps) => {
     const y = (event.clientY - bounds.top) / bounds.height;
     const tile = tileRef.current;
     if (!tile) return;
-    tile.style.setProperty("--tilt-x", `${(0.5 - y) * 88}deg`);
-    tile.style.setProperty("--tilt-y", `${(x - 0.5) * 88}deg`);
+    tile.style.setProperty("--tilt-x", `${(0.5 - y) * 45}deg`);
+    tile.style.setProperty("--tilt-y", `${(x - 0.5) * 45}deg`);
     tile.style.setProperty("--shine-x", `${x * 100}%`);
     tile.style.setProperty("--shine-y", `${y * 100}%`);
   };

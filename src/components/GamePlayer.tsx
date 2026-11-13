@@ -17,7 +17,10 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
   useEffect(() => {
     const iframeElement = iframeRef.current;
     const startHold = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || escapeHeldRef.current) return;
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (escapeHeldRef.current) return;
       escapeHeldRef.current = true;
       holdTimerRef.current = window.setTimeout(onClose, 2000);
     };
@@ -60,7 +63,14 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     void intro.play().catch(() => undefined);
 
     const handleFullscreenChange = () => {
-      wasFullscreen.current = Boolean(document.fullscreenElement);
+      if (document.fullscreenElement) {
+        wasFullscreen.current = true;
+        return;
+      }
+
+      if (wasFullscreen.current && containerRef.current) {
+        void containerRef.current.requestFullscreen().catch(() => undefined);
+      }
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);

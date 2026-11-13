@@ -8,27 +8,34 @@ interface GamePlayerProps {
 }
 
 const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
-  const wasFullscreen = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const holdTimerRef = useRef<number | null>(null);
   const escapeHeldRef = useRef(false);
+  const exitTriggeredRef = useRef(false);
 
   useEffect(() => {
     const iframeElement = iframeRef.current;
     const startHold = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      event.preventDefault();
-      event.stopPropagation();
       if (escapeHeldRef.current) return;
       escapeHeldRef.current = true;
-      holdTimerRef.current = window.setTimeout(onClose, 2000);
+      exitTriggeredRef.current = false;
+      holdTimerRef.current = window.setTimeout(() => {
+        exitTriggeredRef.current = true;
+        onClose();
+      }, 2000);
     };
     const cancelHold = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       escapeHeldRef.current = false;
       if (holdTimerRef.current) window.clearTimeout(holdTimerRef.current);
       holdTimerRef.current = null;
+
+      const container = containerRef.current;
+      if (!exitTriggeredRef.current && container && !document.fullscreenElement) {
+        void container.requestFullscreen().catch(() => undefined);
+      }
     };
     const bindIframeKeys = () => {
       try {
@@ -62,18 +69,6 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     intro.addEventListener("timeupdate", handleIntroTimeUpdate);
     void intro.play().catch(() => undefined);
 
-    const handleFullscreenChange = () => {
-      if (document.fullscreenElement) {
-        wasFullscreen.current = true;
-        return;
-      }
-
-      if (wasFullscreen.current && containerRef.current) {
-        void containerRef.current.requestFullscreen().catch(() => undefined);
-      }
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
     requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
 
     return () => {
@@ -90,7 +85,6 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
         // Cross-origin game frames cannot be observed by the parent page.
       }
       if (holdTimerRef.current) window.clearTimeout(holdTimerRef.current);
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, [onClose]);
 

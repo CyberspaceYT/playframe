@@ -55,10 +55,10 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     >
       <motion.div
         ref={containerRef}
-        className="relative aspect-video w-full max-w-5xl overflow-hidden bg-background"
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        transition={{ type: "spring", damping: 20 }}
+        className="relative h-[100dvh] w-[100vw] overflow-hidden bg-background"
+        initial={{ scale: 0.82, opacity: 0.7 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 170, damping: 24 }}
       >
         <iframe ref={iframeRef} src={game.html_file} className="h-full w-full" title={game.title} allowFullScreen />
 

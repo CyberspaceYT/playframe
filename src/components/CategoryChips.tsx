@@ -56,7 +56,7 @@ const CategoryChips = ({ categories, activeCategory, onSelect }: CategoryChipsPr
   return (
     <div 
       ref={containerRef} 
-      className="relative flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+      className="relative flex items-center justify-start gap-2 overflow-x-auto pb-1 scrollbar-none sm:justify-center"
     >
       {/* Sliding background indicator */}
       <div

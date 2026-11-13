@@ -36,9 +36,9 @@ const Index = () => {
     <div className="min-h-screen bg-[#151515] text-white">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <main className="w-full px-5 pb-16 sm:px-8">
-        <section className="mx-auto max-w-[1080px] py-8 sm:py-12">
+        <section className="mx-auto flex max-w-[1080px] flex-col items-center py-8 text-center sm:py-12">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to PlayFrame</h1>
-          <p className="mt-1 max-w-xs text-sm leading-4 text-white/45">ayo teach me playing<br />games in yo class</p>
+          <p className="mt-1 text-sm leading-5 text-white/45">ayo teach me playing<br />games in yo class</p>
         </section>
         <div className="mx-auto max-w-[1080px]"><CategoryChips categories={categories} activeCategory={activeCategory} onSelect={setActiveCategory} /></div>
         <section className="game-grid mt-7 w-full">

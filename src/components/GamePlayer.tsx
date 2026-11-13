@@ -56,7 +56,7 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
       <motion.div
         ref={containerRef}
         className="relative h-[100dvh] w-[100vw] overflow-hidden bg-background"
-        initial={{ scale: 0.82, opacity: 0.7 }}
+        initial={{ scale: 0.58, opacity: 0.55 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 170, damping: 24 }}
       >

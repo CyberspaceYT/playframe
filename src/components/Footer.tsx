@@ -1,3 +1,5 @@
+import PredictiveArc from "@/components/PredictiveArc";
+
 const BRAND_ICON_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
 
 const Footer = () => {
@@ -18,6 +20,21 @@ const Footer = () => {
           <a className="text-muted-foreground transition-colors hover:text-foreground" href="https://docs.google.com/forms/d/e/1FAIpQLSfdbm3lLLlgaz-dnH4IpFNM4css8vfSuwZ97BLDCDe9HW6TCA/viewform?usp=dialog">Report a Blocked Game</a>
           <a className="text-muted-foreground transition-colors hover:text-foreground" href="https://www.dmca.com/compliance/playframe-five.vercel.app">DMCA Registration</a>
         </nav>
+      </div>
+      <div aria-hidden="true" className="pointer-events-none mt-6 h-36 w-full overflow-hidden sm:mt-8 sm:h-48">
+        <PredictiveArc
+          height={192}
+          style={{ minWidth: 0, minHeight: 0, width: "100%", height: "100%" }}
+          background="#030303"
+          baseColor="#3b1515"
+          accentColor="#ff4d4d"
+          highlight="#ffb3b3"
+          density={110}
+          dotSize={90}
+          speed={65}
+          arch={{ peak: 100, falloff: 600, thickness: 206, archHeight: 0 }}
+          pointer={{ enabled: false }}
+        />
       </div>
     </footer>
   );

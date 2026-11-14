@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Game } from "@/lib/games-data";
 
@@ -16,7 +17,9 @@ interface GamePlayerProps {
 
 const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
   const [showGame, setShowGame] = useState(false);
+  const [showShortcutHint, setShowShortcutHint] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const startRect = launchRect ?? {
     left: window.innerWidth / 2 - 48,
@@ -53,6 +56,7 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
 
     const gameTimer = window.setTimeout(() => {
       setShowGame(true);
+      setShowShortcutHint(true);
     }, 1000);
 
     return () => {
@@ -62,6 +66,25 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
       intro.pause();
     };
   }, []);
+
+  useEffect(() => {
+    if (!showGame) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        event.code === "Tab"
+      ) {
+        event.preventDefault();
+        navigate("/");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, [navigate, showGame]);
 
   return (
     <div
@@ -105,12 +128,25 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
       )}
 
       {showGame && (
-        <iframe
-          src={game.html_file}
-          className="h-full w-full border-0"
-          title={game.title}
-          allowFullScreen
-        />
+        <>
+          <iframe
+            src={game.html_file}
+            className="h-full w-full border-0"
+            title={game.title}
+            allowFullScreen
+          />
+          {showShortcutHint && (
+            <motion.div
+              className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-4 py-2 text-sm font-medium text-white shadow-lg backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 5, times: [0, 0.12, 0.78, 1] }}
+              onAnimationComplete={() => setShowShortcutHint(false)}
+            >
+              Press Ctrl+Tab to go Home
+            </motion.div>
+          )}
+        </>
       )}
     </div>
   );

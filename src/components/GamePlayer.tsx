@@ -1,14 +1,29 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { Game } from "@/lib/games-data";
 
-interface GamePlayerProps {
-  game: Game;
+interface LaunchRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 }
 
-const GamePlayer = ({ game }: GamePlayerProps) => {
+interface GamePlayerProps {
+  game: Game;
+  launchRect?: LaunchRect | null;
+}
+
+const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
   const [showGame, setShowGame] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const startRect = launchRect ?? {
+    left: window.innerWidth / 2 - 48,
+    top: window.innerHeight / 2 - 48,
+    width: 96,
+    height: 96,
+  };
 
   useEffect(() => {
     const intro = new Audio("/audio/game-boy-advance-sp-intro.mp3");
@@ -16,24 +31,29 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
     intro.volume = 0.65;
 
     const stopBeforeBeep = () => {
-      if (Number.isFinite(intro.duration) && intro.duration > 0)
+      if (Number.isFinite(intro.duration) && intro.duration > 0) {
         intro.currentTime = Math.max(0, intro.duration - 0.42);
+      }
       intro.pause();
     };
 
     const handleIntroTimeUpdate = () => {
-      if (intro.duration - intro.currentTime <= 0.42) stopBeforeBeep();
+      if (intro.duration - intro.currentTime <= 0.42) {
+        stopBeforeBeep();
+      }
     };
 
     intro.addEventListener("timeupdate", handleIntroTimeUpdate);
+
     void intro.play().catch(() => undefined);
 
-    // Request fullscreen as soon as the player opens so the browser still has
-    // the navigation's user activation; the game itself appears after the launch animation.
     const fullscreenFrame = requestAnimationFrame(() => {
       void containerRef.current?.requestFullscreen?.().catch(() => undefined);
     });
-    const gameTimer = window.setTimeout(() => setShowGame(true), 1000);
+
+    const gameTimer = window.setTimeout(() => {
+      setShowGame(true);
+    }, 1000);
 
     return () => {
       cancelAnimationFrame(fullscreenFrame);
@@ -46,29 +66,44 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 flex h-[100dvh] w-screen items-center justify-center overflow-hidden bg-black"
+      className="fixed inset-0 z-50 h-[100dvh] w-[100vw] overflow-hidden bg-black"
     >
       {!showGame && (
-        <>
-          <motion.img
-            src="/image.png"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          />
-          <motion.img
-            src={game.thumbnail_url}
-            alt={game.title}
-            className="absolute max-w-none object-cover"
-            initial={{ width: 96, height: 96, borderRadius: 24 }}
-            animate={{ width: "100vw", height: "100dvh", borderRadius: 0 }}
-            transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-          />
-        </>
+        <motion.img
+          src={game.thumbnail_url}
+          alt={game.title}
+          className="absolute block object-cover"
+          style={{
+            left: startRect.left,
+            top: startRect.top,
+            width: startRect.width,
+            height: startRect.height,
+            borderRadius: 18,
+            transformOrigin: "top left",
+          }}
+          initial={{
+            left: startRect.left,
+            top: startRect.top,
+            width: startRect.width,
+            height: startRect.height,
+            borderRadius: 18,
+            opacity: 1,
+          }}
+          animate={{
+            left: 0,
+            top: 0,
+            width: "100vw",
+            height: "100dvh",
+            borderRadius: 0,
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        />
       )}
+
       {showGame && (
         <iframe
           src={game.html_file}

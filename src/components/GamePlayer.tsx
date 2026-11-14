@@ -4,12 +4,10 @@ import type { Game } from "@/lib/games-data";
 
 interface GamePlayerProps {
   game: Game;
-  onClose: () => void;
 }
 
-const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
-  const wasFullscreen = useRef(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+const GamePlayer = ({ game }: GamePlayerProps) => {
+  const [showGame, setShowGame] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,40 +28,44 @@ const GamePlayer = ({ game, onClose }: GamePlayerProps) => {
     intro.addEventListener("timeupdate", handleIntroTimeUpdate);
     void intro.play().catch(() => undefined);
 
-    const handleFullscreenChange = () => {
-      const fullscreen = Boolean(document.fullscreenElement);
-      if (wasFullscreen.current && !fullscreen) onClose();
-      wasFullscreen.current = fullscreen;
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    requestAnimationFrame(() => containerRef.current?.requestFullscreen().catch(() => undefined));
+    // Request fullscreen as soon as the player opens so the browser still has
+    // the navigation's user activation; the game itself appears after the launch animation.
+    const fullscreenFrame = requestAnimationFrame(() => {
+      void containerRef.current?.requestFullscreen?.().catch(() => undefined);
+    });
+    const gameTimer = window.setTimeout(() => setShowGame(true), 1000);
 
     return () => {
+      cancelAnimationFrame(fullscreenFrame);
+      window.clearTimeout(gameTimer);
       intro.removeEventListener("timeupdate", handleIntroTimeUpdate);
       intro.pause();
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
-  }, [onClose]);
+  }, []);
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-50 flex h-[100dvh] w-screen items-center justify-center overflow-hidden bg-black"
     >
-      <motion.div
-        ref={containerRef}
-        className="relative h-[100dvh] w-[100vw] overflow-hidden bg-background"
-        initial={{ scale: 0.58, opacity: 0.55 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 170, damping: 24 }}
-      >
-        <iframe ref={iframeRef} src={game.html_file} className="h-full w-full" title={game.title} allowFullScreen />
-
-      </motion.div>
-    </motion.div>
+      {showGame ? (
+        <iframe
+          src={game.html_file}
+          className="h-full w-full border-0"
+          title={game.title}
+          allowFullScreen
+        />
+      ) : (
+        <motion.img
+          src={game.thumbnail_url}
+          alt={game.title}
+          className="absolute max-w-none object-cover"
+          initial={{ width: 96, height: 96, borderRadius: 24 }}
+          animate={{ width: "100vw", height: "100dvh", borderRadius: 0 }}
+          transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+        />
+      )}
+    </div>
   );
 };
 

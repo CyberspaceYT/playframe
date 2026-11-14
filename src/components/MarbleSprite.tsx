@@ -3,7 +3,6 @@
 
 "use client"
 
-import { addPropertyControls, ControlType } from "framer"
 import { useEffect, useRef, useState } from "react"
 import type { CSSProperties } from "react"
 
@@ -56,12 +55,12 @@ import type { CSSProperties } from "react"
 /* ----------------------------------------------------------- defaults */
 
 const DEFAULTS = {
-    face: "eyes",
+    face: "eyes" as const,
     background: "#000000",
     scale: 90,
     spriteColor: "#1400F6",
     frost: 5,
-    follow: "frame",
+    follow: "frame" as const,
     reach: 10,
     lean: 10,
     blink: 10,
@@ -598,12 +597,12 @@ const CAPSULE_PX = 1600
  * @framerIntrinsicHeight 1080
  */
 export default function MarbleSprite({
-    face = DEFAULTS.face,
+    face = DEFAULTS.face as MarbleSpriteProps["face"],
     background = DEFAULTS.background,
     scale = DEFAULTS.scale,
     spriteColor = DEFAULTS.spriteColor,
     frost = DEFAULTS.frost,
-    follow = DEFAULTS.follow,
+    follow = DEFAULTS.follow as MarbleSpriteProps["follow"],
     reach = DEFAULTS.reach,
     lean = DEFAULTS.lean,
     blink = DEFAULTS.blink,
@@ -1183,119 +1182,3 @@ export default function MarbleSprite({
         </div>
     )
 }
-
-/* --------------------------------------------------- property controls */
-
-const A = DEFAULT_ADVANCED
-
-addPropertyControls(MarbleSprite, {
-    // ---------- Background
-    background: { type: ControlType.Color, title: "Background", defaultValue: DEFAULTS.background },
-    spriteColor: { type: ControlType.Color, title: "Sprite", defaultValue: DEFAULTS.spriteColor },
-    // ---------- Content
-    face: {
-        type: ControlType.Enum,
-        title: "Face",
-        defaultValue: DEFAULTS.face,
-        options: ["eyes", "none"],
-        optionTitles: ["Eyes", "None"],
-        displaySegmentedControl: true,
-        description: "The sprite's pill eyes, or a plain ball.",
-    },
-    // ---------- Element
-    scale: {
-        type: ControlType.Number,
-        title: "Scale",
-        unit: "%",
-        defaultValue: DEFAULTS.scale,
-        min: 15,
-        max: 135,
-        step: 1,
-        description: "Size of the capsule. 100 is the reference's framing; 135 still fits with its glow.",
-    },
-    frost: {
-        type: ControlType.Number,
-        title: "Frost",
-        defaultValue: DEFAULTS.frost,
-        min: 0,
-        max: 10,
-        step: 0.1,
-        description: "How milky the lower half is. 0 is clear glass all round; 5 is the reference.",
-    },
-    // ---------- Response
-    follow: {
-        type: ControlType.Enum,
-        title: "Follow",
-        defaultValue: DEFAULTS.follow,
-        options: ["page", "frame", "off"],
-        optionTitles: ["Page", "Frame", "Off"],
-        displaySegmentedControl: true,
-        description: "Track the cursor anywhere on the page, only over this frame, or never. A press makes it squint.",
-    },
-    reach: {
-        type: ControlType.Number,
-        title: "Reach",
-        defaultValue: DEFAULTS.reach,
-        min: 0,
-        max: 10,
-        step: 0.1,
-        description: "How hard the sprite turns to look at the cursor.",
-        hidden: (props: MarbleSpriteProps) => props.follow === "off",
-    },
-    lean: {
-        type: ControlType.Number,
-        title: "Lean",
-        defaultValue: DEFAULTS.lean,
-        min: 0,
-        max: 10,
-        step: 0.1,
-        description: "How far the capsule tips toward the cursor. The studio stays put, so its highlights slide over the glass.",
-        hidden: (props: MarbleSpriteProps) => props.follow === "off",
-    },
-    // ---------- Travel
-    blink: {
-        type: ControlType.Number,
-        title: "Blink",
-        defaultValue: DEFAULTS.blink,
-        min: 0,
-        max: 10,
-        step: 0.1,
-        description: "How often it blinks. 0 never.",
-    },
-    float: {
-        type: ControlType.Number,
-        title: "Float",
-        defaultValue: DEFAULTS.float,
-        min: 0,
-        max: 15,
-        step: 0.1,
-        description: "Slow bob and sway, and the sprite's idle looking round. Past 10 it bobs and sways harder than the reference.",
-    },
-    // ---------- Advanced
-    advanced: {
-        type: ControlType.Object,
-        title: "Advanced",
-        controls: {
-            restX: { type: ControlType.Number, title: "Rest Gaze X", unit: "°", min: -45, max: 45, step: 1, defaultValue: 0, description: "Where it looks with no cursor. Positive is right." },
-            restY: { type: ControlType.Number, title: "Rest Gaze Y", unit: "°", min: -45, max: 45, step: 1, defaultValue: 10, description: "Positive is up." },
-            roll: { type: ControlType.Number, title: "Face Roll", unit: "°", min: -45, max: 45, step: 1, defaultValue: 0, description: "Tilt of the face about its own axis. Negative is clockwise." },
-            maxTurn: { type: ControlType.Number, title: "Max Turn", unit: "°", min: 5, max: 70, step: 1, defaultValue: 40, description: "Hard limit on how far it turns toward the cursor." },
-            seamAngle: { type: ControlType.Number, title: "Seam Angle", unit: "°", min: -180, max: 180, step: 1, defaultValue: 90, description: "Which way the clear half faces, round the picture. 90 is straight up." },
-            seamTilt: { type: ControlType.Number, title: "Seam Tilt", unit: "°", min: 0, max: 90, step: 1, defaultValue: 64, description: "0 shows the seam as a full circle; 90 edge on, as a line." },
-            seamOffset: { type: ControlType.Number, title: "Seam Offset", unit: "%", min: -50, max: 50, step: 1, defaultValue: -5, description: "Moves the seam off centre. Negative grows the clear half." },
-            shell: { type: ControlType.Number, title: "Wall", unit: "%", min: 1, max: 25, step: 0.5, defaultValue: 4.5, description: "Glass wall thickness, % of the radius. Sets the width of the bright band inside the rim." },
-            lip: { type: ControlType.Number, title: "Seam Lip", unit: "%", min: 0, max: 20, step: 0.5, defaultValue: 6, description: "How far the seam's lip reaches in past the wall." },
-            spriteSize: { type: ControlType.Number, title: "Sprite Size", unit: "%", min: 20, max: 85, step: 0.5, defaultValue: 59.3, description: "Radius of the sprite, % of the capsule's." },
-            eyeGap: { type: ControlType.Number, title: "Eye Gap", unit: "°", min: 10, max: 90, step: 0.5, defaultValue: 45, description: "Angle between the pills, seen from the sprite's centre." },
-            eyeLength: { type: ControlType.Number, title: "Eye Length", unit: "°", min: 5, max: 60, step: 0.5, defaultValue: 34 },
-            eyeWidth: { type: ControlType.Number, title: "Eye Width", unit: "°", min: 3, max: 25, step: 0.5, defaultValue: 10 },
-            eyeColor: { type: ControlType.Color, title: "Eye Color", defaultValue: "#F3F2F8" },
-            lightAngle: { type: ControlType.Number, title: "Light Angle", unit: "°", min: -180, max: 180, step: 1, defaultValue: 0, description: "Rolls the whole studio round the view axis." },
-            gloss: { type: ControlType.Number, title: "Gloss", unit: "%", min: 0, max: 200, step: 1, defaultValue: 100, description: "Strength of every reflection." },
-            glow: { type: ControlType.Number, title: "Glow", unit: "%", min: 0, max: 300, step: 1, defaultValue: 100, description: "Bloom round the silhouette." },
-            grain: { type: ControlType.Number, title: "Grain", unit: "%", min: 0, max: 300, step: 1, defaultValue: 100, description: "Film grain over the whole frame." },
-            followMs: { type: ControlType.Number, title: "Follow Ease", unit: "ms", min: 10, max: 600, step: 1, defaultValue: 90, description: "Time constant of the sprite's turn toward the cursor." },
-            blinkMs: { type: ControlType.Number, title: "Blink Time", unit: "ms", min: 60, max: 600, step: 5, defaultValue: 150, description: "Length of one blink, shut and open again." },
-        },
-    },
-})

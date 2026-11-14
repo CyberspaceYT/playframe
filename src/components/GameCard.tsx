@@ -13,11 +13,13 @@ const GameCard = ({ game }: GameCardProps) => {
 
   const handlePointerMove = (event: React.PointerEvent<HTMLAnchorElement>) => {
     if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width;
     const y = (event.clientY - bounds.top) / bounds.height;
     const tile = tileRef.current;
     if (!tile) return;
+
     tile.style.setProperty("--tilt-x", `${(0.5 - y) * 45}deg`);
     tile.style.setProperty("--tilt-y", `${(x - 0.5) * 45}deg`);
     tile.style.setProperty("--shine-x", `${x * 100}%`);
@@ -33,14 +35,20 @@ const GameCard = ({ game }: GameCardProps) => {
   };
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    // Preserve normal browser behavior for opening a game in another tab/window.
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
+
     const bounds = tileRef.current?.getBoundingClientRect();
+
     navigate(`/game/${game.id}`, {
       state: {
         launchRect: bounds
-          ? { left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height }
+          ? {
+              left: bounds.left,
+              top: bounds.top,
+              width: bounds.width,
+              height: bounds.height,
+            }
           : null,
       },
     });
@@ -75,11 +83,13 @@ const GameCard = ({ game }: GameCardProps) => {
             aria-hidden="true"
           />
         )}
+
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           style={{ background: "radial-gradient(circle at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255,255,255,0.16), transparent 48%)" }}
         />
+
         {game.showCardTitle !== false && (
           <div className="absolute inset-x-0 bottom-0 flex min-h-14 items-end justify-center bg-gradient-to-t from-black/65 via-black/25 to-transparent px-3 pb-3 text-center text-[14px] font-bold transition-[padding] duration-300 group-hover:pb-4">
             <h3 className="max-w-full truncate">{game.title}</h3>

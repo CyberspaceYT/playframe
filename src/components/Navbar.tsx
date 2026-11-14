@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const announcements = [
-  "NEW GAMES!!! Added Fork N' Sausage and Pizza Tower! - but if you pour water on a rock, nothing happens - cant do nathan - ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh - we on tiktok @Cyberspace1104 - domination station annihalation proclamation exclamation nomination nation - supercalifragilisticexpialidociously getting pneumonoultramicroscopicsilicovolcanoconiosis - moto x3m is goat - quite frankly - or is it? - pretty cool right? - it's impossible. no, it's necessary. - https://www.youtube.com/watch?v=pxuj-CWimS0&list=PLpx41Fyr0nnkU4kiFz1jgoW8j7sz4oPG7&index=3 - skadoosh - ayo big teach they playing games in yo class - way to go superstar - devin asked to be on here -",
+  "- NEW GAMES!!! Added Block Blast, Arthurs Nightmare, Drift Boss, and  Happy Wheels! - But if you pour water on a rock, nothing happens - trump was on the jeffrey epstein plane - french horn easily best instrument in band - bulbinator - we on tiktok @Cyberspace1104 - multiple leviathan class life forms detected are you sure what youre doing is worth it - pneumonoultramicroscopicsilicovolcanoconiosis - drift hunters is goat - pretty cool right? - it's impossible. no, it's necessary. - finally they got rid of hotwheels - skadoosh - ayo big teach they playing games in yo class - way to go superstar - devin asked to be on here - gng never getting pirate token - 2024 Chevrolet Silverado 2500HD LT Crew Cab Standard Bed 6.6L V8 Engine 401 HP ",
 ];
 
 const Navbar = ({

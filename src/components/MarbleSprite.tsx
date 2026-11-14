@@ -279,686 +279,756 @@ vec3 backWall(vec3 Pw, vec3 rd, float px) {
 }
 
 /* -------------------------------------------------------------- seam */
+
 vec4 seamBand(vec2 p, float px) {
-if (abs(uSeamN.z) < 1e-3) return vec4(0.0, 0.0, -9.0, 0.0);
-float zp = (uSeamD - uSeamN.x * p.x - uSeamN.y * p.y) / uSeamN.z;
-vec3 P = vec3(p, zp);
-float rp = length(P);
-if (rp < uLip - 0.02 || rp > 1.0) return vec4(0.0, 0.0, zp, 0.0);
-vec2 g = (P.xy - P.z * uSeamN.xy / uSeamN.z) / max(rp, 1e-4);
-float sw = 1.0 - uLip;
-float s = (rp - uLip) / sw;
-float ds = length(g) * px / sw;
-float body = smoothstep(-ds, ds, s) * smoothstep(1.0 + ds, 1.0 - ds, s);
-float w = max(1.3 * ds, 0.07);
-float lines = 0.0;
-lines += 1.00 * smoothstep(max(1.8 * ds, 0.14), 0.0, abs(s - 0.90));
-lines += 0.70 * smoothstep(w, 0.0, abs(s - 0.50));
-lines += 0.85 * smoothstep(w, 0.0, abs(s - 0.08));
-float dark = 0.0;
-dark += smoothstep(w * 1.3, 0.0, abs(s - 0.70));
-dark += smoothstep(w * 1.1, 0.0, abs(s - 0.29));
-return vec4(body, clamp(lines, 0.0, 1.0), zp, clamp(dark, 0.0, 1.0));
+    if (abs(uSeamN.z) < 1e-3) return vec4(0.0, 0.0, -9.0, 0.0);
+    float zp = (uSeamD - uSeamN.x * p.x - uSeamN.y * p.y) / uSeamN.z;
+    vec3 P = vec3(p, zp);
+    float rp = length(P);
+    if (rp < uLip - 0.02 || rp > 1.0) return vec4(0.0, 0.0, zp, 0.0);
+    vec2 g = (P.xy - P.z * uSeamN.xy / uSeamN.z) / max(rp, 1e-4);
+    float sw = 1.0 - uLip;
+    float s = (rp - uLip) / sw;
+    float ds = length(g) * px / sw;
+    float body = smoothstep(-ds, ds, s) * smoothstep(1.0 + ds, 1.0 - ds, s);
+    float w = max(1.3 * ds, 0.07);
+    float lines = 0.0;
+    lines += 1.00 * smoothstep(max(1.8 * ds, 0.14), 0.0, abs(s - 0.90));
+    lines += 0.70 * smoothstep(w, 0.0, abs(s - 0.50));
+    lines += 0.85 * smoothstep(w, 0.0, abs(s - 0.08));
+    float dark = 0.0;
+    dark += smoothstep(w * 1.3, 0.0, abs(s - 0.70));
+    dark += smoothstep(w * 1.1, 0.0, abs(s - 0.29));
+    return vec4(body, clamp(lines, 0.0, 1.0), zp, clamp(dark, 0.0, 1.0));
 }
+
 /* -------------------------------------------------------------- main */
+
 float tone(float x) {
-return x < 0.8 ? x : 0.8 + 0.2 * (1.0 - exp(-(x - 0.8) / 0.2));
+    return x < 0.8 ? x : 0.8 + 0.2 * (1.0 - exp(-(x - 0.8) / 0.2));
 }
+
 void main() {
-float px = 1.0 / uRadius;
-vec2 p = (gl_FragCoord.xy - uCenter) * px;
-float r = length(p);
-vec3 rd = vec3(0.0, 0.0, -1.0);
-float x = max(r - 1.0, 0.0);
-float haloAmount = (0.11 * exp(-x / 0.006) + 0.03 * exp(-x / 0.02)) * uGlow;
-vec3 halo = vec3(0.92, 0.95, 1.0) * haloAmount;
-vec3 col = uBg;
-float cov = 1.0 - smoothstep(1.0 - px, 1.0 + px, r);
-if (cov > 0.0) {
-float rr = min(r, 0.99999);
-vec3 P0 = vec3(p, sqrt(1.0 - rr * rr));
-vec3 N0 = P0;
-float Fo = fres(N0.z);
-vec3 refl = env(reflect(rd, N0), 0.0, 1.0, 1.0, 1.0) * Fo * uGloss;
-float frontSide = dot(uSeamN, P0) - uSeamD;
-float fm = smoothstep(0.012, -0.012, frontSide) * min(uFrost, 1.0);
-float thick = max(uFrost - 1.0, 0.0);
-vec3 r1 = refract(rd, N0, 1.0 / IOR);
-vec2 hi = sphereHit(P0, r1, vec3(0.0), uRi);
-vec3 Pi = P0 + r1 * hi.x;
-vec3 Ni = Pi / uRi;
-vec3 r2 = refract(r1, Ni, IOR);
-vec3 inner;
-float ballZ = -9.0;
-float tir = 1.0 - step(0.0, hi.x) * step(1e-4, dot(r2, r2));
-if (tir < 0.5) {
-vec2 hb = sphereHit(Pi, r2, uBallC, uBallR);
-if (hb.x > 0.0) {
-vec3 Pb = Pi + r2 * hb.x;
-ballZ = Pb.z;
-inner = shadeBall(Pb, r2, px);
-} else {
-vec2 hw = sphereHit(Pi, r2, vec3(0.0), uRi);
-inner = backWall(Pi + r2 * hw.y, r2, px);
-}
-inner *= vec3(0.96, 0.975, 0.985);
-if (fm > 0.0) {
-vec3 oc = uBallC - Pi;
-float tc = max(dot(oc, r2), 0.0);
-float dist = length(oc - r2 * tc);
-float bc = smoothstep(uBallR + 0.24, uBallR - 0.22, dist);
-vec3 behind = mix(inner * 0.35, uBall * 0.60, bc);
-float milk = pow(smoothstep(0.80 + 0.2 * thick, 0.22, N0.z), 1.8 - 1.0 * thick);
-float sharp = smoothstep(0.75, 0.95, N0.z) * (1.0 - thick);
-behind = mix(behind, inner, sharp * 0.3);
-float scatter = (0.55 + frostLight(P0, 0.85)) * (0.02 + 0.98 * milk);
-vec3 frosted = behind * (1.0 - milk * 0.8) + vec3(0.88, 0.90, 0.97) * scatter;
-inner = mix(inner, frosted, fm);
-}
-} else {
-vec3 rt = reflect(r1, normalize(Pi));
-if (hi.x <= 0.0) rt = r1;
-vec2 ho = sphereHit(P0 + r1 * max(hi.x, 0.0), rt, vec3(0.0), 1.0);
-vec3 P2 = P0 + r1 * max(hi.x, 0.0) + rt * ho.y;
-vec3 r3 = refract(rt, -normalize(P2), IOR);
-if (dot(r3, r3) < 1e-4) r3 = rt;
-float b = (r - uRi) / (1.0 - uRi);
-vec3 clearRim = uBg * 0.6 + env(r3, 0.03, 0.05, 1.0, 1.0) * 0.20 + vec3(0.040, 0.042, 0.052) * (0.8 + 0.6 * b);
-clearRim += vec3(0.9, 0.93, 1.0) * 0.6 * exp(-pow(b / 0.12, 2.0)) * smoothstep(-0.1, 0.8, p.y);
-inner = clearRim;
-if (fm > 0.0) {
-vec3 frostRim = vec3(0.88, 0.90, 0.97) * (0.55 + frostLight(P0, 0.85)) * 1.15;
-inner = mix(clearRim, frostRim, fm);
-}
-}
-col = inner * (1.0 - Fo) + refl;
-vec4 sb = seamBand(p, px);
-if (sb.x > 0.0 && sb.z > ballZ) {
-float hidden = sb.z < 0.0 ? fm * 0.85 : 0.0;
-float a = sb.x * (1.0 - hidden);
-vec3 edge = vec3(0.95, 0.97, 1.0) * 1.6;
-vec3 c2 = col * 0.62 + vec3(0.12, 0.125, 0.15) * (0.6 + 0.6 * min(uFrost, 1.0));
-c2 = mix(c2, c2 * 0.35, sb.w * 0.8);
-c2 = mix(c2, edge, sb.y);
-col = mix(col, c2, a);
-}
-}
-col = mix(uBg + halo, col, cov);
-col = vec3(tone(col.r), tone(col.g), tone(col.b));
-col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / 2.2));
-vec2 gp = floor(gl_FragCoord.xy / max(uDpr, 1.0));
-col += (hash13(vec3(gp, uTime)) - 0.5) * (4.0 / 255.0) * uGrain;
-float alpha = clamp(max(cov, haloAmount), 0.0, 1.0);
-gl_FragColor = vec4(col * alpha, alpha);
+    float px = 1.0 / uRadius;
+    vec2 p = (gl_FragCoord.xy - uCenter) * px;
+    float r = length(p);
+    vec3 rd = vec3(0.0, 0.0, -1.0);
+
+    float x = max(r - 1.0, 0.0);
+    float haloAmount = (0.11 * exp(-x / 0.006) + 0.03 * exp(-x / 0.02)) * uGlow;
+    vec3 halo = vec3(0.92, 0.95, 1.0) * haloAmount;
+
+    vec3 col = uBg;
+    float cov = 1.0 - smoothstep(1.0 - px, 1.0 + px, r);
+    if (cov > 0.0) {
+        float rr = min(r, 0.99999);
+        vec3 P0 = vec3(p, sqrt(1.0 - rr * rr));
+        vec3 N0 = P0;
+        float Fo = fres(N0.z);
+        vec3 refl = env(reflect(rd, N0), 0.0, 1.0, 1.0, 1.0) * Fo * uGloss;
+        float frontSide = dot(uSeamN, P0) - uSeamD;
+        float fm = smoothstep(0.012, -0.012, frontSide) * min(uFrost, 1.0);
+        float thick = max(uFrost - 1.0, 0.0);
+
+        vec3 r1 = refract(rd, N0, 1.0 / IOR);
+        vec2 hi = sphereHit(P0, r1, vec3(0.0), uRi);
+        vec3 Pi = P0 + r1 * hi.x;
+        vec3 Ni = Pi / uRi;
+        vec3 r2 = refract(r1, Ni, IOR);
+        vec3 inner;
+        float ballZ = -9.0;
+        float tir = 1.0 - step(0.0, hi.x) * step(1e-4, dot(r2, r2));
+
+        if (tir < 0.5) {
+            vec2 hb = sphereHit(Pi, r2, uBallC, uBallR);
+            if (hb.x > 0.0) {
+                vec3 Pb = Pi + r2 * hb.x;
+                ballZ = Pb.z;
+                inner = shadeBall(Pb, r2, px);
+            } else {
+                vec2 hw = sphereHit(Pi, r2, vec3(0.0), uRi);
+                inner = backWall(Pi + r2 * hw.y, r2, px);
+            }
+            inner *= vec3(0.96, 0.975, 0.985);
+
+            if (fm > 0.0) {
+                vec3 oc = uBallC - Pi;
+                float tc = max(dot(oc, r2), 0.0);
+                float dist = length(oc - r2 * tc);
+                float bc = smoothstep(uBallR + 0.24, uBallR - 0.22, dist);
+                vec3 behind = mix(inner * 0.35, uBall * 0.60, bc);
+                float milk = pow(smoothstep(0.80 + 0.2 * thick, 0.22, N0.z), 1.8 - 1.0 * thick);
+                float sharp = smoothstep(0.75, 0.95, N0.z) * (1.0 - thick);
+                behind = mix(behind, inner, sharp * 0.3);
+                float scatter = (0.55 + frostLight(P0, 0.85)) * (0.02 + 0.98 * milk);
+                vec3 frosted = behind * (1.0 - milk * 0.8) + vec3(0.88, 0.90, 0.97) * scatter;
+                inner = mix(inner, frosted, fm);
+            }
+        } else {
+            vec3 rt = reflect(r1, normalize(Pi));
+            if (hi.x <= 0.0) rt = r1;
+            vec2 ho = sphereHit(P0 + r1 * max(hi.x, 0.0), rt, vec3(0.0), 1.0);
+            vec3 P2 = P0 + r1 * max(hi.x, 0.0) + rt * ho.y;
+            vec3 r3 = refract(rt, -normalize(P2), IOR);
+            if (dot(r3, r3) < 1e-4) r3 = rt;
+            float b = (r - uRi) / (1.0 - uRi);
+            vec3 clearRim = uBg * 0.6 + env(r3, 0.03, 0.05, 1.0, 1.0) * 0.20 + vec3(0.040, 0.042, 0.052) * (0.8 + 0.6 * b);
+            clearRim += vec3(0.9, 0.93, 1.0) * 0.6 * exp(-pow(b / 0.12, 2.0)) * smoothstep(-0.1, 0.8, p.y);
+            inner = clearRim;
+            if (fm > 0.0) {
+                vec3 frostRim = vec3(0.88, 0.90, 0.97) * (0.55 + frostLight(P0, 0.85)) * 1.15;
+                inner = mix(clearRim, frostRim, fm);
+            }
+        }
+
+        col = inner * (1.0 - Fo) + refl;
+
+        vec4 sb = seamBand(p, px);
+        if (sb.x > 0.0 && sb.z > ballZ) {
+            float hidden = sb.z < 0.0 ? fm * 0.85 : 0.0;
+            float a = sb.x * (1.0 - hidden);
+            vec3 edge = vec3(0.95, 0.97, 1.0) * 1.6;
+            vec3 c2 = col * 0.62 + vec3(0.12, 0.125, 0.15) * (0.6 + 0.6 * min(uFrost, 1.0));
+            c2 = mix(c2, c2 * 0.35, sb.w * 0.8);
+            c2 = mix(c2, edge, sb.y);
+            col = mix(col, c2, a);
+        }
+    }
+
+    col = mix(uBg + halo, col, cov);
+
+    col = vec3(tone(col.r), tone(col.g), tone(col.b));
+    col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / 2.2));
+    vec2 gp = floor(gl_FragCoord.xy / max(uDpr, 1.0));
+    col += (hash13(vec3(gp, uTime)) - 0.5) * (4.0 / 255.0) * uGrain;
+    float alpha = clamp(max(cov, haloAmount), 0.0, 1.0);
+    gl_FragColor = vec4(col * alpha, alpha);
 }
 `
+
 /* ------------------------------------------------------------- helpers */
+
 let parseCtx: CanvasRenderingContext2D | null | undefined
-type RGB = { r: number; g: number; b: number }
-/** CSS colour string -> normalised sRGB object. */
-function toRGB(css: string): RGB {
-if (!css) return { r: 0, g: 0, b: 0 }
-const s = css.trim()
-const hex = /^#([0-9a-f]{3,8})$/i.exec(s)
-if (hex) {
-let h = hex.at(1) || ""
-if (h.length === 3 || h.length === 4) {
-h = h
-.split("")
-.map((c) => c + c)
-.join("")
+
+/** CSS colour string -> normalised sRGB triple. */
+function toRGB(css: string): [number, number, number] {
+    if (!css) return [0, 0, 0]
+    const s = css.trim()
+    const hex = /^#([0-9a-f]{3,8})$/i.exec(s)
+    if (hex) {
+        let h = hex[1]
+        if (h.length === 3 || h.length === 4) {
+            h = h
+                .split("")
+                .map((c) => c + c)
+                .join("")
+        }
+        const n = parseInt(h.slice(0, 6), 16)
+        return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]
+    }
+    const fn = /^rgba?\(([^)]+)\)$/i.exec(s)
+    if (fn) {
+        const v = fn[1]
+            .split(/[\s,/]+/)
+            .filter(Boolean)
+            .slice(0, 3)
+            .map((x) => (x.indexOf("%") >= 0 ? parseFloat(x) * 2.55 : parseFloat(x)))
+        return [(v[0] || 0) / 255, (v[1] || 0) / 255, (v[2] || 0) / 255]
+    }
+    if (typeof document !== "undefined") {
+        if (parseCtx === undefined) parseCtx = document.createElement("canvas").getContext("2d")
+        if (parseCtx) {
+            parseCtx.fillStyle = "#000000"
+            parseCtx.fillStyle = s
+            const out = parseCtx.fillStyle
+            if (typeof out === "string" && out.charAt(0) === "#" && out !== s) return toRGB(out)
+        }
+    }
+    return [0, 0, 0]
 }
-const n = parseInt(h.slice(0, 6), 16)
-return {
-r: ((n >> 16) & 255) / 255,
-g: ((n >> 8) & 255) / 255,
-b: (n & 255) / 255,
-}
-}
-const fn = /^rgba?\(([^)]+)\)$/i.exec(s)
-if (fn) {
-const inner = fn.at(1) || ""
-const v = inner
-.split(/[\s,/]+/)
-.filter(Boolean)
-.slice(0, 3)
-.map((x) => (x.indexOf("%") >= 0 ? parseFloat(x) * 2.55 : parseFloat(x)))
-return {
-r: (v.at(0) || 0) / 255,
-g: (v.at(1) || 0) / 255,
-b: (v.at(2) || 0) / 255,
-}
-}
-if (typeof document !== "undefined") {
-if (parseCtx === undefined) parseCtx = document.createElement("canvas").getContext("2d")
-if (parseCtx) {
-parseCtx.fillStyle = "#000000"
-parseCtx.fillStyle = s
-const out = parseCtx.fillStyle
-if (typeof out === "string" && out.charAt(0) === "#" && out !== s) return toRGB(out)
-}
-}
-return { r: 0, g: 0, b: 0 }
-}
+
 /** sRGB -> linear, the shader lights in linear space */
-function lin(css: string): RGB {
-const c = toRGB(css)
-return {
-r: Math.pow(c.r, 2.2),
-g: Math.pow(c.g, 2.2),
-b: Math.pow(c.b, 2.2),
+function lin(css: string): [number, number, number] {
+    const c = toRGB(css)
+    return [Math.pow(c[0], 2.2), Math.pow(c[1], 2.2), Math.pow(c[2], 2.2)]
 }
-}
+
 function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLShader | null {
-const sh = gl.createShader(type)
-if (!sh) return null
-gl.shaderSource(sh, src)
-gl.compileShader(sh)
-if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-gl.deleteShader(sh)
-return null
+    const sh = gl.createShader(type)
+    if (!sh) return null
+    gl.shaderSource(sh, src)
+    gl.compileShader(sh)
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+        gl.deleteShader(sh)
+        return null
+    }
+    return sh
 }
-return sh
-}
-type V3 = { x: number; y: number; z: number }
+
+type V3 = [number, number, number]
+
 function rotX(v: V3, a: number): V3 {
-const c = Math.cos(a), s = Math.sin(a)
-return { x: v.x, y: c * v.y - s * v.z, z: s * v.y + c * v.z }
+    const c = Math.cos(a), s = Math.sin(a)
+    return [v[0], c * v[1] - s * v[2], s * v[1] + c * v[2]]
 }
+
 function rotY(v: V3, a: number): V3 {
-const c = Math.cos(a), s = Math.sin(a)
-return { x: c * v.x + s * v.z, y: v.y, z: -s * v.x + c * v.z }
+    const c = Math.cos(a), s = Math.sin(a)
+    return [c * v[0] + s * v[2], v[1], -s * v[0] + c * v[2]]
 }
+
 const DEG = Math.PI / 180
 const FIT = 0.709
 const DPR_CAP = 2
 const CAPSULE_PX = 1600
+
 /* ----------------------------------------------------------- component */
+
 /**
-• @framerSupportedLayoutWidth any
-• @framerSupportedLayoutHeight any
-• @framerIntrinsicWidth 1080
-• @framerIntrinsicHeight 1080
-*/
+ * @framerSupportedLayoutWidth any
+ * @framerSupportedLayoutHeight any
+ * @framerIntrinsicWidth 1080
+ * @framerIntrinsicHeight 1080
+ */
 export default function MarbleSprite({
-face = DEFAULTS.face as MarbleSpriteProps["face"],
-background = DEFAULTS.background,
-scale = DEFAULTS.scale,
-spriteColor = DEFAULTS.spriteColor,
-frost = DEFAULTS.frost,
-follow = DEFAULTS.follow as MarbleSpriteProps["follow"],
-reach = DEFAULTS.reach,
-lean = DEFAULTS.lean,
-blink = DEFAULTS.blink,
-float = DEFAULTS.float,
-advanced,
-style,
+    face = DEFAULTS.face as MarbleSpriteProps["face"],
+    background = DEFAULTS.background,
+    scale = DEFAULTS.scale,
+    spriteColor = DEFAULTS.spriteColor,
+    frost = DEFAULTS.frost,
+    follow = DEFAULTS.follow as MarbleSpriteProps["follow"],
+    reach = DEFAULTS.reach,
+    lean = DEFAULTS.lean,
+    blink = DEFAULTS.blink,
+    float = DEFAULTS.float,
+    advanced,
+    style,
 }: MarbleSpriteProps) {
-const hostRef = useRef(null)
-const canvasRef = useRef(null)
-const [failed, setFailed] = useState(false)const props = {
-face,
-background,
-scale,
-spriteColor,
-frost,
-follow,
-reach,
-lean,
-blink,
-float,
-adv: { ...DEFAULT_ADVANCED, ...advanced },
-}
-const propsRef = useRef(props)
-propsRef.current = propsuseEffect(() => {
-const host = hostRef.current
-const canvas = canvasRef.current
-if (!host || !canvas) returnlet disposed = false
-let raf = 0
-let gl: WebGLRenderingContext | null = null
-let program: WebGLProgram | null = null
-let buffer: WebGLBuffer | null = null
-let uni: Record<string, WebGLUniformLocation | null> = {}
-let onScreen = true
-let pageVisible = true
-let reduceMotion = falselet cssW = Math.max(1, host.clientWidth)
-let cssH = Math.max(1, host.clientHeight)
-let dpr = 1
-let quality = 1const pointer = { x: 0, y: 0, u: 0.5, v: 0.5, active: false, down: false, moved: false, lastMove: -1e9 }
-let rectDirty = truelet yaw = DEFAULT_ADVANCED.restX * DEG
-let pitch = DEFAULT_ADVANCED.restY * DEG
-let leanX = 0
-let leanY = 0
-let open = 1
-let squint = 0
-let nextBlink = 1.6
-let blinkT = -1
-let doubleBlink = false
-let clock = 0
-let lastNow = 0let lastDraw = -1e9
-let drawnProps: unknown = null
-let forceDraw = true
-let frameMs = 16.7
-let postDrawMs = 16.7
-let slowFor = 0
-let fastFor = 0
-let justDrew = falseconst rot = new Float32Array(9)
-const colorCache = new Map<string, RGB>()
-const linC = (css: string) => {
-let c = colorCache.get(css)
-if (!c) {
-if (colorCache.size > 32) colorCache.clear()
-c = lin(css)
-colorCache.set(css, c)
-}
-return c
-}/* ------------------------------------------------------ setup */function init(): boolean {
-const ctx = canvas!.getContext("webgl", {
-alpha: true,
-premultipliedAlpha: true,
-antialias: false,
-depth: false,
-stencil: false,
-powerPreference: "low-power",
-}) as WebGLRenderingContext | null
-if (!ctx) return false
-gl = ctx
-const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
-const prelude = "precision " + (hp && hp.precision > 0 ? "highp" : "mediump") + " float;\n"
-const vs = compile(gl, gl.VERTEX_SHADER, VERT)
-const fs = compile(gl, gl.FRAGMENT_SHADER, prelude + FRAG)
-if (!vs || !fs) return false
-const prog = gl.createProgram()
-if (!prog) return false
-gl.attachShader(prog, vs)
-gl.attachShader(prog, fs)
-gl.bindAttribLocation(prog, 0, "aPos")
-gl.linkProgram(prog)
-gl.deleteShader(vs)
-gl.deleteShader(fs)
-if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false
-program = prog
-gl.useProgram(prog)buffer = gl.createBuffer()
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
-gl.enableVertexAttribArray(0)
-gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)uni = {}
-for (const n of [
-"uCenter", "uRadius", "uSeamN", "uSeamD", "uRi", "uLip", "uBallC", "uBallR", "uRot",
-"uEye", "uFace", "uBall", "uEyeCol", "uBg", "uFrost", "uGloss", "uGlow", "uGrain",
-"uLight", "uDpr", "uTime",
-])
-uni[n] = gl.getUniformLocation(prog, n)
-forceDraw = true
-return true
-}function applySize(): boolean {
-if (!gl) return false
-const p = propsRef.current
-const device = Math.min(window.devicePixelRatio || 1, DPR_CAP)
-const diam = FIT * (Math.max(1, p.scale) / 100) * Math.min(cssW, cssH)
-const budget = diam > 0 ? CAPSULE_PX / diam : device
-dpr = Math.max(0.5, Math.min(device, budget) * quality)
-const w = Math.max(1, Math.round(cssW * dpr))
-const h = Math.max(1, Math.round(cssH * dpr))
-if (canvas!.width === w && canvas!.height === h) return false
-canvas!.width = w
-canvas!.height = h
-gl.viewport(0, 0, w, h)
-return true
-}/* ------------------------------------------------------ state */function step(dt: number, now: number): "active" | "idle" | "still" {
-const p = propsRef.current
-const a = p.adv
-const still = reduceMotion
-clock += dtconst radius = FIT * (Math.max(1, p.scale) / 100) * Math.min(cssW, cssH) * 0.5
-const fl = still ? 0 : p.float / 10
-const cx = cssW * 0.5 + Math.sin(clock * 0.53) * fl * 0.035 * radius
-const cy = cssH * 0.5 + Math.sin(clock * 0.8) * fl * 0.07 * radiusif (pointer.active && (pointer.moved || rectDirty)) {
-const r = host!.getBoundingClientRect()
-if (r.width > 0 && r.height > 0) {
-pointer.u = (pointer.x - r.left) / r.width
-pointer.v = (pointer.y - r.top) / r.height
-}
-pointer.moved = false
-rectDirty = false
-}let tx = a.restX * DEG
-let ty = a.restY * DEG
-let lx = 0
-let ly = 0
-const following = p.follow !== "off" && pointer.active
-if (following) {
-const dx = (pointer.u * cssW - cx) / radius
-const dy = -(pointer.v * cssH - cy) / radius
-if (p.reach > 0) {
-const D = 16 / p.reach
-const lim = a.maxTurn * DEG
-tx = Math.max(-lim, Math.min(lim, Math.atan2(dx, D)))
-ty = Math.max(-lim, Math.min(lim, Math.atan2(dy, Math.hypot(dx, D))))
-}
-const k = (p.lean / 10) * 22 * DEG
-lx = Math.max(-1, Math.min(1, dx / 2.5)) * k
-ly = Math.max(-1, Math.min(1, dy / 2.5)) * k
-} else if (!still) {
-tx += Math.sin(clock * 0.37) * 6 * DEG * fl + Math.sin(clock * 0.91) * 2 * DEG * fl
-ty += Math.sin(clock * 0.29 + 1.3) * 4 * DEG * fl
-}
-if (!still) {
-lx += Math.sin(clock * 0.53) * 3 * DEG * fl
-ly += Math.sin(clock * 0.41 + 0.7) * 2 * DEG * fl
-}
-const y0 = yaw, p0 = pitch, lx0 = leanX, ly0 = leanY
-const k = 1 - Math.exp(-dt / Math.max(0.005, a.followMs / 1000))
-yaw += (tx - yaw) * k
-pitch += (ty - pitch) * k
-const kl = 1 - Math.exp(-dt / 0.35)
-leanX += (lx - leanX) * kl
-leanY += (ly - leanY) * klconst bd = Math.max(0.04, a.blinkMs / 1000)
-if (!still && p.blink > 0) {
-nextBlink -= dt
-if (nextBlink <= 0 && blinkT < 0) {
-blinkT = 0
-const gap = (11 - p.blink) * (0.5 + Math.random())
-if (doubleBlink) doubleBlink = false
-else doubleBlink = Math.random() < 0.25
-nextBlink = doubleBlink ? bd + 0.12 : gap
-}
-}
-let o = 1
-if (blinkT >= 0) {
-blinkT += dt
-const u = blinkT / bd
-o = u < 0.4 ? 1 - u / 0.4 : Math.min(1, (u - 0.4) / 0.6)
-if (u >= 1) blinkT = -1
-}
-const sq = pointer.down ? 1 : 0
-squint += (sq - squint) * (1 - Math.exp(-dt / 0.06))
-open = Math.min(o, 1 - squint * 0.8)const turn = Math.abs(yaw - y0) + Math.abs(pitch - p0) + Math.abs(leanX - lx0) + Math.abs(leanY - ly0)
-const speed = (turn / Math.max(dt, 1e-3)) * radius
-if (speed > 12 || blinkT >= 0 || Math.abs(sq - squint) > 1e-3 || now - pointer.lastMove < 300)
-return "active"
-const rest = (Math.abs(tx - yaw) + Math.abs(ty - pitch) + Math.abs(lx - leanX) + Math.abs(ly - leanY)) * radius
-return fl > 0 || rest > 0.25 ? "idle" : "still"
-}/* ------------------------------------------------------ frame */function draw() {
-if (!gl || !program) return
-const p = propsRef.current
-const a = p.adv
-const still = reduceMotionconst W = canvas!.width
-const H = canvas!.height
-const radius = FIT * (Math.max(1, p.scale) / 100) * Math.min(W, H) * 0.5
-const fl = still ? 0 : p.float / 10
-const cx = W * 0.5 + Math.sin(clock * 0.53) * fl * 0.035 * radius
-const cy = H * 0.5 + Math.sin(clock * 0.8) * fl * 0.07 * radius
-const cp = Math.cos(pitch)
-const fx = Math.sin(yaw) * cp, fy = Math.sin(pitch), fz = Math.cos(yaw) * cp
-const rl = Math.hypot(fz, fx) || 1
-const rx = fz / rl, rz = -fx / rl
-const ux = fy * rz, uy = fz * rx - fx * rz, uz = -fy * rx
-const cr = Math.cos(a.roll * DEG), sr = Math.sin(a.roll * DEG)
-rot.set([
-rx * cr + ux * sr,
-uy * sr,
-rz * cr + uz * sr,
-ux * cr - rx * sr,
-uy * cr,
-uz * cr - rz * sr,
-fx,
-fy,
-fz,
-])
-const sa = a.seamAngle * DEG
-const st = a.seamTilt * DEG
-let n: V3 = {
-x: Math.cos(sa) * Math.sin(st),
-y: Math.sin(sa) * Math.sin(st),
-z: Math.cos(st),
-}
-n = rotY(n, leanX)
-n = rotX(n, -leanY)
-const ri = 1 - Math.max(0.01, Math.min(0.3, a.shell / 100))
-const lip = Math.max(0.3, ri - Math.max(0, a.lip / 100))
-const br = Math.max(0.1, Math.min(ri - 0.02, a.spriteSize / 100))
-const by = still ? 0 : Math.sin(clock * 0.8 - 0.9) * fl * 0.045
-gl.uniform2f(uni.uCenter, cx, H - cy)
-gl.uniform1f(uni.uRadius, radius)
-gl.uniform3f(uni.uSeamN, n.x, n.y, n.z)
-gl.uniform1f(uni.uSeamD, a.seamOffset / 100)
-gl.uniform1f(uni.uRi, ri)
-gl.uniform1f(uni.uLip, lip)
-gl.uniform3f(uni.uBallC, 0, by, 0)
-gl.uniform1f(uni.uBallR, br)
-gl.uniformMatrix3fv(uni.uRot, false, rot)
-gl.uniform4f(
-uni.uEye,
-(a.eyeGap / 2) * DEG,
-Math.max(0, (a.eyeLength - a.eyeWidth) / 2) * DEG,
-(a.eyeWidth / 2) * DEG,
-open
-)
-gl.uniform1f(uni.uFace, p.face === "eyes" ? 1 : 0)
-const bc = linC(p.spriteColor)
-const ec = linC(a.eyeColor)
-const bg = linC(p.background)
-gl.uniform3f(uni.uBall, bc.r, bc.g, bc.b)
-gl.uniform3f(uni.uEyeCol, ec.r, ec.g, ec.b)
-gl.uniform3f(uni.uBg, bg.r, bg.g, bg.b)
-gl.uniform1f(uni.uFrost, Math.max(0, Math.min(2, p.frost / 5)))
-gl.uniform1f(uni.uGloss, a.gloss / 100)
-gl.uniform1f(uni.uGlow, a.glow / 100)
-gl.uniform1f(uni.uGrain, a.grain / 100)
-gl.uniform2f(uni.uLight, Math.cos(a.lightAngle * DEG), Math.sin(a.lightAngle * DEG))
-gl.uniform1f(uni.uDpr, Math.max(dpr, 1))
-gl.uniform1f(uni.uTime, still ? 0 : clock % 100)
-gl.drawArrays(gl.TRIANGLES, 0, 3)
-}
-function adapt(ms: number) {
-postDrawMs += (ms - postDrawMs) * 0.1
-if (postDrawMs > 26) {
-slowFor += ms
-fastFor = 0
-} else if (postDrawMs < 19) {
-fastFor += ms
-slowFor = 0
-}
-if (slowFor > 600 && quality > 0.6) {
-quality = Math.max(0.6, quality * 0.85)
-slowFor = 0
-postDrawMs = 16.7
-} else if (fastFor > 4000 && quality < 1) {
-quality = Math.min(1, quality / 0.85)
-fastFor = 0
-}
-}
-function loop(now: number) {
-if (disposed) return
-raf = requestAnimationFrame(loop)
-if (!onScreen || !pageVisible) {
-lastNow = 0
-return
-}
-const ms = lastNow ? now - lastNow : 0
-lastNow = now
-if (ms > 0) {
-frameMs += (Math.min(ms, 100) - frameMs) * 0.1
-if (justDrew) adapt(ms)
-}
-justDrew = false
-const mode = step(Math.min(ms / 1000, 0.1), now)
-const p = propsRef.current
-const resized = applySize()
-const changed = forceDraw || resized || p !== drawnProps
-const interval = changed ? 1000 / 60 : mode === "active" ? 1000 / 60 : mode === "idle" ? 1000 / 30 : Infinity
-if (now - lastDraw < interval - frameMs * 0.5) return
-lastDraw = now
-drawnProps = p
-forceDraw = false
-draw()
-justDrew = true
-}
-if (!init()) {
-setFailed(true)
-return
-}
-/* --------------------------------------------------- pointer */
-const record = (e: PointerEvent) => {
-pointer.x = e.clientX
-pointer.y = e.clientY
-pointer.moved = true
-pointer.active = true
-pointer.lastMove = performance.now()
-}
-const onRootMove = (e: PointerEvent) => {
-if (propsRef.current.follow === "frame") record(e)
-}
-const onRootLeave = () => {
-if (propsRef.current.follow === "frame") {
-pointer.active = false
-pointer.lastMove = performance.now()
-}
-pointer.down = false
-}
-const onDocMove = (e: PointerEvent) => {
-if (propsRef.current.follow === "page") record(e)
-}
-const onDocOut = (e: PointerEvent) => {
-if (!e.relatedTarget && propsRef.current.follow === "page") {
-pointer.active = false
-pointer.lastMove = performance.now()
-}
-}
-const onDown = (e: PointerEvent) => {
-record(e)
-pointer.down = true
-}
-const onUp = (e: PointerEvent) => {
-pointer.down = false
-pointer.lastMove = performance.now()
-if (e.pointerType === "touch") pointer.active = false
-}
-const onScroll = () => {
-rectDirty = true
-}
-const passive: AddEventListenerOptions = { passive: true }
-const capturePassive: AddEventListenerOptions = { passive: true, capture: true }
-host.addEventListener("pointermove", onRootMove, passive)
-host.addEventListener("pointerleave", onRootLeave, passive)
-host.addEventListener("pointerdown", onDown, passive)
-document.addEventListener("pointermove", onDocMove, capturePassive)
-document.addEventListener("pointerout", onDocOut, passive)
-document.addEventListener("pointerup", onUp, capturePassive)
-document.addEventListener("pointercancel", onUp, capturePassive)
-window.addEventListener("scroll", onScroll, capturePassive)
-/* --------------------------------------------------- lifecycle */
-const ro =
-typeof ResizeObserver !== "undefined"
-? new ResizeObserver((entries) => {
-const entry = entries.at(-1)
-if (!entry) return
-const r = entry.contentRect
-cssW = Math.max(1, r.width)
-cssH = Math.max(1, r.height)
-rectDirty = true
-forceDraw = true
-})
-: null
-if (ro) ro.observe(host)
-const io =
-typeof IntersectionObserver !== "undefined"
-? new IntersectionObserver(
-(en) => {
-onScreen = en.some((e) => e.isIntersecting)
-forceDraw = true
-},
-{ rootMargin: "128px" }
-)
-: null
-if (io) io.observe(host)
-const onVisibility = () => {
-pageVisible = document.visibilityState !== "hidden"
-forceDraw = true
-}
-document.addEventListener("visibilitychange", onVisibility)
-const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-reduceMotion = mq.matches
-const onMQ = (e: MediaQueryListEvent) => {
-reduceMotion = e.matches
-forceDraw = true
-}
-mq.addEventListener("change", onMQ)
-const onLost = (e: Event) => {
-e.preventDefault()
-cancelAnimationFrame(raf)
-}
-const onRestored = () => {
-if (disposed) return
-lastNow = 0
-if (init()) raf = requestAnimationFrame(loop)
-else setFailed(true)
-}
-canvas.addEventListener("webglcontextlost", onLost)
-canvas.addEventListener("webglcontextrestored", onRestored)
-raf = requestAnimationFrame(loop)
-return () => {
-disposed = true
-cancelAnimationFrame(raf)
-host.removeEventListener("pointermove", onRootMove)
-host.removeEventListener("pointerleave", onRootLeave)
-host.removeEventListener("pointerdown", onDown)
-document.removeEventListener("pointermove", onDocMove, { capture: true })
-document.removeEventListener("pointerout", onDocOut)
-document.removeEventListener("pointerup", onUp, { capture: true })
-document.removeEventListener("pointercancel", onUp, { capture: true })
-window.removeEventListener("scroll", onScroll, { capture: true })
-if (ro) ro.disconnect()
-if (io) io.disconnect()
-document.removeEventListener("visibilitychange", onVisibility)
-mq.removeEventListener("change", onMQ)
-canvas.removeEventListener("webglcontextlost", onLost)
-canvas.removeEventListener("webglcontextrestored", onRestored)
-if (gl) {
-if (buffer) gl.deleteBuffer(buffer)
-if (program) gl.deleteProgram(program)
-const lose = gl.getExtension("WEBGL_lose_context")
-if (lose) lose.loseContext()
-}
-}
-}, [])
-const fallback: CSSProperties = failed
-? {
-width: FIT * scale + "%",
-aspectRatio: "1",
-maxHeight: FIT * scale + "%",
-margin: "auto",
-borderRadius: "50%",
-boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.85), 0 0 12px rgba(255,255,255,0.25)",
-background:
-"radial-gradient(circle at 50% 50%, " +
-spriteColor +
-" 0 58%, transparent 59.5%), linear-gradient(35deg, #e8ecf6 0 38%, rgba(255,255,255,0.06) 52%)",
-}
-: { display: "none" }
-return (
-<div
-ref={hostRef}
-style={{
-position: "relative",
-width: "100%",
-height: "100%",
-overflow: "hidden",
-display: "flex",
-background: "transparent",
-...style,
-}}
->
-<canvas
-ref={canvasRef}
-style={{
-position: "absolute",
-inset: 0,
-width: "100%",
-height: "100%",
-display: failed ? "none" : "block",
-}}
-/>
+    const hostRef = useRef<HTMLDivElement>(null)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [failed, setFailed] = useState(false)
 
+    const props = {
+        face,
+        background,
+        scale,
+        spriteColor,
+        frost,
+        follow,
+        reach,
+        lean,
+        blink,
+        float,
+        adv: { ...DEFAULT_ADVANCED, ...advanced },
+    }
+    const propsRef = useRef(props)
+    propsRef.current = props
 
-)
+    useEffect(() => {
+        const host = hostRef.current
+        const canvas = canvasRef.current
+        if (!host || !canvas) return
+
+        let disposed = false
+        let raf = 0
+        let gl: WebGLRenderingContext | null = null
+        let program: WebGLProgram | null = null
+        let buffer: WebGLBuffer | null = null
+        let uni: Record<string, WebGLUniformLocation | null> = {}
+        let onScreen = true
+        let pageVisible = true
+        let reduceMotion = false
+
+        let cssW = Math.max(1, host.clientWidth)
+        let cssH = Math.max(1, host.clientHeight)
+        let dpr = 1
+        let quality = 1
+
+        const pointer = { x: 0, y: 0, u: 0.5, v: 0.5, active: false, down: false, moved: false, lastMove: -1e9 }
+        let rectDirty = true
+
+        let yaw = DEFAULT_ADVANCED.restX * DEG
+        let pitch = DEFAULT_ADVANCED.restY * DEG
+        let leanX = 0
+        let leanY = 0
+        let open = 1
+        let squint = 0
+        let nextBlink = 1.6
+        let blinkT = -1
+        let doubleBlink = false
+        let clock = 0
+        let lastNow = 0
+
+        let lastDraw = -1e9
+        let drawnProps: unknown = null
+        let forceDraw = true
+        let frameMs = 16.7
+        let postDrawMs = 16.7
+        let slowFor = 0
+        let fastFor = 0
+        let justDrew = false
+
+        const rot = new Float32Array(9)
+        const colorCache = new Map<string, [number, number, number]>()
+        const linC = (css: string) => {
+            let c = colorCache.get(css)
+            if (!c) {
+                if (colorCache.size > 32) colorCache.clear()
+                c = lin(css)
+                colorCache.set(css, c)
+            }
+            return c
+        }
+
+        /* ------------------------------------------------------ setup */
+
+        function init(): boolean {
+            const ctx = canvas!.getContext("webgl", {
+                alpha: true,
+                premultipliedAlpha: true,
+                antialias: false,
+                depth: false,
+                stencil: false,
+                powerPreference: "low-power",
+            }) as WebGLRenderingContext | null
+            if (!ctx) return false
+            gl = ctx
+            const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
+            const prelude = "precision " + (hp && hp.precision > 0 ? "highp" : "mediump") + " float;\n"
+            const vs = compile(gl, gl.VERTEX_SHADER, VERT)
+            const fs = compile(gl, gl.FRAGMENT_SHADER, prelude + FRAG)
+            if (!vs || !fs) return false
+            const prog = gl.createProgram()
+            if (!prog) return false
+            gl.attachShader(prog, vs)
+            gl.attachShader(prog, fs)
+            gl.bindAttribLocation(prog, 0, "aPos")
+            gl.linkProgram(prog)
+            gl.deleteShader(vs)
+            gl.deleteShader(fs)
+            if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false
+            program = prog
+            gl.useProgram(prog)
+
+            buffer = gl.createBuffer()
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
+            gl.enableVertexAttribArray(0)
+            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
+
+            uni = {}
+            for (const n of [
+                "uCenter", "uRadius", "uSeamN", "uSeamD", "uRi", "uLip", "uBallC", "uBallR", "uRot",
+                "uEye", "uFace", "uBall", "uEyeCol", "uBg", "uFrost", "uGloss", "uGlow", "uGrain",
+                "uLight", "uDpr", "uTime",
+            ])
+                uni[n] = gl.getUniformLocation(prog, n)
+            forceDraw = true
+            return true
+        }
+
+        function applySize(): boolean {
+            if (!gl) return false
+            const p = propsRef.current
+            const device = Math.min(window.devicePixelRatio || 1, DPR_CAP)
+            const diam = FIT * (Math.max(1, p.scale) / 100) * Math.min(cssW, cssH)
+            const budget = diam > 0 ? CAPSULE_PX / diam : device
+            dpr = Math.max(0.5, Math.min(device, budget) * quality)
+            const w = Math.max(1, Math.round(cssW * dpr))
+            const h = Math.max(1, Math.round(cssH * dpr))
+            if (canvas!.width === w && canvas!.height === h) return false
+            canvas!.width = w
+            canvas!.height = h
+            gl.viewport(0, 0, w, h)
+            return true
+        }
+
+        /* ------------------------------------------------------ state */
+
+        function step(dt: number, now: number): "active" | "idle" | "still" {
+            const p = propsRef.current
+            const a = p.adv
+            const still = reduceMotion
+            clock += dt
+
+            const radius = FIT * (Math.max(1, p.scale) / 100) * Math.min(cssW, cssH) * 0.5
+            const fl = still ? 0 : p.float / 10
+            const cx = cssW * 0.5 + Math.sin(clock * 0.53) * fl * 0.035 * radius
+            const cy = cssH * 0.5 + Math.sin(clock * 0.8) * fl * 0.07 * radius
+
+            if (pointer.active && (pointer.moved || rectDirty)) {
+                const r = host!.getBoundingClientRect()
+                if (r.width > 0 && r.height > 0) {
+                    pointer.u = (pointer.x - r.left) / r.width
+                    pointer.v = (pointer.y - r.top) / r.height
+                }
+                pointer.moved = false
+                rectDirty = false
+            }
+
+            let tx = a.restX * DEG
+            let ty = a.restY * DEG
+            let lx = 0
+            let ly = 0
+            const following = p.follow !== "off" && pointer.active
+            if (following) {
+                const dx = (pointer.u * cssW - cx) / radius
+                const dy = -(pointer.v * cssH - cy) / radius
+                if (p.reach > 0) {
+                    const D = 16 / p.reach
+                    const lim = a.maxTurn * DEG
+                    tx = Math.max(-lim, Math.min(lim, Math.atan2(dx, D)))
+                    ty = Math.max(-lim, Math.min(lim, Math.atan2(dy, Math.hypot(dx, D))))
+                }
+                const k = (p.lean / 10) * 22 * DEG
+                lx = Math.max(-1, Math.min(1, dx / 2.5)) * k
+                ly = Math.max(-1, Math.min(1, dy / 2.5)) * k
+            } else if (!still) {
+                tx += Math.sin(clock * 0.37) * 6 * DEG * fl + Math.sin(clock * 0.91) * 2 * DEG * fl
+                ty += Math.sin(clock * 0.29 + 1.3) * 4 * DEG * fl
+            }
+            if (!still) {
+                lx += Math.sin(clock * 0.53) * 3 * DEG * fl
+                ly += Math.sin(clock * 0.41 + 0.7) * 2 * DEG * fl
+            }
+            const y0 = yaw, p0 = pitch, lx0 = leanX, ly0 = leanY
+            const k = 1 - Math.exp(-dt / Math.max(0.005, a.followMs / 1000))
+            yaw += (tx - yaw) * k
+            pitch += (ty - pitch) * k
+            const kl = 1 - Math.exp(-dt / 0.35)
+            leanX += (lx - leanX) * kl
+            leanY += (ly - leanY) * kl
+
+            const bd = Math.max(0.04, a.blinkMs / 1000)
+            if (!still && p.blink > 0) {
+                nextBlink -= dt
+                if (nextBlink <= 0 && blinkT < 0) {
+                    blinkT = 0
+                    const gap = (11 - p.blink) * (0.5 + Math.random())
+                    if (doubleBlink) doubleBlink = false
+                    else doubleBlink = Math.random() < 0.25
+                    nextBlink = doubleBlink ? bd + 0.12 : gap
+                }
+            }
+            let o = 1
+            if (blinkT >= 0) {
+                blinkT += dt
+                const u = blinkT / bd
+                o = u < 0.4 ? 1 - u / 0.4 : Math.min(1, (u - 0.4) / 0.6)
+                if (u >= 1) blinkT = -1
+            }
+            const sq = pointer.down ? 1 : 0
+            squint += (sq - squint) * (1 - Math.exp(-dt / 0.06))
+            open = Math.min(o, 1 - squint * 0.8)
+
+            const turn = Math.abs(yaw - y0) + Math.abs(pitch - p0) + Math.abs(leanX - lx0) + Math.abs(leanY - ly0)
+            const speed = (turn / Math.max(dt, 1e-3)) * radius
+            if (speed > 12 || blinkT >= 0 || Math.abs(sq - squint) > 1e-3 || now - pointer.lastMove < 300)
+                return "active"
+            const rest = (Math.abs(tx - yaw) + Math.abs(ty - pitch) + Math.abs(lx - leanX) + Math.abs(ly - leanY)) * radius
+            return fl > 0 || rest > 0.25 ? "idle" : "still"
+        }
+
+        /* ------------------------------------------------------ frame */
+
+        function draw() {
+            if (!gl || !program) return
+            const p = propsRef.current
+            const a = p.adv
+            const still = reduceMotion
+
+            const W = canvas!.width
+            const H = canvas!.height
+            const radius = FIT * (Math.max(1, p.scale) / 100) * Math.min(W, H) * 0.5
+            const fl = still ? 0 : p.float / 10
+            const cx = W * 0.5 + Math.sin(clock * 0.53) * fl * 0.035 * radius
+            const cy = H * 0.5 + Math.sin(clock * 0.8) * fl * 0.07 * radius
+
+            const cp = Math.cos(pitch)
+            const fx = Math.sin(yaw) * cp, fy = Math.sin(pitch), fz = Math.cos(yaw) * cp
+            const rl = Math.hypot(fz, fx) || 1
+            const rx = fz / rl, rz = -fx / rl
+            const ux = fy * rz, uy = fz * rx - fx * rz, uz = -fy * rx
+            const cr = Math.cos(a.roll * DEG), sr = Math.sin(a.roll * DEG)
+            rot[0] = rx * cr + ux * sr
+            rot[1] = uy * sr
+            rot[2] = rz * cr + uz * sr
+            rot[3] = ux * cr - rx * sr
+            rot[4] = uy * cr
+            rot[5] = uz * cr - rz * sr
+            rot[6] = fx
+            rot[7] = fy
+            rot[8] = fz
+
+            const sa = a.seamAngle * DEG
+            const st = a.seamTilt * DEG
+            let n: V3 = [Math.cos(sa) * Math.sin(st), Math.sin(sa) * Math.sin(st), Math.cos(st)]
+            n = rotY(n, leanX)
+            n = rotX(n, -leanY)
+
+            const ri = 1 - Math.max(0.01, Math.min(0.3, a.shell / 100))
+            const lip = Math.max(0.3, ri - Math.max(0, a.lip / 100))
+            const br = Math.max(0.1, Math.min(ri - 0.02, a.spriteSize / 100))
+            const by = still ? 0 : Math.sin(clock * 0.8 - 0.9) * fl * 0.045
+
+            gl.uniform2f(uni.uCenter, cx, H - cy)
+            gl.uniform1f(uni.uRadius, radius)
+            gl.uniform3f(uni.uSeamN, n[0], n[1], n[2])
+            gl.uniform1f(uni.uSeamD, a.seamOffset / 100)
+            gl.uniform1f(uni.uRi, ri)
+            gl.uniform1f(uni.uLip, lip)
+            gl.uniform3f(uni.uBallC, 0, by, 0)
+            gl.uniform1f(uni.uBallR, br)
+            gl.uniformMatrix3fv(uni.uRot, false, rot)
+            gl.uniform4f(
+                uni.uEye,
+                (a.eyeGap / 2) * DEG,
+                Math.max(0, (a.eyeLength - a.eyeWidth) / 2) * DEG,
+                (a.eyeWidth / 2) * DEG,
+                open
+            )
+            gl.uniform1f(uni.uFace, p.face === "eyes" ? 1 : 0)
+            const bc = linC(p.spriteColor)
+            const ec = linC(a.eyeColor)
+            const bg = linC(p.background)
+            gl.uniform3f(uni.uBall, bc[0], bc[1], bc[2])
+            gl.uniform3f(uni.uEyeCol, ec[0], ec[1], ec[2])
+            gl.uniform3f(uni.uBg, bg[0], bg[1], bg[2])
+            gl.uniform1f(uni.uFrost, Math.max(0, Math.min(2, p.frost / 5)))
+            gl.uniform1f(uni.uGloss, a.gloss / 100)
+            gl.uniform1f(uni.uGlow, a.glow / 100)
+            gl.uniform1f(uni.uGrain, a.grain / 100)
+            gl.uniform2f(uni.uLight, Math.cos(a.lightAngle * DEG), Math.sin(a.lightAngle * DEG))
+            gl.uniform1f(uni.uDpr, Math.max(dpr, 1))
+            gl.uniform1f(uni.uTime, still ? 0 : clock % 100)
+
+            gl.drawArrays(gl.TRIANGLES, 0, 3)
+        }
+
+        function adapt(ms: number) {
+            postDrawMs += (ms - postDrawMs) * 0.1
+            if (postDrawMs > 26) {
+                slowFor += ms
+                fastFor = 0
+            } else if (postDrawMs < 19) {
+                fastFor += ms
+                slowFor = 0
+            }
+            if (slowFor > 600 && quality > 0.6) {
+                quality = Math.max(0.6, quality * 0.85)
+                slowFor = 0
+                postDrawMs = 16.7
+            } else if (fastFor > 4000 && quality < 1) {
+                quality = Math.min(1, quality / 0.85)
+                fastFor = 0
+            }
+        }
+
+        function loop(now: number) {
+            if (disposed) return
+            raf = requestAnimationFrame(loop)
+            if (!onScreen || !pageVisible) {
+                lastNow = 0
+                return
+            }
+            const ms = lastNow ? now - lastNow : 0
+            lastNow = now
+            if (ms > 0) {
+                frameMs += (Math.min(ms, 100) - frameMs) * 0.1
+                if (justDrew) adapt(ms)
+            }
+            justDrew = false
+            const mode = step(Math.min(ms / 1000, 0.1), now)
+
+            const p = propsRef.current
+            const resized = applySize()
+            const changed = forceDraw || resized || p !== drawnProps
+            const interval = changed ? 1000 / 60 : mode === "active" ? 1000 / 60 : mode === "idle" ? 1000 / 30 : Infinity
+            if (now - lastDraw < interval - frameMs * 0.5) return
+            lastDraw = now
+            drawnProps = p
+            forceDraw = false
+            draw()
+            justDrew = true
+        }
+
+        if (!init()) {
+            setFailed(true)
+            return
+        }
+
+        /* --------------------------------------------------- pointer */
+
+        const record = (e: PointerEvent) => {
+            pointer.x = e.clientX
+            pointer.y = e.clientY
+            pointer.moved = true
+            pointer.active = true
+            pointer.lastMove = performance.now()
+        }
+        const onRootMove = (e: PointerEvent) => {
+            if (propsRef.current.follow === "frame") record(e)
+        }
+        const onRootLeave = () => {
+            if (propsRef.current.follow === "frame") {
+                pointer.active = false
+                pointer.lastMove = performance.now()
+            }
+            pointer.down = false
+        }
+        const onDocMove = (e: PointerEvent) => {
+            if (propsRef.current.follow === "page") record(e)
+        }
+        const onDocOut = (e: PointerEvent) => {
+            if (!e.relatedTarget && propsRef.current.follow === "page") {
+                pointer.active = false
+                pointer.lastMove = performance.now()
+            }
+        }
+        const onDown = (e: PointerEvent) => {
+            record(e)
+            pointer.down = true
+        }
+        const onUp = (e: PointerEvent) => {
+            pointer.down = false
+            pointer.lastMove = performance.now()
+            if (e.pointerType === "touch") pointer.active = false
+        }
+        const onScroll = () => {
+            rectDirty = true
+        }
+
+        const passive: AddEventListenerOptions = { passive: true }
+        const capturePassive: AddEventListenerOptions = { passive: true, capture: true }
+
+        host.addEventListener("pointermove", onRootMove, passive)
+        host.addEventListener("pointerleave", onRootLeave, passive)
+        host.addEventListener("pointerdown", onDown, passive)
+        document.addEventListener("pointermove", onDocMove, capturePassive)
+        document.addEventListener("pointerout", onDocOut, passive)
+        document.addEventListener("pointerup", onUp, capturePassive)
+        document.addEventListener("pointercancel", onUp, capturePassive)
+        window.addEventListener("scroll", onScroll, capturePassive)
+
+        /* --------------------------------------------------- lifecycle */
+
+        const ro =
+            typeof ResizeObserver !== "undefined"
+                ? new ResizeObserver((entries) => {
+                      const entry = entries[entries.length - 1]
+                      if (!entry) return
+                      const r = entry.contentRect
+                      cssW = Math.max(1, r.width)
+                      cssH = Math.max(1, r.height)
+                      rectDirty = true
+                      forceDraw = true
+                  })
+                : null
+        if (ro) ro.observe(host)
+        const io =
+            typeof IntersectionObserver !== "undefined"
+                ? new IntersectionObserver(
+                      (en) => {
+                          onScreen = en.some((e) => e.isIntersecting)
+                          forceDraw = true
+                      },
+                      { rootMargin: "128px" }
+                  )
+                : null
+        if (io) io.observe(host)
+        const onVisibility = () => {
+            pageVisible = document.visibilityState !== "hidden"
+            forceDraw = true
+        }
+        document.addEventListener("visibilitychange", onVisibility)
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+        reduceMotion = mq.matches
+        const onMQ = (e: MediaQueryListEvent) => {
+            reduceMotion = e.matches
+            forceDraw = true
+        }
+        mq.addEventListener("change", onMQ)
+
+        const onLost = (e: Event) => {
+            e.preventDefault()
+            cancelAnimationFrame(raf)
+        }
+        const onRestored = () => {
+            if (disposed) return
+            lastNow = 0
+            if (init()) raf = requestAnimationFrame(loop)
+            else setFailed(true)
+        }
+        canvas.addEventListener("webglcontextlost", onLost)
+        canvas.addEventListener("webglcontextrestored", onRestored)
+
+        raf = requestAnimationFrame(loop)
+
+        return () => {
+            disposed = true
+            cancelAnimationFrame(raf)
+            host.removeEventListener("pointermove", onRootMove)
+            host.removeEventListener("pointerleave", onRootLeave)
+            host.removeEventListener("pointerdown", onDown)
+            document.removeEventListener("pointermove", onDocMove, { capture: true })
+            document.removeEventListener("pointerout", onDocOut)
+            document.removeEventListener("pointerup", onUp, { capture: true })
+            document.removeEventListener("pointercancel", onUp, { capture: true })
+            window.removeEventListener("scroll", onScroll, { capture: true })
+            if (ro) ro.disconnect()
+            if (io) io.disconnect()
+            document.removeEventListener("visibilitychange", onVisibility)
+            mq.removeEventListener("change", onMQ)
+            canvas.removeEventListener("webglcontextlost", onLost)
+            canvas.removeEventListener("webglcontextrestored", onRestored)
+            if (gl) {
+                if (buffer) gl.deleteBuffer(buffer)
+                if (program) gl.deleteProgram(program)
+                const lose = gl.getExtension("WEBGL_lose_context")
+                if (lose) lose.loseContext()
+            }
+        }
+    }, [])
+
+    const fallback: CSSProperties = failed
+        ? {
+              width: FIT * scale + "%",
+              aspectRatio: "1",
+              maxHeight: FIT * scale + "%",
+              margin: "auto",
+              borderRadius: "50%",
+              boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.85), 0 0 12px rgba(255,255,255,0.25)",
+              background:
+                  "radial-gradient(circle at 50% 50%, " +
+                  spriteColor +
+                  " 0 58%, transparent 59.5%), linear-gradient(35deg, #e8ecf6 0 38%, rgba(255,255,255,0.06) 52%)",
+          }
+        : { display: "none" }
+
+    return (
+        <div
+            ref={hostRef}
+            style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                display: "flex",
+                background: "transparent",
+                ...style,
+            }}
+        >
+            <canvas
+                ref={canvasRef}
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    display: failed ? "none" : "block",
+                }}
+            />
+            <div style={fallback} />
+        </div>
+    )
 }

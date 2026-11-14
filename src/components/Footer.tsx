@@ -14,7 +14,7 @@ const Footer = () => {
           </p>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs sm:justify-end">
-          <a className="text-muted-foreground transition-colors hover:text-foreground" href="mailto:wyattwhittington@gmail.com">Contact Us</a>
+          <a className="text-muted-foreground transition-colors hover:text-foreground" href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox?compose=CllgCKHRMJwcGfsnrGSSKChVCrrcNNdCkWzrBJrkbBfRFKDqPklsVhnrmblFJRQWMPMRjWzHTgV">Contact Us</a>
           <a className="text-muted-foreground transition-colors hover:text-foreground" href="https://docs.google.com/forms/d/e/1FAIpQLSfdbm3lLLlgaz-dnH4IpFNM4css8vfSuwZ97BLDCDe9HW6TCA/viewform?usp=dialog">Report a Blocked Game</a>
           <a className="text-muted-foreground transition-colors hover:text-foreground" href="https://www.dmca.com/compliance/playframe-five.vercel.app">DMCA Registration</a>
         </nav>

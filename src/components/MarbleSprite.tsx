@@ -60,7 +60,7 @@ const DEFAULTS = {
     scale: 90,
     spriteColor: "#1400F6",
     frost: 5,
-    follow: "frame" as const,
+    follow: "page" as const,
     reach: 10,
     lean: 10,
     blink: 10,
@@ -400,9 +400,11 @@ void main() {
     vec3 rd = vec3(0.0, 0.0, -1.0);
 
     // bloom round the silhouette, measured off the reference: a tight
-    // core and a wider skirt
+    // core and a wider skirt. Keep its alpha separate so the canvas
+    // outside the capsule remains genuinely transparent.
     float x = max(r - 1.0, 0.0);
-    vec3 halo = vec3(0.92, 0.95, 1.0) * (0.11 * exp(-x / 0.006) + 0.03 * exp(-x / 0.02)) * uGlow;
+    float haloAmount = (0.11 * exp(-x / 0.006) + 0.03 * exp(-x / 0.02)) * uGlow;
+    vec3 halo = vec3(0.92, 0.95, 1.0) * haloAmount;
 
     vec3 col = uBg;
     float cov = 1.0 - smoothstep(1.0 - px, 1.0 + px, r);
@@ -505,7 +507,9 @@ void main() {
     // film grain at a fixed size in CSS pixels, like the reference's
     vec2 gp = floor(gl_FragCoord.xy / max(uDpr, 1.0));
     col += (hash13(vec3(gp, uTime)) - 0.5) * (4.0 / 255.0) * uGrain;
-    gl_FragColor = vec4(col, 1.0);
+    float alpha = clamp(max(cov, haloAmount), 0.0, 1.0);
+    // WebGL's default canvas compositing expects premultiplied alpha.
+    gl_FragColor = vec4(col * alpha, alpha);
 }
 `
 
@@ -704,7 +708,8 @@ export default function MarbleSprite({
 
         function init(): boolean {
             const ctx = canvas!.getContext("webgl", {
-                alpha: false,
+                alpha: true,
+                premultipliedAlpha: true,
                 antialias: false,
                 depth: false,
                 stencil: false,
@@ -1164,7 +1169,7 @@ export default function MarbleSprite({
                 height: "100%",
                 overflow: "hidden",
                 display: "flex",
-                background,
+                background: "transparent",
                 ...style,
             }}
         >

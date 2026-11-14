@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Game } from "@/lib/games-data";
@@ -19,6 +19,7 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
   const [showGame, setShowGame] = useState(false);
   const [showShortcutHint, setShowShortcutHint] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const navigate = useNavigate();
 
   const startRect = launchRect ?? {
@@ -67,24 +68,56 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!showGame) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
+  const handleShortcutKeyDown = useCallback(
+    (event: KeyboardEvent) => {
       if (
-        event.ctrlKey &&
+        event.code === "Escape" &&
+        event.getModifierState("Fn") &&
+        !event.ctrlKey &&
         !event.altKey &&
-        !event.metaKey &&
-        event.code === "Tab"
+        !event.metaKey
       ) {
         event.preventDefault();
         navigate("/");
       }
+    },
+    [navigate],
+  );
+
+  useEffect(() => {
+    if (!showGame) return;
+
+    const iframe = iframeRef.current;
+    const attachIframeListener = () => {
+      try {
+        iframe?.contentWindow?.addEventListener(
+          "keydown",
+          handleShortcutKeyDown,
+          true,
+        );
+      } catch {
+        // Cross-origin game frames cannot be accessed; the parent listener remains active.
+      }
     };
 
-    window.addEventListener("keydown", handleKeyDown, true);
-    return () => window.removeEventListener("keydown", handleKeyDown, true);
-  }, [navigate, showGame]);
+    window.addEventListener("keydown", handleShortcutKeyDown, true);
+    iframe?.addEventListener("load", attachIframeListener);
+    attachIframeListener();
+
+    return () => {
+      window.removeEventListener("keydown", handleShortcutKeyDown, true);
+      iframe?.removeEventListener("load", attachIframeListener);
+      try {
+        iframe?.contentWindow?.removeEventListener(
+          "keydown",
+          handleShortcutKeyDown,
+          true,
+        );
+      } catch {
+        // Ignore inaccessible cross-origin game frames during cleanup.
+      }
+    };
+  }, [handleShortcutKeyDown, showGame]);
 
   return (
     <div
@@ -130,6 +163,7 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
       {showGame && (
         <>
           <iframe
+            ref={iframeRef}
             src={game.html_file}
             className="h-full w-full border-0"
             title={game.title}
@@ -143,7 +177,7 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
               transition={{ duration: 5, times: [0, 0.12, 0.78, 1] }}
               onAnimationComplete={() => setShowShortcutHint(false)}
             >
-              Press Ctrl+Tab to go Home
+              Press Fn+Esc to go Home
             </motion.div>
           )}
         </>

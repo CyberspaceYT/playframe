@@ -75,8 +75,8 @@ const Navbar = ({
 
         {showSearch && (
           <div
-            className={`absolute left-1/2 flex -translate-x-1/2 items-center transition-all duration-200 ${
-              searchOpen ? "w-52" : "w-[200px]"
+            className={`absolute right-3 flex translate-x-0 items-center transition-all duration-200 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 ${
+              searchOpen ? "w-48 sm:w-52" : "w-9 sm:w-[200px]"
             }`}
           >
             {searchOpen ? (
@@ -107,7 +107,7 @@ const Navbar = ({
                 type="button"
                 aria-label="Open search"
                 onClick={() => setSearchOpen(true)}
-                className="flex h-9 w-[240px] items-center justify-start rounded-lg bg-[#929292] px-3 text-white"
+                className="flex h-9 w-full items-center justify-start rounded-lg bg-[#929292] px-3 text-white"
               >
                 <Search className="size-4" aria-hidden="true" />
               </button>

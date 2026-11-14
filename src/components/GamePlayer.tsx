@@ -48,21 +48,33 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
       ref={containerRef}
       className="fixed inset-0 z-50 flex h-[100dvh] w-screen items-center justify-center overflow-hidden bg-black"
     >
-      {showGame ? (
+      {!showGame && (
+        <>
+          <motion.img
+            src="/image.png"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+          <motion.img
+            src={game.thumbnail_url}
+            alt={game.title}
+            className="absolute max-w-none object-cover"
+            initial={{ width: 96, height: 96, borderRadius: 24 }}
+            animate={{ width: "100vw", height: "100dvh", borderRadius: 0 }}
+            transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </>
+      )}
+      {showGame && (
         <iframe
           src={game.html_file}
           className="h-full w-full border-0"
           title={game.title}
           allowFullScreen
-        />
-      ) : (
-        <motion.img
-          src={game.thumbnail_url}
-          alt={game.title}
-          className="absolute max-w-none object-cover"
-          initial={{ width: 96, height: 96, borderRadius: 24 }}
-          animate={{ width: "100vw", height: "100dvh", borderRadius: 0 }}
-          transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
         />
       )}
     </div>

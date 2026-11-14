@@ -109,20 +109,19 @@ export interface MarbleSpriteProps {
     face?: "eyes" | "none"
     /** Sits behind the capsule; the glass shows it through the clear half */
     background?: string
-    /** Size of the capsule, in % of the reference's framing (100 = 71% of the frame's shorter side) */
+    /** Size of the capsule */
     scale?: number
-    /** Mid tone of the sprite; its lit and shadow sides are derived from it */
+    /** Mid tone of the sprite */
     spriteColor?: string
-    /** 0-10 how milky the lower half of the capsule is; 0 is clear glass all round */
+    /** 0-10 how milky the lower half of the capsule is */
     frost?: number
-    /** Follow the cursor anywhere on the page, only over the frame, or never */
+    /** Follow the cursor */
     follow?: "page" | "frame" | "off"
-    /** 0-10 how hard the sprite turns to look at the cursor */
     reach?: number
-    /** 0-10 how far the capsule leans toward the cursor */
     lean?: number
-    /** 0-10 how often it blinks; 0 never */
     blink?: number
-    /** 0-10 slow bob and sway of the whole capsule */
     float?: number
     /** Tuning constants behind the look */
+    advanced?: Partial<Advanced>
+    style?: CSSProperties
+}

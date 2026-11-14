@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Game } from "@/lib/games-data";
 
@@ -20,7 +19,6 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
   const [showShortcutHint, setShowShortcutHint] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const navigate = useNavigate();
 
   const startRect = launchRect ?? {
     left: window.innerWidth / 2 - 48,
@@ -68,21 +66,12 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
     };
   }, []);
 
-  const handleShortcutKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (
-        event.code === "Escape" &&
-        event.getModifierState("Fn") &&
-        !event.ctrlKey &&
-        !event.altKey &&
-        !event.metaKey
-      ) {
-        event.preventDefault();
-        navigate("/");
-      }
-    },
-    [navigate],
-  );
+  const handleShortcutKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.ctrlKey && event.altKey && !event.metaKey) {
+      event.preventDefault();
+      window.location.assign("https://playframe-five.vercel.app");
+    }
+  }, []);
 
   useEffect(() => {
     if (!showGame) return;
@@ -177,7 +166,7 @@ const GamePlayer = ({ game, launchRect }: GamePlayerProps) => {
               transition={{ duration: 5, times: [0, 0.12, 0.78, 1] }}
               onAnimationComplete={() => setShowShortcutHint(false)}
             >
-              Press Fn+Esc to go Home
+              Press Ctrl+Alt to go to PlayFrame
             </motion.div>
           )}
         </>

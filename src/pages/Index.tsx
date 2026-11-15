@@ -51,7 +51,7 @@ const Index = () => {
               <span>Welcome to PlayFrame</span>
               <span
                 aria-hidden="true"
-                className="welcome-text-shine pointer-events-none absolute inset-0 text-[#78ff83]"
+                className="welcome-text-shine pointer-events-none absolute inset-0 text-[#0091ff]"
                 style={{
                   WebkitMaskImage: "linear-gradient(to right, transparent 30%, #000 50%, transparent 70%)",
                   maskImage: "linear-gradient(to right, transparent 30%, #000 50%, transparent 70%)",

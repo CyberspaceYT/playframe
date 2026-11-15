@@ -126,7 +126,7 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
       />
 
       <motion.div
-        className="absolute inset-0 z-10 bg-black"
+        className="pointer-events-none absolute inset-0 z-10 bg-black"
         initial={{ opacity: 0 }}
         animate={{ opacity: revealGame ? 0 : 1 }}
         transition={{ duration: 0.45, ease: "easeInOut" }}

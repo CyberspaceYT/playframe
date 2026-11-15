@@ -70,7 +70,7 @@ const Footer = () => {
 
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
-            href="mailto:wyattwhittington@gmail.com?subject=Take%20Down%20a%20Game"
+            href="https://www.dmca.com/compliance/takedown.aspx?site=playframe-five.vercel.app"
           >
             Take Down a Game
           </a>

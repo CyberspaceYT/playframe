@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Game } from "@/lib/games-data";
@@ -62,7 +63,6 @@ const GameCard = ({ game }: GameCardProps) => {
     };
 
     setIsLaunching(true);
-
     launchTimerRef.current = window.setTimeout(() => {
       navigate(`/game/${game.id}`, { state: routeState });
     }, 1000);
@@ -70,15 +70,17 @@ const GameCard = ({ game }: GameCardProps) => {
 
   return (
     <>
-      {isLaunching && (
-        <motion.div
-          className="pointer-events-none fixed inset-0 z-50 bg-black"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-        />
-      )}
+      {isLaunching &&
+        createPortal(
+          <motion.div
+            className="pointer-events-none fixed inset-0 z-[9999] bg-black"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.75, ease: "easeInOut" }}
+            aria-hidden="true"
+          />,
+          document.body,
+        )}
 
       <Link
         to={`/game/${game.id}`}

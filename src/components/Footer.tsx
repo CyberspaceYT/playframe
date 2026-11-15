@@ -58,7 +58,7 @@ const Footer = () => {
         >
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox?compose=CllgCKHRMJwcGfsnrGSSKChVCrrcNNdCkWzrBJrkbBfRFKDqPklsVhnrmblFJRQWMPMRjWzHTgV"
+            href="mailto:wyattwhittington@gmail.com?subject=Contact%20Us"
           >
             Contact Us
           </a>
@@ -72,7 +72,7 @@ const Footer = () => {
 
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox?compose=CllgCKHRMJwcGfsnrGSSKChVCrrcNNdCkWzrBJrkbBfRFKDqPklsVhnrmblFJRQWMPMRjWzHTgV"
+            href="mailto:wyattwhittington@gmail.com?subject=Take%20Down%20a%20Game"
           >
             Take Down a Game
           </a>

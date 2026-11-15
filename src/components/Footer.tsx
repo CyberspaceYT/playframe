@@ -1,6 +1,6 @@
 "use client";
 
-import MarbleSprite from "./MarbleSprite";
+import Cobalt from "./Cobalt";
 
 const BRAND_ICON_URL =
   "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
@@ -35,7 +35,7 @@ const Footer = () => {
 
         {/* CENTER: ANIMATED GLASS SPRITE */}
         <div className="relative h-[180px] w-[180px] shrink-0 justify-self-center">
-          <MarbleSprite
+          <Cobalt
             face="eyes"
             background="#000000"
             scale={90}

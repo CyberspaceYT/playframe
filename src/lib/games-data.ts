@@ -29,7 +29,7 @@ export const categories: Category[] = [
 
 export const games: Game[] = [
   { id: "1", title: "Deltarune", showCardTitle: false, description: "Two worlds, one destiny. Light and dark must align.", category: "adventure", thumbnail_url: "https://i.redd.it/w0sn0rvlasw51.png", html_file: "/games/deltarune.html" },
-  { id: "2", title: "Backrooms", showCardTitle: false, description: "Horror maze escape.", category: "horror", thumbnail_url: "https://img.itch.zone/aW1nLzIxNTk2MjEuanBn/original/1i6rgK.jpg", html_file: "/games/backrooms.html" },
+  { id: "2", title: "Backrooms", showCardTitle: true, description: "Horror maze escape.", category: "horror", thumbnail_url: "https://upload.wikimedia.org/wikipedia/commons/b/bb/HobbyTown_USA_Oshkosh_interior_under_construction_2002_%28The_Backrooms%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original", html_file: "/games/backrooms.html" },
   { id: "3", title: "Basket Bros.", showCardTitle: false, description: "1v1 basketball action.", category: "sports", thumbnail_url: "https://basketbros-game.github.io/images/logo.png", html_file: "/games/basket-bros.html" },
   { id: "4", title: "Basketball Stars", showCardTitle: false, description: "1v1 basketball action.", category: "sports", thumbnail_url: "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/bc02c9cdfc5b424ddf343b01edf791ce/basketball-stars-logo.png", html_file: "/games/basketball-stars.html" },
   { id: "5", title: "Cookie Clicker", description: "Click cookies to build a cookie empire.", category: "arcade", thumbnail_url: "https://play-lh.googleusercontent.com/UuIl7UOtKmAjXGHX7qX_XvEIfE9K85u92a0f0Bf7hxKMpRmLFV6EdOEA_0MrMpToPpzLGaGP9p4neHwhFqts", html_file: "/games/cookie-clicker.html" },

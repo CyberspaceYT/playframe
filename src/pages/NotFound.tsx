@@ -44,7 +44,7 @@ const NotFound = () => {
 
       <div className="relative z-10 px-6">
         <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-white/70">Oops! Page not found</p>
+        <p className="mb-4 text-xl text-white/70">Page was eaten by a Black Hole</p>
         <a href="/" className="text-primary underline hover:text-primary/90">
           Return to Home
         </a>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import MarbleSprite from "./MarbleSprite";
@@ -9,8 +8,7 @@ const BRAND_ICON_URL =
 const Footer = () => {
   return (
     <footer className="border-t border-border/50 bg-background/0 py-8 backdrop-blur-sm transition-colors duration-500">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 lg:flex-row">
-
+      <div className="container mx-auto grid grid-cols-1 items-center gap-6 px-4 lg:grid-cols-[1fr_auto_1fr]">
         {/* LEFT: BRANDING */}
         <div className="flex max-w-md flex-col items-center text-center lg:items-start lg:text-left">
           <div className="mb-3 flex items-center justify-center gap-2">
@@ -36,7 +34,7 @@ const Footer = () => {
         </div>
 
         {/* CENTER: ANIMATED GLASS SPRITE */}
-        <div className="relative h-[180px] w-[180px] shrink-0">
+        <div className="relative h-[180px] w-[180px] shrink-0 justify-self-center">
           <MarbleSprite
             face="eyes"
             background="#000000"
@@ -54,7 +52,7 @@ const Footer = () => {
         {/* RIGHT: NAVIGATION */}
         <nav
           aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs lg:justify-end"
+          className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs lg:justify-self-end"
         >
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
@@ -84,7 +82,6 @@ const Footer = () => {
             DMCA Registration
           </a>
         </nav>
-
       </div>
     </footer>
   );

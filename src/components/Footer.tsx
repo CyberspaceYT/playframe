@@ -72,6 +72,13 @@ const Footer = () => {
 
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
+            href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox?compose=CllgCKHRMJwcGfsnrGSSKChVCrrcNNdCkWzrBJrkbBfRFKDqPklsVhnrmblFJRQWMPMRjWzHTgV"
+          >
+            Take Down a Game
+          </a>
+
+          <a
+            className="text-muted-foreground transition-colors hover:text-foreground"
             href="https://www.dmca.com/compliance/playframe-five.vercel.app"
           >
             DMCA Registration

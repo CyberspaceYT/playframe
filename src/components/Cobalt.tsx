@@ -490,7 +490,7 @@ const CAPSULE_PX = 1600
  * @framerIntrinsicWidth 1080
  * @framerIntrinsicHeight 1080
  */
-export default function MarbleSprite({
+export default function Cobalt({
     face = DEFAULTS.face as MarbleSpriteProps["face"],
     background = DEFAULTS.background,
     scale = DEFAULTS.scale,

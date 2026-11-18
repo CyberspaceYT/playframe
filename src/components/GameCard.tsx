@@ -12,15 +12,34 @@ const GameCard = ({ game }: GameCardProps) => {
   const [isLaunching, setIsLaunching] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const launchTimerRef = useRef<number | null>(null);
+  const hoverSoundRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const hoverSound = new Audio("/koiroylers-gear-click-351962_EQNxwyeZ.mp3");
+    hoverSound.preload = "auto";
+    hoverSound.volume = 0.5;
+    hoverSoundRef.current = hoverSound;
+
     return () => {
       if (launchTimerRef.current !== null) {
         window.clearTimeout(launchTimerRef.current);
       }
+      hoverSoundRef.current = null;
     };
   }, []);
+
+  const playHoverSound = (event: React.PointerEvent<HTMLAnchorElement>) => {
+    if (event.pointerType !== "mouse") return;
+
+    const hoverSound = hoverSoundRef.current;
+    if (!hoverSound) return;
+
+    hoverSound.currentTime = 0;
+    void hoverSound.play().catch(() => {
+      // Browsers may block playback until the user has interacted with the page.
+    });
+  };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLAnchorElement>) => {
     if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -83,6 +102,7 @@ const GameCard = ({ game }: GameCardProps) => {
       <Link
         to={`/game/${game.id}`}
         onClick={handleClick}
+        onPointerEnter={playHoverSound}
         onPointerMove={handlePointerMove}
         onPointerLeave={resetPointer}
         className="group relative z-0 block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3348] hover:z-10"

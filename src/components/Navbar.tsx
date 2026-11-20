@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Download, Github, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
@@ -20,6 +20,35 @@ const Navbar = ({
 }: NavbarProps) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const downloadMhtml = () => {
+    const boundary = `----PlayFrameMHTML${Date.now().toString(16)}`;
+    const pageUrl = window.location.href;
+    const pageHtml = `<!doctype html>\r\n${document.documentElement.outerHTML}`;
+    const archive = [
+      "MIME-Version: 1.0",
+      `Content-Type: multipart/related; type=\"text/html\"; boundary=\"${boundary}\"`,
+      "",
+      `--${boundary}`,
+      "Content-Type: text/html; charset=\"UTF-8\"",
+      "Content-Transfer-Encoding: 8bit",
+      `Content-Location: ${pageUrl}`,
+      "",
+      pageHtml,
+      `--${boundary}--`,
+      "",
+    ].join("\r\n");
+    const downloadUrl = URL.createObjectURL(
+      new Blob([archive], { type: "multipart/related" }),
+    );
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = "playframe.mhtml";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+  };
+
   return (
     <header className="sticky top-0 z-50">
       {/* CSS injection for seamless infinite scrolling loop */}
@@ -34,9 +63,8 @@ const Navbar = ({
       `}</style>
 
       {/* 1. Scrolling banner at the very top */}
-      <div className="h-[25px] overflow-hidden bg-black text-white flex items-center">
+      <div className="flex h-[25px] items-center overflow-hidden bg-black text-white">
         <div className="relative flex w-full overflow-x-hidden whitespace-nowrap text-[12px] font-bold tracking-wide">
-          
           {/* Primary text layer */}
           <div className="animate-marquee-infinite flex shrink-0 items-center">
             {announcements.map((item, index) => (
@@ -47,14 +75,16 @@ const Navbar = ({
           </div>
 
           {/* Identical secondary text layer to catch the end of the loop seamlessly */}
-          <div className="animate-marquee-infinite flex shrink-0 items-center" aria-hidden="true">
+          <div
+            className="animate-marquee-infinite flex shrink-0 items-center"
+            aria-hidden="true"
+          >
             {announcements.map((item, index) => (
               <span className="mr-2" key={`track-secondary-${index}`}>
                 {item}
               </span>
             ))}
           </div>
-
         </div>
       </div>
 
@@ -114,6 +144,28 @@ const Navbar = ({
             )}
           </div>
         )}
+
+        <div className="ml-auto hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            aria-label="Download this page as MHTML"
+            title="Download this page as MHTML"
+            onClick={downloadMhtml}
+            className="flex size-9 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10"
+          >
+            <Download className="size-5" aria-hidden="true" />
+          </button>
+          <a
+            href="https://github.com/CyberspaceYT/playframe"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="PlayFrame on GitHub"
+            title="PlayFrame on GitHub"
+            className="flex size-9 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10"
+          >
+            <Github className="size-5" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </header>
   );

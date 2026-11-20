@@ -69,7 +69,7 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
   const handleShortcutKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.ctrlKey && event.altKey && !event.metaKey) {
       event.preventDefault();
-      window.location.assign("https://playframe-five.vercel.app");
+      window.location.assign("https://playframe-launchpad.vercel.app");
     }
   }, []);
 

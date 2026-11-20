@@ -70,14 +70,14 @@ const Footer = () => {
 
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://www.dmca.com/compliance/takedown.aspx?site=playframe-five.vercel.app"
+            href="https://www.dmca.com/compliance/takedown.aspx?site=playframe-launchpad.vercel.app"
           >
             Take Down a Game
           </a>
 
           <a
             className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://www.dmca.com/compliance/playframe-five.vercel.app"
+            href="https://www.dmca.com/compliance/playframe-launchpad.vercel.app"
           >
             DMCA Registration
           </a>

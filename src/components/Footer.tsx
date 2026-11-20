@@ -4,6 +4,8 @@ import Cobalt from "./Cobalt";
 
 const BRAND_ICON_URL =
   "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
+const DMCA_BADGE_URL =
+  "https://images.dmca.com/Badges/dmca-badge-w150-5x1-02.png";
 
 const Footer = () => {
   return (
@@ -50,38 +52,46 @@ const Footer = () => {
         </div>
 
         {/* RIGHT: NAVIGATION */}
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs lg:justify-self-end"
-        >
-          <a
-            className="text-muted-foreground transition-colors hover:text-foreground"
-            href="mailto:wyattwhittington@gmail.com?subject=Contact%20Us"
+        <div className="flex flex-col items-center gap-3 lg:items-end">
+          <nav
+            aria-label="Footer"
+            className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs lg:justify-self-end"
           >
-            Contact Us
-          </a>
+            <a
+              className="text-muted-foreground transition-colors hover:text-foreground"
+              href="mailto:wyattwhittington@gmail.com?subject=Contact%20Us"
+            >
+              Contact Us
+            </a>
 
-          <a
-            className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfdbm3lLLlgaz-dnH4IpFNM4css8vfSuwZ97BLDCDe9HW6TCA/viewform?usp=dialog"
-          >
-            Report a Blocked Game
-          </a>
+            <a
+              className="text-muted-foreground transition-colors hover:text-foreground"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfdbm3lLLlgaz-dnH4IpFNM4css8vfSuwZ97BLDCDe9HW6TCA/viewform?usp=dialog"
+            >
+              Report a Blocked Game
+            </a>
 
-          <a
-            className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://www.dmca.com/compliance/takedown.aspx?site=playframe-launchpad.vercel.app"
-          >
-            Take Down a Game
-          </a>
+            <a
+              className="text-muted-foreground transition-colors hover:text-foreground"
+              href="https://www.dmca.com/compliance/takedown.aspx?site=playframe-launchpad.vercel.app"
+            >
+              Take Down a Game
+            </a>
 
-          <a
-            className="text-muted-foreground transition-colors hover:text-foreground"
-            href="https://www.dmca.com/compliance/playframe-launchpad.vercel.app"
-          >
-            DMCA Registration
-          </a>
-        </nav>
+            <a
+              className="text-muted-foreground transition-colors hover:text-foreground"
+              href="https://www.dmca.com/compliance/playframe-launchpad.vercel.app"
+            >
+              DMCA Registration
+            </a>
+          </nav>
+          <img
+            src={DMCA_BADGE_URL}
+            alt="DMCA protected"
+            width={150}
+            height={30}
+          />
+        </div>
       </div>
     </footer>
   );

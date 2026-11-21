@@ -114,7 +114,7 @@ const GameCard = ({ game }: GameCardProps) => {
         >
           {imageFailed ? (
             <div className="absolute inset-0 flex items-center justify-center bg-muted px-4 text-center text-xs font-bold uppercase text-muted-foreground">
-              IMAGE COULDNT BE LOADED
+              IMAGE LOAD ERROR
             </div>
           ) : (
             <img

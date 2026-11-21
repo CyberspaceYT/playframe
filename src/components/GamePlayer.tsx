@@ -55,12 +55,13 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
   }, [revealGame]);
 
   const handleFrameLoad = useCallback(() => {
+    // Game pages are same-origin wrappers; keep their surrounding loading area black.
     try {
       const doc = iframeRef.current?.contentDocument;
       doc?.documentElement.style.setProperty("background-color", "#000", "important");
       doc?.body?.style.setProperty("background-color", "#000", "important");
     } catch {
-      // Cross-origin game frames cannot be styled; the black player background remains visible.
+      // A cross-origin game frame cannot be styled; the black player background remains visible.
     }
     setFrameLoaded(true);
   }, []);
@@ -124,25 +125,15 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       />
 
-      {!revealGame && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-black"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: revealGame ? 0 : 1 }}
-          transition={{ duration: 0.45, ease: "easeInOut" }}
-          onAnimationComplete={() => {
-            if (!coverComplete) setCoverComplete(true);
-          }}
-        >
-          <img
-            src="https://i.ibb.co/bjvw3kmf/output-onlinegiftools.gif"
-            alt=""
-            aria-hidden="true"
-            className="max-h-[50vh] max-w-[50vw] object-contain"
-            draggable={false}
-          />
-        </motion.div>
-      )}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-10 bg-black"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: revealGame ? 0 : 1 }}
+        transition={{ duration: 0.45, ease: "easeInOut" }}
+        onAnimationComplete={() => {
+          if (!coverComplete) setCoverComplete(true);
+        }}
+      />
 
       {showShortcutHint && (
         <motion.div

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Download, Github, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export const announcements = [
-  "NEW GAMES!!! Added Fork N' Sausage and Pizza Tower! - but if you pour water on a rock, nothing happens - cant do nathan - shawty told me she got yellow fever so i had to look at her crazy like baby you bugging bu bu bugging - we on tiktok @Cyberspace1104 - domination station annihalation proclamation exclamation nomination nation - supercalifragilisticexpialidociously getting pneumonoultramicroscopicsilicovolcanoconiosis - moto x3m on top - quite frankly - or is it? - pretty cool right? - it's impossible. no, it's necessary. - https://www.youtube.com/watch?v=pxuj-CWimS0&list=PLpx41Fyr0nnkU4kiFz1jgoW8j7sz4oPG7&index=3 - skadoosh - ayo big teach they playing games in yo class - way to go superstar - if you got this from lowell he lied -",
+  "- NEW GAMES!!! Added Block Blast, Arthurs Nightmare, Drift Boss, and  Happy Wheels! - But if you pour water on a rock, nothing happens - trump was on the jeffrey epstein plane - french horn easily best instrument in band - bulbinator - we on tiktok @Cyberspace1104 - multiple leviathan class life forms detected are you sure what youre doing is worth it - pneumonoultramicroscopicsilicovolcanoconiosis - drift hunters is goat - pretty cool right? - it's impossible. no, it's necessary. - finally they got rid of hotwheels - skadoosh - ayo big teach they playing games in yo class - way to go superstar - devin asked to be on here - gng never getting pirate token - 2024 Chevrolet Silverado 2500HD LT Crew Cab Standard Bed 6.6L V8 Engine 401 HP ",
 ];
 
 const Navbar = ({
@@ -19,6 +19,35 @@ const Navbar = ({
   showSearch = true,
 }: NavbarProps) => {
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const downloadMhtml = () => {
+    const boundary = `----PlayFrameMHTML${Date.now().toString(16)}`;
+    const pageUrl = window.location.href;
+    const pageHtml = `<!doctype html>\r\n${document.documentElement.outerHTML}`;
+    const archive = [
+      "MIME-Version: 1.0",
+      `Content-Type: multipart/related; type=\"text/html\"; boundary=\"${boundary}\"`,
+      "",
+      `--${boundary}`,
+      "Content-Type: text/html; charset=\"UTF-8\"",
+      "Content-Transfer-Encoding: 8bit",
+      `Content-Location: ${pageUrl}`,
+      "",
+      pageHtml,
+      `--${boundary}--`,
+      "",
+    ].join("\r\n");
+    const downloadUrl = URL.createObjectURL(
+      new Blob([archive], { type: "multipart/related" }),
+    );
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = "playframe.mhtml";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+  };
 
   return (
     <header className="sticky top-0 z-50">
@@ -34,9 +63,8 @@ const Navbar = ({
       `}</style>
 
       {/* 1. Scrolling banner at the very top */}
-      <div className="h-[25px] overflow-hidden bg-black text-white flex items-center">
+      <div className="flex h-[25px] items-center overflow-hidden bg-black text-white">
         <div className="relative flex w-full overflow-x-hidden whitespace-nowrap text-[12px] font-bold tracking-wide">
-          
           {/* Primary text layer */}
           <div className="animate-marquee-infinite flex shrink-0 items-center">
             {announcements.map((item, index) => (
@@ -47,14 +75,16 @@ const Navbar = ({
           </div>
 
           {/* Identical secondary text layer to catch the end of the loop seamlessly */}
-          <div className="animate-marquee-infinite flex shrink-0 items-center" aria-hidden="true">
+          <div
+            className="animate-marquee-infinite flex shrink-0 items-center"
+            aria-hidden="true"
+          >
             {announcements.map((item, index) => (
               <span className="mr-2" key={`track-secondary-${index}`}>
                 {item}
               </span>
             ))}
           </div>
-
         </div>
       </div>
 
@@ -75,8 +105,8 @@ const Navbar = ({
 
         {showSearch && (
           <div
-            className={`absolute left-1/2 flex -translate-x-1/2 items-center transition-all duration-200 ${
-              searchOpen ? "w-52" : "w-[200px]"
+            className={`absolute right-3 flex translate-x-0 items-center transition-all duration-200 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 ${
+              searchOpen ? "w-48 sm:w-52" : "w-9 sm:w-[200px]"
             }`}
           >
             {searchOpen ? (
@@ -107,13 +137,35 @@ const Navbar = ({
                 type="button"
                 aria-label="Open search"
                 onClick={() => setSearchOpen(true)}
-                className="flex h-9 w-[240px] items-center justify-start rounded-lg bg-[#929292] px-3 text-white"
+                className="flex h-9 w-full items-center justify-start rounded-lg bg-[#929292] px-3 text-white"
               >
                 <Search className="size-4" aria-hidden="true" />
               </button>
             )}
           </div>
         )}
+
+        <div className="ml-auto hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            aria-label="Download this page as MHTML"
+            title="Download this page as MHTML"
+            onClick={downloadMhtml}
+            className="flex size-9 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10"
+          >
+            <Download className="size-5" aria-hidden="true" />
+          </button>
+          <a
+            href="https://github.com/CyberspaceYT/playframe"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="PlayFrame on GitHub"
+            title="PlayFrame on GitHub"
+            className="flex size-9 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10"
+          >
+            <Github className="size-5" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </header>
   );

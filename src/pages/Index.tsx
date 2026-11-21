@@ -34,11 +34,37 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[#151515] text-white">
+      <style>{`
+        @keyframes welcomeTextShine {
+          0% { -webkit-mask-position: 200% 0; mask-position: 200% 0; }
+          100% { -webkit-mask-position: -100% 0; mask-position: -100% 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .welcome-text-shine { animation: none !important; }
+        }
+      `}</style>
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <main className="w-full px-5 pb-16 sm:px-8">
-        <section className="mx-auto max-w-[1080px] py-8 sm:py-12">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to PlayFrame</h1>
-          <p className="mt-1 max-w-xs text-sm leading-4 text-white/45">ayo teach me playing<br />games in yo class</p>
+        <section className="mx-auto flex max-w-[1080px] flex-col items-center py-8 text-center sm:py-12">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <span className="relative inline-block">
+              <span>Welcome to PlayFrame</span>
+              <span
+                aria-hidden="true"
+                className="welcome-text-shine pointer-events-none absolute inset-0 text-[#0091ff]"
+                style={{
+                  WebkitMaskImage: "linear-gradient(to right, transparent 30%, #000 50%, transparent 70%)",
+                  maskImage: "linear-gradient(to right, transparent 30%, #000 50%, transparent 70%)",
+                  WebkitMaskSize: "150% 100%",
+                  maskSize: "150% 100%",
+                  animation: "welcomeTextShine 1.5s ease-in-out infinite",
+                }}
+              >
+                Welcome to PlayFrame
+              </span>
+            </span>
+          </h1>
+          <p className="mt-1 text-sm leading-5 text-white/45">ayo teach me playing<br />games in yo class</p>
         </section>
         <div className="mx-auto max-w-[1080px]"><CategoryChips categories={categories} activeCategory={activeCategory} onSelect={setActiveCategory} /></div>
         <section className="game-grid mt-7 w-full">

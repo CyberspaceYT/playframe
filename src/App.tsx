@@ -10,12 +10,11 @@ import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
 import GamePlayer from "./components/GamePlayer";
 import { useTabVisibility } from "./hooks/useTabVisibility";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { useAdminShortcut } from "./hooks/useAdminShortcut";
 import { AdminEditorModal } from "./components/AdminEditorModal";
 import { games } from "@/lib/games-data";
-import type { Game } from "@/lib/games-data";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +65,7 @@ function FullGamePlayer() {
     );
   }
 
-  return <GamePlayer game={game} onClose={() => { window.history.replaceState(null, "", "/"); window.dispatchEvent(new PopStateEvent("popstate")); }} />;
+  return <GamePlayer game={game} />;
 }
 
 const App = () => <AppContent />;

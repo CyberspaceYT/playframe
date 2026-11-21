@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,11 +7,12 @@
   :root, .light { --reference-red: 353 100% 60%; --background: 190 35% 98%; --foreground: 230 28% 14%; --card: 0 0% 100%; --card-foreground: 230 28% 14%; --popover: 0 0% 100%; --popover-foreground: 230 28% 14%; --primary: 219 78% 66%; --primary-foreground: 0 0% 100%; --secondary: 184 30% 93%; --secondary-foreground: 230 28% 20%; --muted: 190 24% 93%; --muted-foreground: 230 12% 44%; --accent: 189 100% 33%; --logo: 198 92% 52%; --accent-foreground: 0 0% 100%; --destructive: 0 72% 51%; --destructive-foreground: 0 0% 100%; --border: 190 20% 86%; --input: 190 20% 86%; --ring: 238 74% 61%; --radius: 0.85rem; }
   .dark { --background: 0 0% 8%; --foreground: 0 0% 96%; --card: 0 0% 10%; --card-foreground: 0 0% 96%; --popover: 230 27% 13%; --popover-foreground: 190 30% 96%; --primary: 219 78% 66%; --primary-foreground: 0 0% 100%; --secondary: 230 22% 18%; --secondary-foreground: 190 25% 88%; --muted: 230 18% 16%; --muted-foreground: 220 12% 62%; --accent: 238 74% 61%; --accent-foreground: 0 0% 100%; --destructive: 0 72% 51%; --destructive-foreground: 0 0% 100%; --border: 230 17% 24%; --input: 230 17% 24%; --ring: 179 66% 66%; --radius: 0.85rem; }
   * { @apply border-border; }
-  body { @apply bg-background text-foreground; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; transition: background-color .5s ease, color .5s ease; }
-  h1,h2,h3,h4,h5,h6 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; }
+  body { @apply bg-background text-foreground; font-family: "Montserrat", sans-serif; font-weight: 400; transition: background-color .5s ease, color .5s ease; }
+  h1,h2,h3,h4,h5,h6 { font-family: "Montserrat", sans-serif; font-weight: 400; }
 }
 @layer utilities {
-  .game-grid { display: grid; width: 100%; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 1.6rem 1.75rem; }
+  .game-grid { display: grid; width: 100%; grid-template-columns: repeat(auto-fill, 160px); justify-content: space-between; gap: 1.6rem 1.75rem; }
+  .game-grid > div { width: 160px; }
   .game-grid > div { animation: tile-enter 650ms cubic-bezier(.2,.8,.2,1) both; }
   .game-grid > div:nth-child(2n) { animation-delay: 70ms; }
   .game-grid > div:nth-child(3n) { animation-delay: 140ms; }
@@ -19,6 +20,5 @@
   .animate-marquee { animation: marquee 8000s linear infinite; will-change: transform; }
   @keyframes marquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
   @keyframes tile-enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  @media (min-width: 768px) { .game-grid { grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); } }
   @media (prefers-reduced-motion: reduce) { .game-grid > div, .animate-marquee { animation: none; } }
 }

@@ -55,13 +55,12 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
   }, [revealGame]);
 
   const handleFrameLoad = useCallback(() => {
-    // Game pages are same-origin wrappers; keep their surrounding loading area black.
     try {
       const doc = iframeRef.current?.contentDocument;
       doc?.documentElement.style.setProperty("background-color", "#000", "important");
       doc?.body?.style.setProperty("background-color", "#000", "important");
     } catch {
-      // A cross-origin game frame cannot be styled; the black player background remains visible.
+      // Cross-origin game frames cannot be styled; the black player background remains visible.
     }
     setFrameLoaded(true);
   }, []);
@@ -125,15 +124,25 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       />
 
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-10 bg-black"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: revealGame ? 0 : 1 }}
-        transition={{ duration: 0.45, ease: "easeInOut" }}
-        onAnimationComplete={() => {
-          if (!coverComplete) setCoverComplete(true);
-        }}
-      />
+      {!revealGame && (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-black"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: revealGame ? 0 : 1 }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
+          onAnimationComplete={() => {
+            if (!coverComplete) setCoverComplete(true);
+          }}
+        >
+          <img
+            src="https://i.redd.it/inb7xkog7y131.gif"
+            alt=""
+            aria-hidden="true"
+            className="max-h-[50vh] max-w-[50vw] object-contain"
+            draggable={false}
+          />
+        </motion.div>
+      )}
 
       {showShortcutHint && (
         <motion.div

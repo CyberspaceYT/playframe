@@ -5,7 +5,7 @@ import Cobalt from "./Cobalt";
 const BRAND_ICON_URL =
   "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cy3BIvTi3DAf0uxoIdf1nHZC7PQBoo.png";
 const DMCA_BADGE_URL =
-  "https://images.dmca.com/Badges/dmca-badge-w150-5x1-02.png";
+  "https://images.dmca.com/Badges/dmca_protected_21_120.png";
 
 const Footer = () => {
   return (

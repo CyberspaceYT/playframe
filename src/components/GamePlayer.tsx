@@ -135,7 +135,7 @@ const GamePlayer = ({ game }: GamePlayerProps) => {
           }}
         >
           <img
-            src="https://i.redd.it/inb7xkog7y131.gif"
+            src="https://i.ibb.co/bjvw3kmf/output-onlinegiftools.gif"
             alt=""
             aria-hidden="true"
             className="max-h-[50vh] max-w-[50vw] object-contain"

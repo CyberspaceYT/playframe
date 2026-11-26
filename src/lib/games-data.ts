@@ -101,4 +101,5 @@ export const games: Game[] = [
   { id: "71", title: "Untitled Goose Game", showCardTitle: false,  description: "Cause harmless havoc as the most annoying goose on the block.", category: "puzzle", thumbnail_url: "https://assets.nintendo.com/image/fetch/q_auto/f_auto/https://atum-img-lp1.cdn.nintendo.net/i/c/81c27f15c61f4ea7a09276e7d49aeb9d_1024", html_file: "/games/Untitled Goose Game.html" },
   { id: "72", title: "Funny Shooter 2", showCardTitle: false,  description: "Fast, frantic shooting action with silly energy.", category: "action", thumbnail_url: "https://1v1lolgame.org//data/image/game/funny-shooter-2.jpg", html_file: "/games/funny-shooter-2.html" },
   { id: "73", title: "Burger & Frights", showCardTitle: false,  description: "Burger.", category: "horror", thumbnail_url: "https://badparentingame.io/assets/upload/poki/png/burger-and-frights.webp", html_file: "/games/burgerandfrights.html" },
+  { id: "73", title: "1v1.lol", showCardTitle: false,  description: "A high tense online shooting game.", category: "action", thumbnail_url: "https://pbs.twimg.com/profile_images/1618270716381593601/FDftiXwH_400x400.jpg", html_file: "/games/cl1v1.lol.html" },
 ];
